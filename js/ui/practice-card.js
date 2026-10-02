@@ -77,6 +77,12 @@ export function segmentStates(session) {
   });
 }
 
+/** Passes among first attempts (retries don't count), for checkpoint and drill scores. */
+export function scoreResults(results) {
+  const first = (results || []).filter((r) => r && !r.retry);
+  return { passes: first.filter((r) => r.pass).length, total: first.length };
+}
+
 /** SRS grading: every mode but drill, and only a card's first attempt in the session. */
 export const shouldGrade = (mode, card) => mode !== 'drill' && !card.retry;
 

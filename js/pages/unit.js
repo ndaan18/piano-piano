@@ -67,6 +67,37 @@ export function unitSteps(unit, progress) {
   return steps.map((s) => ({ ...s, minutes: MINUTES[s.kind] }));
 }
 
+/** Whether the unit's step of this kind exists and is open ('mixed', 'scene', 'checkpoint', 'drill'). */
+export function stepOpen(unit, progress, kind) {
+  const step = unitSteps(unit, progress).find((s) => s.kind === kind);
+  return !!step && !step.locked;
+}
+
+/**
+ * Loads a unit for one of its step pages. Redirects to the unit page (and
+ * returns null) when the unit is locked, not written, or the step isn't open
+ * yet; returns null without redirecting if the page was left while loading.
+ */
+export async function loadUnitStep(root, params, store, kind) {
+  const meta = /^\d+$/.test(params.u) ? UNITS.find((m) => m.id === Number(params.u)) : undefined;
+  if (!meta) { location.replace('#/'); return null; }
+  const u = meta.id;
+  if (!isUnlocked(u, store.get().units)) { location.replace(`#/unit/${u}`); return null; }
+  const unit = await loadUnit(u);
+  if (!root.isConnected) return null;
+  if (!unit || (kind && !stepOpen(unit, store.get().units[u], kind))) { location.replace(`#/unit/${u}`); return null; }
+  return { meta, u, unit };
+}
+
+/** Updates a unit's progress record (created with defaults if missing) inside store.update. */
+export function updateProgress(store, u, fn) {
+  return store.update((d) => {
+    const p = { lessonsDone: [], mixedDone: false, sceneDone: false, checkpointBest: 0, ...d.units[u] };
+    fn(p, d);
+    d.units[u] = p;
+  });
+}
+
 /** The first open, unfinished step (drill excluded), or null when the unit is complete. */
 export function nextStep(steps) {
   return steps.find((s) => !s.optional && !s.done && !s.locked) || null;
@@ -144,6 +175,7 @@ export async function mount(root, params, ctx) {
     return;
   }
   const unit = await loadUnit(id);
+  if (!root.isConnected) return;
   const stage = root.querySelector('[data-stage]');
   if (!unit) {
     stage.textContent = 'Being written';

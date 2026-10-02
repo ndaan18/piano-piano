@@ -628,3 +628,71 @@ a.step:hover { border-color: var(--ink); }
   .pc__btns .btn { flex: 1; }
   .ldone__go { flex-direction: column; align-self: stretch; }
 }
+
+/* ---------- checkpoint: ink page (Task 9) ---------- */
+body.page--ink { background: var(--ink); color: var(--base); }
+.page--ink .card, .page--ink .pc { color: var(--ink); }
+.page--ink .nav__logo span { color: var(--pink); }
+.page--ink .nav__links a[aria-current="page"] { border-bottom-color: var(--base); }
+.page--ink .foot { border-top-color: #3A3A35; color: var(--on-ink-muted); }
+.page--ink .iconbtn { background: transparent; border-color: #4A4A44; color: var(--base); }
+.page--ink .session__bar .segs i { background: #3A3A35; }
+.page--ink .session__bar .segs i.done { background: var(--base); }
+.page--ink .session__bar .segs i.now { background: var(--lime); box-shadow: none; }
+.page--ink .session__bar .segs i.miss { background: var(--orange); }
+@media (max-width: 599px) {
+  .page--ink .nav__links { color: var(--ink); }
+}
+
+.cp__revisit { display: flex; flex-direction: column; gap: 8px; align-self: stretch; margin-top: 6px; }
+.cp__rules { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.cp__rules a {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: var(--tap);
+  padding: 10px 14px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  text-decoration: none;
+  font-size: 17px;
+}
+/* the short orange bar from the mistake feedback, before the rule title */
+.cp__rules a::before { content: ""; flex: none; width: 44px; height: 8px; border-radius: var(--r-pill); background: var(--orange); }
+.cp__rules a b { flex: 1; }
+.cp__rules a:hover { border-color: var(--ink); }
+
+/* ---------- scene ---------- */
+.scene { display: flex; flex-direction: column; gap: 14px; }
+.scene__head { display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 12px 18px; }
+.scene__title { font-weight: 900; font-size: clamp(32px, 4vw, 44px); letter-spacing: -0.05em; line-height: 1; margin-top: 6px; }
+.scene__setting { color: var(--muted); font-size: 15px; margin-top: 8px; max-width: 60ch; }
+.scene__tools { display: flex; gap: 8px; flex-wrap: wrap; }
+.scene__lines { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.sline { display: grid; grid-template-columns: 9.5rem 1fr auto; grid-template-areas: "who it play" "who en play"; align-items: center; gap: 4px 14px; padding: 12px 14px; }
+.sline__who { grid-area: who; display: flex; flex-direction: column; align-items: flex-start; gap: 6px; }
+.sline__it { grid-area: it; font-weight: 800; font-size: 21px; letter-spacing: -0.03em; line-height: 1.2; }
+.sline__en { grid-area: en; color: var(--muted); font-size: 15px; }
+.sline__en[hidden] { display: none; }
+.sline .play { grid-area: play; }
+.sline.is-playing { background: var(--lime); border-color: var(--lime); }
+.sline.is-playing .play { background: var(--ink); color: var(--lime); }
+
+/* ---------- review ---------- */
+.review { display: grid; grid-template-columns: 0.8fr 1.2fr; gap: 12px; max-width: 900px; margin-top: 10px; }
+.review > .card { min-height: 300px; display: flex; flex-direction: column; justify-content: space-between; gap: var(--sp-4); }
+.review__title { font-weight: 900; font-size: clamp(30px, 4vw, 40px); letter-spacing: -0.05em; line-height: 1; }
+.review__list { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 8px; font-weight: 600; }
+.review__list li { padding-bottom: 8px; border-bottom: 1px solid var(--line); }
+.review__how .btn { align-self: flex-start; }
+
+@media (max-width: 599px) {
+  .sline { grid-template-columns: 1fr auto; grid-template-areas: "who play" "it play" "en en"; }
+  .sline__who { flex-direction: row; align-items: center; }
+  .sline__it { font-size: 19px; }
+  .scene__tools { align-self: stretch; }
+  .scene__tools .btn { flex: 1; }
+  .review { grid-template-columns: 1fr; }
+  .review > .card { min-height: 0; }
+  .review__how .btn { align-self: stretch; }
+}

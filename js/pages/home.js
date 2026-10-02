@@ -5,8 +5,9 @@ import { UNITS, loadUnit, exerciseIndex } from '../../content/index.js';
 import { renderCover, lightAt } from '../covers.js';
 import { PASS_MARK, localDate, addDays, unitStage, isUnlocked, dueIds } from '../engine/srs.js';
 import { SLOW_RATE } from '../audio.js';
-import { esc, PLAY_ICON } from '../ui/dom.js';
+import { esc, PLAY_ICON, regChip } from '../ui/dom.js';
 import { unitSteps, nextStep, unitFromRoute, safeRoute, pad2 } from './unit.js';
+import { reviewCountText } from './review.js';
 
 const FALLBACK_PHRASE = {
   it: 'Dai, andiamo a prendere un caffè?',
@@ -42,12 +43,6 @@ export function currentUnit(unitsProgress, count) {
   return count - 1;
 }
 
-function regChip(reg) {
-  if (reg === 'tu') return '<span class="chip chip--tu">informale · tu</span>';
-  if (reg === 'lei') return '<span class="chip chip--lei">formale · Lei</span>';
-  return '<span class="chip">neutral</span>';
-}
-
 // "dai = …" → the term before " = " in bold (lime on ink), the rest plain.
 function tipHTML(tip) {
   const at = tip.indexOf(' = ');
@@ -63,6 +58,7 @@ export async function mount(root, params, ctx) {
   const loaded = (
     await Promise.all(reached.map((u) => loadUnit(u.id).catch((err) => { console.error(err); return null; })))
   ).filter(Boolean);
+  if (!root.isConnected) return; // left while loading
   const content = new Map(loaded.map((u) => [u.id, u]));
 
   // stats
@@ -70,18 +66,20 @@ export async function mount(root, params, ctx) {
   const built = Object.values(state.cards).reduce((n, c) => n + (c.correct || 0), 0);
   const accuracy = weekAccuracy(state.log, today);
 
-  // continue card: the saved place, else the current unit's next step
+  // continue card: the saved place (a unit step or a review), else the current unit's next step
   const saved = safeRoute(state.resume?.route);
   const resumeUnit = unitFromRoute(saved);
-  const resuming = resumeUnit != null && UNITS[resumeUnit] && isUnlocked(resumeUnit, state.units);
-  const current = resuming ? resumeUnit : currentUnit(state.units, UNITS.length);
+  const reviewing = saved === '#/review';
+  const resuming = reviewing || (resumeUnit != null && UNITS[resumeUnit] && isUnlocked(resumeUnit, state.units));
+  const current = resumeUnit != null && resuming ? resumeUnit : currentUnit(state.units, UNITS.length);
   const steps = content.has(current) ? unitSteps(content.get(current), state.units[current]) : [];
   const core = steps.filter((s) => !s.optional);
   const next = nextStep(steps);
   const href = resuming ? saved : next?.route ?? `#/unit/${current}`;
   const started = core.some((s) => s.done);
   const at = core.findIndex((s) => s.route === href);
-  const stepLabel = !core.length ? 'Being written' : at >= 0 ? `Step ${at + 1} / ${core.length}` : next ? '' : 'Complete';
+  const stepLabel = reviewing ? 'In progress'
+    : !core.length ? 'Being written' : at >= 0 ? `Step ${at + 1} / ${core.length}` : next ? '' : 'Complete';
   // text tone follows the cover under it (dark covers can be lime at the edges)
   const tone = (x, y) => (lightAt(current, x, y) ? '' : ' on-dark');
   const btnOnDark = !lightAt(current, 85, 85);
@@ -132,10 +130,10 @@ export async function mount(root, params, ctx) {
     <div class="bento">
       <section class="card bento__hero" aria-label="Continue">
         <div class="cover cover--fill" data-cover="${current}"></div>
-        <div class="cover__content bento__row mono"><span class="${tone(12, 8)}">Continue · Unit ${pad2(current)}</span><span class="${tone(88, 8)}">${stepLabel}</span></div>
+        <div class="cover__content bento__row mono"><span class="${tone(12, 8)}">Continue · ${reviewing ? 'Review' : `Unit ${pad2(current)}`}</span><span class="${tone(88, 8)}">${stepLabel}</span></div>
         <div class="cover__content bento__row bento__row--end">
-          <h2 class="bento__title${tone(22, 82)}">${esc(UNITS[current].title)}</h2>
-          <a class="btn${btnOnDark ? ' btn--lime' : ''}" href="${esc(href)}">${resuming ? 'Resume →' : started ? 'Continue →' : 'Start →'}</a>
+          <h2 class="bento__title${tone(22, 82)}">${reviewing ? 'Review' : esc(UNITS[current].title)}</h2>
+          <a class="btn${btnOnDark ? ' btn--lime' : ''}" href="${esc(href)}">${reviewing ? 'Continue review →' : resuming ? 'Resume →' : started ? 'Continue →' : 'Start →'}</a>
         </div>
       </section>
 
@@ -153,7 +151,7 @@ export async function mount(root, params, ctx) {
         <span class="mono">Review</span>
         <div>
           <div class="review__count">${due}</div>
-          <p class="review__text">${due === 0 ? 'Nothing due today. Mistakes come back here.' : `${due === 1 ? 'sentence' : 'sentences'} due for another try.`}</p>
+          <p class="review__text">${esc(reviewCountText(due))}</p>
         </div>
         <a class="btn" href="#/review">Start review →</a>
       </section>

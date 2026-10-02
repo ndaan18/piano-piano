@@ -14,7 +14,7 @@ export const REQUEUE_OFFSET = 3;
 const LESSON_SIZE = 20;
 const MIXED_SIZE = 30;
 const DRILL_SIZE = 15;
-const REVIEW_LIMIT = 30;
+export const REVIEW_LIMIT = 30;
 
 // Fisher-Yates on a copy.
 function shuffle(arr, rng) {

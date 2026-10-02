@@ -1,15 +1,14 @@
 // Lesson page (spec §7.3–7.5): rule screens → examples → practice → done.
-// The same route module serves mixed practice and drill (`params.mode`); those
-// modes are added in Task 9 and show a placeholder until then.
+// The same route module serves mixed practice and drill (`params.mode`).
 
 import { UNITS, loadUnit, exerciseIndex } from '../../content/index.js';
 import { isUnlocked } from '../engine/srs.js';
-import { buildLessonSession } from '../engine/session.js';
+import { buildLessonSession, buildMixedSession, buildDrill } from '../engine/session.js';
 import { SLOW_RATE } from '../audio.js';
 import { esc, PLAY_ICON, regChip } from '../ui/dom.js';
 import { renderRuleSentence } from '../ui/marks.js';
-import { runSession, restoreSession } from '../ui/practice-card.js';
-import { pad2 } from './unit.js';
+import { runSession, restoreSession, scoreResults } from '../ui/practice-card.js';
+import { pad2, loadUnitStep, updateProgress } from './unit.js';
 
 // ---------- pure helpers ----------
 
@@ -126,12 +125,12 @@ function examplesHTML(examples, nextLabel) {
     </section>`;
 }
 
-function doneHTML(unitId, results) {
+function doneHTML(unitId, results, { chip = 'Lesson done' } = {}) {
   const missed = new Set(results.filter((r) => !r.retry && !r.pass).map((r) => r.exerciseId)).size;
   const count = results.filter((r) => !r.retry).length;
   return `
     <section class="card ldone">
-      <span class="chip chip--lime">Lesson done</span>
+      <span class="chip chip--lime">${esc(chip)}</span>
       <h1 class="ldone__title">Bravo.</h1>
       <p class="ldone__text">${count} ${count === 1 ? 'card' : 'cards'}, ${missed} into your review queue.</p>
       <p class="ldone__hint">${missed ? 'The mistakes come back tomorrow, then in 3, 7 and 21 days, until they stick.' : 'Every card goes into spaced review, so this sticks.'}</p>
@@ -142,37 +141,52 @@ function doneHTML(unitId, results) {
     </section>`;
 }
 
-function placeholder(root) {
-  root.innerHTML = `
-    <div class="soon">
-      <span class="mono">Coming soon</span>
-      <h1 class="soon__title">This page isn't built yet.</h1>
-      <a class="btn" href="#/">← Back to your path</a>
-    </div>`;
+function drillDoneHTML(unitId, results) {
+  const { passes, total } = scoreResults(results);
+  return `
+    <section class="card ldone">
+      <h1 class="ldone__text">Drill done · ${passes}/${total}</h1>
+      <p class="ldone__hint">Drills don't change your review schedule. Go again as often as you like.</p>
+      <div class="ldone__go">
+        <button class="btn" type="button" data-again>Again</button>
+        <a class="btn btn--ghost" href="#/unit/${unitId}" data-back>Back to unit</a>
+      </div>
+    </section>`;
+}
+
+function emptyHTML(unitId, text) {
+  return `
+    <section class="card ldone">
+      <p class="ldone__text">${esc(text)}</p>
+      <div class="ldone__go"><a class="btn" href="#/unit/${unitId}" data-back>Back to unit</a></div>
+    </section>`;
+}
+
+/** Content for interleaving: the earlier units the learner has reached. */
+async function loadEarlier(u, unitsProgress) {
+  const earlier = await Promise.all(
+    UNITS.filter((m) => m.id < u && isUnlocked(m.id, unitsProgress))
+      .map((m) => loadUnit(m.id).catch((err) => { console.error(err); return null; })),
+  );
+  return earlier.filter(Boolean);
 }
 
 // ---------- modes ----------
 
 async function mountLesson(root, params, { store, audio }) {
-  const meta = /^\d+$/.test(params.u) ? UNITS.find((m) => m.id === Number(params.u)) : undefined;
-  if (!meta) { location.replace('#/'); return; }
-  const u = meta.id;
-  const state = store.get();
-  if (!isUnlocked(u, state.units)) { location.replace(`#/unit/${u}`); return; }
-  const unit = await loadUnit(u);
-  const lessonIndex = (unit?.lessons || []).findIndex((l) => l.id === params.lessonId);
+  const loaded = await loadUnitStep(root, params, store, null);
+  if (!loaded) return;
+  const { meta, u, unit } = loaded;
+  const lessonIndex = (unit.lessons || []).findIndex((l) => l.id === params.lessonId);
   if (lessonIndex < 0) { location.replace(`#/unit/${u}`); return; }
   const lesson = unit.lessons[lessonIndex];
 
-  // Content for interleaving: earlier reached units plus this one.
-  const earlier = await Promise.all(
-    UNITS.filter((m) => m.id < u && isUnlocked(m.id, state.units))
-      .map((m) => loadUnit(m.id).catch((err) => { console.error(err); return null; })),
-  );
-  const units = [...earlier.filter(Boolean), unit];
+  const units = [...(await loadEarlier(u, store.get().units)), unit];
+  if (!root.isConnected) return; // left while loading: don't touch the saved place
   const index = exerciseIndex(units);
   const lookup = (id) => index.get(id)?.exercise;
 
+  const state = store.get();
   const route = `#/lesson/${u}/${lesson.id}`;
   const steps = lessonSteps(lesson);
   let step = resumeStep(state.resume, route, steps);
@@ -272,10 +286,8 @@ async function mountLesson(root, params, { store, audio }) {
       onDone: (res) => {
         if (!alive) return;
         results = res;
-        store.update((d) => {
-          const p = { lessonsDone: [], mixedDone: false, sceneDone: false, checkpointBest: 0, ...d.units[u] };
+        updateProgress(store, u, (p, d) => {
           if (!p.lessonsDone.includes(lesson.id)) p.lessonsDone = [...p.lessonsDone, lesson.id];
-          d.units[u] = p;
           d.resume = null;
         });
         stopSession = null;
@@ -293,10 +305,91 @@ async function mountLesson(root, params, { store, audio }) {
   };
 }
 
-const MODES = { lesson: mountLesson }; // Task 9 adds mixed and drill
+// Mixed practice (every rule of the unit shuffled, plus earlier units) and
+// drill (type/transform cards, no SRS). One session, then a done screen.
+async function mountUnitSession(root, params, { store, audio }, mode) {
+  const mixed = mode === 'mixed';
+  const loaded = await loadUnitStep(root, params, store, mode);
+  if (!loaded) return;
+  const { meta, u, unit } = loaded;
+  const earlier = mixed ? await loadEarlier(u, store.get().units) : [];
+  if (!root.isConnected) return;
+  const index = exerciseIndex([...earlier, unit]);
+  const lookup = (id) => index.get(id)?.exercise;
+
+  const route = `#/${mode}/${u}`;
+  const state = store.get();
+  let saved = mixed && state.resume?.route === route ? restoreSession(state.resume.session, lookup) : null;
+  let stopSession = null;
+  let alive = true;
+  const label = mixed ? 'Mixed practice' : 'Drill';
+
+  document.title = `${label} · ${meta.title} · italiano.`;
+  root.innerHTML = `
+    <div class="topbar">
+      <a class="iconbtn" href="#/unit/${u}" aria-label="Back to the unit">✕</a>
+      <span class="mono">Unit ${pad2(u)} · ${label}</span>
+    </div>
+    <div data-stage></div>`;
+  const stage = root.querySelector('[data-stage]');
+  const saveResume = (session) => store.update((d) => {
+    d.resume = session ? { route, step: 'practice', session } : { route, step: 'practice' };
+  });
+
+  function start() {
+    stopSession?.();
+    window.scrollTo(0, 0);
+    const now = store.get();
+    const cards = saved ? [] : mixed
+      ? buildMixedSession(unit, priorPool(earlier, u, null, now.cards), { weak: weakIds(now.cards) })
+      : buildDrill(unit);
+    if (!saved && !cards.length) {
+      stage.innerHTML = emptyHTML(u, 'Cards for this are being written.');
+      return;
+    }
+    const resume = saved;
+    saved = null;
+    if (mixed && !resume) saveResume(null);
+    stopSession = runSession(stage, cards, {
+      mode: mixed ? 'practice' : 'drill',
+      lookup,
+      store,
+      audio,
+      resume,
+      onProgress: mixed ? saveResume : undefined,
+      onDone: (results) => {
+        if (!alive) return;
+        stopSession = null;
+        if (mixed) {
+          updateProgress(store, u, (p, d) => {
+            p.mixedDone = true;
+            d.resume = null;
+          });
+        }
+        window.scrollTo(0, 0);
+        stage.innerHTML = mixed ? doneHTML(u, results, { chip: 'Mixed practice done' }) : drillDoneHTML(u, results);
+        stage.querySelector('[data-again]').addEventListener('click', start);
+        stage.querySelector('[data-back]').focus({ preventScroll: true });
+      },
+    });
+  }
+
+  start();
+
+  return () => {
+    alive = false;
+    stopSession?.();
+  };
+}
+
+const MODES = {
+  lesson: mountLesson,
+  mixed: (root, params, ctx) => mountUnitSession(root, params, ctx, 'mixed'),
+  drill: (root, params, ctx) => mountUnitSession(root, params, ctx, 'drill'),
+};
 
 export async function mount(root, params, ctx) {
   const run = MODES[params.mode];
-  if (!run) { placeholder(root); return; }
+  if (!run) { location.replace('#/'); return; }
   return run(root, params, ctx);
 }

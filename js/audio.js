@@ -50,15 +50,21 @@ export function createAudio(store, synth = globalThis.speechSynthesis) {
     setVoice(voiceURI) {
       store.update((s) => { s.settings.voiceURI = voiceURI; });
     },
-    speak(text, { rate = 1 } = {}) {
+    /** Speaks `text`, cutting off anything playing, or after it with `queue`. */
+    speak(text, { rate = 1, queue = false, onstart, onend } = {}) {
       if (!synth || !globalThis.SpeechSynthesisUtterance || !text) return;
-      synth.cancel();
+      if (!queue) synth.cancel();
       const u = new SpeechSynthesisUtterance(text);
       u.lang = 'it-IT';
       u.rate = rate;
       const voice = pickVoice(synth.getVoices(), store.get().settings.voiceURI);
       if (voice) u.voice = voice;
+      if (onstart) u.onstart = onstart;
+      if (onend) { u.onend = onend; u.onerror = onend; }
       synth.speak(u);
+    },
+    stop() {
+      synth?.cancel();
     },
   };
 }
