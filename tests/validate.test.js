@@ -148,7 +148,7 @@ test('UNITS lists all 19 units in order', () => {
 test('loadUnit returns the sample unit and null for unwritten ones', async () => {
   const unit = await loadUnit(2);
   assert.equal(unit.id, 2);
-  assert.equal(await loadUnit(0), null);
+  assert.equal(await loadUnit(UNITS.find((u) => !u.load).id), null);
   assert.equal(await loadUnit(99), null);
 });
 

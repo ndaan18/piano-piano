@@ -2,7 +2,8 @@
 // loaded on demand; `load` is null for units not written yet.
 
 export const UNITS = [
-  { id: 0, slug: 'sounds', title: 'Sounds', teaser: 'c, g, gli, gn, double letters', load: null },
+  { id: 0, slug: 'sounds', title: 'Sounds', teaser: 'c, g, gli, gn, double letters',
+    load: () => import('./units/unit-00-sounds.js').then((m) => m.default) },
   { id: 1, slug: 'nouns', title: 'Nouns', teaser: 'gender & plurals', load: null },
   { id: 2, slug: 'articles', title: 'Articles', teaser: "il · lo · la · l'",
     load: () => import('./units/unit-02-articles.js').then((m) => m.default) },
