@@ -11,3 +11,9 @@ export function regChip(reg) {
   if (reg === 'lei') return '<span class="chip chip--lei">formal · Lei</span>';
   return '<span class="chip">neutral</span>';
 }
+
+/** Inner markup of the "no Italian voice" notice (home banner, Settings). */
+export const NO_VOICE_HTML = `<span class="mono">Audio</span>
+      <p><b>No Italian voice is installed,</b> so sentences can't be read aloud.
+        On a Mac: System Settings → Accessibility → Spoken Content.
+        On iPhone or iPad: Settings → Accessibility → Spoken Content → Voices → Italian.</p>`;

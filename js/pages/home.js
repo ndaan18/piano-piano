@@ -5,7 +5,7 @@ import { UNITS, loadUnit, exerciseIndex } from '../../content/index.js';
 import { renderCover, lightAt } from '../covers.js';
 import { PASS_MARK, localDate, addDays, unitStage, isUnlocked, dueIds } from '../engine/srs.js';
 import { SLOW_RATE } from '../audio.js';
-import { esc, PLAY_ICON, regChip } from '../ui/dom.js';
+import { esc, PLAY_ICON, regChip, NO_VOICE_HTML } from '../ui/dom.js';
 import { unitSteps, nextStep, unitFromRoute, safeRoute, pad2 } from './unit.js';
 import { reviewCountText } from './review.js';
 
@@ -120,12 +120,7 @@ export async function mount(root, params, ctx) {
       </dl>
     </div>
 
-    <div class="notice" data-voice hidden>
-      <span class="mono">Audio</span>
-      <p><b>No Italian voice is installed,</b> so sentences can't be read aloud.
-        On a Mac: System Settings → Accessibility → Spoken Content.
-        On iPhone or iPad: Settings → Accessibility → Spoken Content → Voices → Italian.</p>
-    </div>
+    <div class="notice" data-voice hidden>${NO_VOICE_HTML}</div>
 
     <div class="bento">
       <section class="card bento__hero" aria-label="Continue">
