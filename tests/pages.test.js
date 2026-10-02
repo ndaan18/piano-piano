@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { pickVoice } from '../js/audio.js';
 import { phraseOfTheDay, weekAccuracy, currentUnit } from '../js/pages/home.js';
-import { unitSteps, nextStep, unitFromRoute } from '../js/pages/unit.js';
+import { unitSteps, nextStep, unitFromRoute, safeRoute } from '../js/pages/unit.js';
 
 const voice = (name, lang, voiceURI = name) => ({ name, lang, voiceURI });
 
@@ -107,4 +107,14 @@ test('a unit without a scene goes mixed → checkpoint', () => {
   const steps = unitSteps({ ...UNIT, scene: undefined }, { lessonsDone: ['u2-l1', 'u2-l2'], mixedDone: true });
   assert.deepEqual(kinds(steps), ['lesson', 'lesson', 'mixed', 'checkpoint', 'drill']);
   assert.equal(steps[3].locked, false);
+});
+
+test('safeRoute accepts plain app routes and rejects anything that could break out of an attribute', () => {
+  assert.equal(safeRoute('#/lesson/2/u2-l1'), '#/lesson/2/u2-l1');
+  assert.equal(safeRoute('#/review'), '#/review');
+  assert.equal(safeRoute('#/unit/0/" onmouseover="alert(1)" x="'), null);
+  assert.equal(safeRoute('javascript:alert(1)'), null);
+  assert.equal(safeRoute('#/unit/0?x=1'), null);
+  assert.equal(safeRoute(null), null);
+  assert.equal(safeRoute({ route: '#/' }), null);
 });

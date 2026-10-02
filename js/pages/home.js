@@ -5,7 +5,7 @@ import { UNITS, loadUnit, exerciseIndex } from '../../content/index.js';
 import { renderCover, lightAt } from '../covers.js';
 import { PASS_MARK, localDate, addDays, unitStage, isUnlocked, dueIds } from '../engine/srs.js';
 import { SLOW_RATE } from '../audio.js';
-import { unitSteps, nextStep, unitFromRoute, pad2 } from './unit.js';
+import { unitSteps, nextStep, unitFromRoute, safeRoute, pad2 } from './unit.js';
 
 const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`);
 
@@ -74,13 +74,14 @@ export async function mount(root, params, ctx) {
   const accuracy = weekAccuracy(state.log, today);
 
   // continue card: the saved place, else the current unit's next step
-  const resumeUnit = unitFromRoute(state.resume?.route);
+  const saved = safeRoute(state.resume?.route);
+  const resumeUnit = unitFromRoute(saved);
   const resuming = resumeUnit != null && UNITS[resumeUnit] && isUnlocked(resumeUnit, state.units);
   const current = resuming ? resumeUnit : currentUnit(state.units, UNITS.length);
   const steps = content.has(current) ? unitSteps(content.get(current), state.units[current]) : [];
   const core = steps.filter((s) => !s.optional);
   const next = nextStep(steps);
-  const href = resuming ? state.resume.route : next?.route ?? `#/unit/${current}`;
+  const href = resuming ? saved : next?.route ?? `#/unit/${current}`;
   const started = core.some((s) => s.done);
   const at = core.findIndex((s) => s.route === href);
   const stepLabel = !core.length ? 'Being written' : at >= 0 ? `Step ${at + 1} / ${core.length}` : next ? '' : 'Complete';
@@ -105,7 +106,7 @@ export async function mount(root, params, ctx) {
       .filter(Boolean).join(' ');
     const status = locked ? 'locked' : passed ? 'passed' : u.id === current ? 'current unit' : '';
     return `
-      <li><a class="${cls}" href="#/unit/${u.id}">
+      <li><a class="${cls}" href="${esc(`#/unit/${u.id}`)}">
         <div class="tile__thumb"><div class="cover cover--fill" data-cover="${u.id}"></div>
           <span class="tile__num mono">${pad2(u.id)}</span>${passed ? '<span class="tile__badge" aria-hidden="true">✓</span>' : ''}</div>
         <div class="tile__info"><b>${esc(u.title)}</b><span class="tile__tease">${esc(u.teaser)}</span>
@@ -137,7 +138,7 @@ export async function mount(root, params, ctx) {
         <div class="cover__content bento__row mono"><span class="${tone(12, 8)}">Continue · Unit ${pad2(current)}</span><span class="${tone(88, 8)}">${stepLabel}</span></div>
         <div class="cover__content bento__row bento__row--end">
           <h2 class="bento__title${tone(22, 82)}">${esc(UNITS[current].title)}</h2>
-          <a class="btn${btnOnDark ? ' btn--lime' : ''}" href="${href}">${resuming ? 'Resume →' : started ? 'Continue →' : 'Start →'}</a>
+          <a class="btn${btnOnDark ? ' btn--lime' : ''}" href="${esc(href)}">${resuming ? 'Resume →' : started ? 'Continue →' : 'Start →'}</a>
         </div>
       </section>
 

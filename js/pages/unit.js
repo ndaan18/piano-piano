@@ -13,6 +13,13 @@ export const pad2 = (n) => String(n).padStart(2, '0');
 // Rough minutes per step, for the "about N min left" estimate.
 const MINUTES = { lesson: 15, mixed: 15, scene: 10, checkpoint: 10, drill: 3 };
 
+const SAFE_ROUTE = /^#\/[a-z]+(\/[\w-]+)*$/;
+
+/** The route if it is a plain app route ('#/lesson/2/u2-l1'), else null. Guards stored or imported routes. */
+export function safeRoute(route) {
+  return typeof route === 'string' && SAFE_ROUTE.test(route) ? route : null;
+}
+
 /** The unit index of a unit-scoped route ('#/lesson/2/u2-l1' → 2), else null. */
 export function unitFromRoute(route) {
   const m = /^#\/(?:unit|lesson|mixed|scene|checkpoint|drill)\/(\d+)(?:\/|$)/.exec(route || '');
@@ -81,7 +88,7 @@ function stepRow(s, i, next) {
     ${state ? `<span class="sr-only">, ${state}</span>` : ''}`;
   return s.locked
     ? `<li><div class="${cls}" aria-disabled="true">${inner}</div></li>`
-    : `<li><a class="${cls}" href="${s.route}">${inner}</a></li>`;
+    : `<li><a class="${cls}" href="${esc(s.route)}">${inner}</a></li>`;
 }
 
 const STAGE_LABELS = { learned: 'Learned', practised: 'Practised', passed: 'Passed ✓', longterm: 'Long-term ✓' };
@@ -150,7 +157,8 @@ export async function mount(root, params, ctx) {
   const core = steps.filter((s) => !s.optional);
   const doneCount = core.filter((s) => s.done).length;
   const minutesLeft = core.filter((s) => !s.done).reduce((n, s) => n + s.minutes, 0);
-  const resume = unitFromRoute(state.resume?.route) === id ? state.resume.route : null;
+  const saved = safeRoute(state.resume?.route);
+  const resume = unitFromRoute(saved) === id ? saved : null;
   stage.textContent = STAGE_LABELS[unitStage(unit, state.units[id], state.cards)] || (doneCount ? 'In progress' : 'Not started');
 
   let go;
@@ -170,7 +178,7 @@ export async function mount(root, params, ctx) {
     <ol class="steps" aria-label="Steps">${steps.map((s, i) => stepRow(s, i, next)).join('')}</ol>
     <div class="unit__go">
       <p class="mono unit__meta">${minutesLeft ? `${doneCount} / ${core.length} steps done · about ${minutesLeft} min left · leaving saves your place` : 'Unit complete · drill any time'}</p>
-      <a class="btn unit__btn" href="${go.href}">${go.label}</a>
+      <a class="btn unit__btn" href="${esc(go.href)}">${go.label}</a>
     </div>`;
 
   side.querySelector('.play')?.addEventListener('click', () => {
