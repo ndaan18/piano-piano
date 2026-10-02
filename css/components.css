@@ -1,0 +1,160 @@
+/* type helpers */
+.mono {
+  font-family: var(--font-mono);
+  font-size: var(--fs-mono);
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  line-height: 1.4;
+}
+.big-title {
+  font-weight: 900;
+  font-size: var(--fs-title);
+  line-height: 0.86;
+  letter-spacing: -0.055em;
+}
+
+/* buttons: ink pill, lime label. .btn--lime flips it for use on ink surfaces. */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-2);
+  min-height: var(--tap);
+  padding: 12px 20px;
+  border: 0;
+  border-radius: var(--r-pill);
+  background: var(--ink);
+  color: var(--lime);
+  font-weight: 800;
+  font-size: 14px;
+  white-space: nowrap;
+  text-decoration: none;
+  cursor: pointer;
+}
+.btn--lime { background: var(--lime); color: var(--ink); }
+.btn[disabled], .btn[aria-disabled="true"] { opacity: 0.45; cursor: not-allowed; }
+
+/* chips: register + exercise-type labels */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--font-mono);
+  font-size: var(--fs-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  padding: 5px 10px;
+  border-radius: var(--r-pill);
+  background: var(--fog);
+  color: var(--ink);
+}
+.chip--tu { background: var(--pink); color: var(--ink); }
+.chip--lei { background: var(--ultra); color: #fff; }
+
+/* cards */
+.card {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--r-lg);
+  padding: var(--sp-4);
+  background: var(--card);
+  border: 1px solid var(--line);
+}
+.card--ink { background: var(--ink); color: var(--base); border-color: var(--ink); }
+.card--lime { background: var(--lime); color: var(--ink); border-color: var(--lime); }
+
+/* generative cover (see js/covers.js). Add .cover--fill to use as an absolute backdrop. */
+.cover { position: relative; overflow: hidden; background: var(--fog); }
+.cover--fill { position: absolute; inset: 0; }
+.cover__blob { position: absolute; border-radius: 50%; z-index: 1; }
+.cover__grain {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.07  0 0 0 0 0.07  0 0 0 0 0.06  0 0 0 .5 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+}
+.cover--dark .cover__grain { mix-blend-mode: screen; filter: invert(1); }
+/* content that sits over a cover */
+.cover__content { position: relative; z-index: 3; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .cover__blob { animation: drift var(--dur) ease-in-out infinite alternate; }
+}
+@keyframes drift { to { transform: translate(var(--dx), var(--dy)) scale(var(--ds)); } }
+
+/* unit tile: mini cover + title + teaser */
+.tile {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  color: inherit;
+  text-decoration: none;
+}
+.tile__thumb { position: relative; overflow: hidden; aspect-ratio: 1 / 0.82; }
+.tile__num { position: absolute; left: 9px; top: 8px; z-index: 4; }
+.tile--dark .tile__num { color: var(--base); }
+.tile__badge {
+  position: absolute;
+  right: 8px;
+  top: 8px;
+  z-index: 4;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--ink);
+  color: var(--lime);
+  font-size: 12px;
+  font-weight: 900;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.tile__info { padding: 10px 11px 12px; display: flex; flex-direction: column; gap: 4px; }
+.tile__info b { font-weight: 800; font-size: 16px; letter-spacing: -0.025em; line-height: 1.05; }
+.tile__tease { color: var(--muted); font-size: 12.5px; font-weight: 500; }
+.tile--now { outline: 2px solid var(--ink); outline-offset: 2px; }
+.tile--locked .tile__thumb { filter: grayscale(1) contrast(0.8); opacity: 0.45; }
+.tile--locked .tile__info b { color: var(--muted); }
+
+/* segmented progress: <div class="segs"><i class="done"></i><i class="now"></i><i></i></div> */
+.segs { display: flex; gap: 3px; }
+.segs i {
+  flex: 1;
+  height: 6px;
+  border-radius: var(--r-pill);
+  background: var(--fog);
+  min-width: 4px;
+}
+.segs i.done { background: var(--ink); }
+.segs i.now { background: var(--lime); box-shadow: inset 0 0 0 1px var(--ink); }
+
+/* feedback: coloured bar + verdict word + explanation.
+   .fb--close = near miss (cyan), .fb--wrong = mistake (orange). */
+.fb {
+  padding: 2px 0 2px 12px;
+  border-left: 4px solid var(--lime);
+  font-size: 14px;
+  line-height: 1.35;
+}
+.fb--close { border-left-color: var(--cyan); }
+.fb--wrong { border-left-color: var(--orange); }
+.fb__verdict { font-weight: 800; }
+.fb--wrong .fb__verdict { color: var(--orange-ink); }
+
+@media (prefers-reduced-motion: no-preference) {
+  .shake { animation: shake 0.28s ease-in-out 1; }
+}
+@keyframes shake {
+  20% { transform: translateX(-5px); }
+  45% { transform: translateX(5px); }
+  70% { transform: translateX(-3px); }
+}
+
+@media (max-width: 599px) {
+  .btn { min-height: var(--tap); }
+  .chip { min-height: 28px; }
+}

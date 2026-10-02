@@ -1,0 +1,47 @@
+:root {
+  /* colour (spec §8). Lime is a fill, never text. */
+  --lime: #D2FF3C;
+  --ink: #121210;
+  --base: #F4F4F1;
+  --card: #FFFFFF;
+  --line: #E2E2DD;
+  --fog: #E3E1DA;
+  --pink: #FF4FA8;       /* informale · tu (fill) */
+  --pink-ink: #C70F6E;   /* informale · tu (text) */
+  --ultra: #2E3BFF;      /* formale · Lei */
+  --lilac: #C3A6FF;      /* cover moods only */
+  --cyan: #42D9F0;       /* cover moods, near-miss feedback bar */
+  --orange: #FF6B1F;     /* mistakes only (fill) */
+  --orange-ink: #B93A0A; /* mistakes only (text) */
+
+  /* secondary text, >= 4.5:1 on base and card */
+  --muted: #5C5B54;
+  --on-ink-muted: #BDBCB4;
+
+  /* type */
+  --font-ui: 'Inter Tight', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+  --fs-mono: 11px;
+  --fs-sm: 13px;
+  --fs-body: 16px;
+  --fs-lg: 20px;
+  --fs-xl: 30px;
+  --fs-title: clamp(40px, 7vw, 88px);
+
+  /* spacing */
+  --sp-1: 4px;
+  --sp-2: 8px;
+  --sp-3: 12px;
+  --sp-4: 18px;
+  --sp-5: 26px;
+  --sp-6: 40px;
+
+  /* radii */
+  --r-sm: 8px;
+  --r-md: 14px;
+  --r-lg: 16px;
+  --r-pill: 99px;
+
+  --page-max: 1240px;
+  --tap: 44px;
+}
