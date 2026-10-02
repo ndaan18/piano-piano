@@ -4,7 +4,7 @@
 
 export const INTERVALS = [1, 3, 7, 21, 60];
 const MAX_BOX = INTERVALS.length;
-const PASS_MARK = 0.8;
+export const PASS_MARK = 0.8;
 const LONGTERM_SHARE = 0.8;
 
 const pad = (n) => String(n).padStart(2, '0');
