@@ -67,8 +67,8 @@ export default {
           prompt: '___ treno parte alle nove.', base: '', en: 'The train leaves at nine.',
           answers: ['Il'], options: ['Il', 'Lo', "L'"],
           mistakes: {
-            Lo: 'treno starts with t + r, a normal consonant cluster. Only s + consonant takes lo.',
-            "L'": "l' is only for words that start with a vowel. treno starts with t.",
+            Lo: 'tr is an ordinary consonant cluster. Among clusters, only s + consonant, gn and ps take lo: il treno.',
+            "L'": "l' is only for a vowel or a silent h. treno starts with t, so il.",
           },
           why: WHY_IL,
         },
@@ -78,7 +78,7 @@ export default {
           answers: ['lo'], options: ['il', 'lo', "l'"],
           mistakes: {
             il: 'zaino starts with z, and z always takes lo: lo zaino.',
-            "l'": "l' is for vowels. zaino starts with z, so lo.",
+            "l'": "l' is for a vowel or a silent h. zaino starts with z, so lo.",
           },
           why: WHY_LO,
         },
@@ -105,7 +105,7 @@ export default {
           answers: ['lo'], options: ['il', 'lo', "l'"],
           mistakes: {
             il: 'scontrino starts with s + consonant (sc), so lo: lo scontrino.',
-            "l'": "l' is for vowels. scontrino starts with s + c, so lo.",
+            "l'": "l' is for a vowel or a silent h. scontrino starts with s + c, so lo.",
           },
           why: WHY_LO,
         },
@@ -134,7 +134,7 @@ export default {
           answers: ['Lo'],
           mistakes: {
             il: 'zio starts with z, so lo: lo zio.',
-            "l'": "l' is for vowels. zio starts with z, so lo.",
+            "l'": "l' is for a vowel or a silent h. zio starts with z, so lo.",
           },
           why: WHY_LO,
         },
@@ -154,7 +154,7 @@ export default {
           answers: ['il'],
           mistakes: {
             lo: 'conto starts with c + vowel, a normal consonant: il conto.',
-            "l'": "l' is for vowels. conto starts with c, so il.",
+            "l'": "l' is for a vowel or a silent h. conto starts with c, so il.",
           },
           why: WHY_IL,
         },
@@ -180,8 +180,8 @@ export default {
           prompt: 'Mi piace ___ gelato al pistacchio.', base: '', en: 'I like pistachio ice cream.',
           answers: ['il'],
           mistakes: {
-            lo: 'gelato starts with g + vowel. Only gn takes lo: il gelato, but lo gnocco.',
-            "l'": "l' is for vowels. gelato starts with g, so il.",
+            lo: 'Of the words starting with g, only gn takes lo: il gelato, but lo gnocco.',
+            "l'": "l' is for a vowel or a silent h. gelato starts with g, so il.",
           },
           why: WHY_IL,
         },
