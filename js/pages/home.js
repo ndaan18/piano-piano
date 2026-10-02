@@ -5,9 +5,8 @@ import { UNITS, loadUnit, exerciseIndex } from '../../content/index.js';
 import { renderCover, lightAt } from '../covers.js';
 import { PASS_MARK, localDate, addDays, unitStage, isUnlocked, dueIds } from '../engine/srs.js';
 import { SLOW_RATE } from '../audio.js';
+import { esc, PLAY_ICON } from '../ui/dom.js';
 import { unitSteps, nextStep, unitFromRoute, safeRoute, pad2 } from './unit.js';
-
-const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`);
 
 const FALLBACK_PHRASE = {
   it: 'Dai, andiamo a prendere un caffè?',
@@ -42,8 +41,6 @@ export function currentUnit(unitsProgress, count) {
   }
   return count - 1;
 }
-
-const PLAY_ICON = '<svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 2l10 6-10 6z" fill="currentColor"/></svg>';
 
 function regChip(reg) {
   if (reg === 'tu') return '<span class="chip chip--tu">informale · tu</span>';

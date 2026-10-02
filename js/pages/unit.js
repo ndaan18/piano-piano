@@ -6,8 +6,8 @@ import { UNITS, loadUnit } from '../../content/index.js';
 import { renderCover, lightAt } from '../covers.js';
 import { PASS_MARK, isUnlocked, unitStage } from '../engine/srs.js';
 import { SLOW_RATE } from '../audio.js';
+import { esc, PLAY_ICON } from '../ui/dom.js';
 
-const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`);
 export const pad2 = (n) => String(n).padStart(2, '0');
 
 // Rough minutes per step, for the "about N min left" estimate.
@@ -72,7 +72,6 @@ export function nextStep(steps) {
   return steps.find((s) => !s.optional && !s.done && !s.locked) || null;
 }
 
-const PLAY_ICON = '<svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 2l10 6-10 6z" fill="currentColor"/></svg>';
 const LOCK_ICON = '<svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><path d="M3.5 5V3.6a2.5 2.5 0 0 1 5 0V5" fill="none" stroke="currentColor" stroke-width="1.4"/><rect x="2" y="5" width="8" height="6" rx="1.5" fill="currentColor"/></svg>';
 
 function stepRow(s, i, next) {
