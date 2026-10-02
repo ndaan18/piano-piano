@@ -24,10 +24,18 @@ function isValid(obj) {
   return isPlainObject(obj) && obj.version === 1 && isPlainObject(obj.cards) && isPlainObject(obj.units);
 }
 
+export const LOG_CAP = 500;
+
 // Saved fields win; anything missing (added in later versions) comes from the default.
+// Fields of the wrong type are replaced with their default, and the log is capped.
 function withDefaults(saved) {
   const base = defaultState();
-  return { ...base, ...saved, settings: { ...base.settings, ...(isPlainObject(saved.settings) ? saved.settings : {}) } };
+  const out = { ...base, ...saved };
+  out.settings = { ...base.settings, ...(isPlainObject(saved.settings) ? saved.settings : {}) };
+  if (!isPlainObject(out.extraAnswers)) out.extraAnswers = base.extraAnswers;
+  if (!Array.isArray(out.reports)) out.reports = base.reports;
+  out.log = Array.isArray(out.log) ? out.log.slice(-LOG_CAP) : base.log;
+  return out;
 }
 
 function probe(storage) {
@@ -79,6 +87,7 @@ export function createStore(storage = globalThis.localStorage) {
     update(fn) {
       const draft = structuredClone(state);
       fn(draft);
+      if (Array.isArray(draft.log) && draft.log.length > LOG_CAP) draft.log = draft.log.slice(-LOG_CAP);
       state = draft;
       save();
       notify();

@@ -32,9 +32,8 @@ test('fresh store returns the default state', () => {
   assert.equal(KEY, 'pianopiano:v1');
 });
 
-test('imports cleanly with no localStorage global', () => {
-  const store = createStore();
-  assert.equal(typeof store.get, 'function');
+test('module imports cleanly in Node', () => {
+  assert.equal(typeof createStore, 'function');
 });
 
 test('update persists and a new store reads it back', () => {
@@ -175,4 +174,33 @@ test('defaultState returns a fresh object each time', () => {
   const a = defaultState();
   a.cards.x = 1;
   assert.deepEqual(defaultState().cards, {});
+});
+
+test('update caps the log at 500, keeping the most recent entries', () => {
+  const store = createStore(memoryStorage());
+  store.update((s) => {
+    for (let i = 0; i < 510; i++) s.log.push({ date: '2026-10-02', pass: true, n: i });
+  });
+  const log = store.get().log;
+  assert.equal(log.length, 500);
+  assert.equal(log[0].n, 10);
+  assert.equal(log[499].n, 509);
+});
+
+test('loaded and imported logs are capped too', () => {
+  const log = Array.from({ length: 510 }, (_, n) => ({ date: '2026-10-02', pass: false, n }));
+  const saved = JSON.stringify({ ...defaultState(), log });
+  assert.equal(createStore(memoryStorage({ [KEY]: saved })).get().log[0].n, 10);
+  const store = createStore(memoryStorage());
+  store.importJSON(saved);
+  assert.equal(store.get().log.length, 500);
+});
+
+test('wrongly typed fields on load/import are replaced with defaults', () => {
+  const bad = '{"version":1,"cards":{},"units":{},"log":"x","reports":5,"extraAnswers":[],"settings":null}';
+  const store = createStore(memoryStorage());
+  store.importJSON(bad);
+  assert.deepEqual(store.get(), DEFAULT);
+  const loaded = createStore(memoryStorage({ [KEY]: bad }));
+  assert.deepEqual(loaded.get(), DEFAULT);
 });
