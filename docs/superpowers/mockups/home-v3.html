@@ -1,0 +1,151 @@
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap');
+:root { --lime:#D2FF3C; --ink:#121210; --base:#F4F4F1; --fog:#E3E1DA; --pink:#FF4FA8; --pink-ink:#C70F6E; --ultra:#2E3BFF; --lilac:#C3A6FF; --cyan:#42D9F0; --orange:#FF6B1F; --line:#E2E2DD; }
+.hv h2, .hv > .subtitle { color:var(--text-primary); }
+.hv .app { font-family:'Inter Tight',sans-serif; color:var(--ink); background:var(--base); border-radius:18px; padding:22px; margin-top:1rem; }
+.mono { font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:.03em; text-transform:uppercase; line-height:1.4; }
+.nav { display:flex; justify-content:space-between; align-items:center; }
+.nav .links { display:flex; gap:18px; font-weight:600; font-size:14px; }
+.nav .on { border-bottom:2px solid var(--ink); }
+.hello { display:flex; justify-content:space-between; align-items:flex-end; margin:26px 0 16px; gap:20px; flex-wrap:wrap; }
+.hello h1 { font-weight:900; font-size:88px; line-height:.86; letter-spacing:-.055em; margin:0; }
+.stats { display:flex; gap:26px; }
+.stats div b { display:block; font-weight:900; font-size:34px; letter-spacing:-.04em; line-height:1; }
+
+.bento { display:grid; grid-template-columns:1.5fr 1fr 0.8fr; grid-template-rows:auto; gap:12px; }
+.card { position:relative; overflow:hidden; border-radius:16px; padding:18px; min-height:290px; display:flex; flex-direction:column; justify-content:space-between; }
+.white { background:#fff; border:1px solid var(--line); }
+.black { background:var(--ink); color:#F4F4F1; }
+.limec { background:var(--lime); }
+.btn { display:inline-block; background:var(--ink); color:var(--lime); font-weight:800; padding:12px 20px; border-radius:99px; font-size:14px; }
+.play { width:46px; height:46px; border-radius:50%; background:var(--lime); display:flex; align-items:center; justify-content:center; }
+.big { font-weight:900; font-size:54px; line-height:.88; letter-spacing:-.05em; margin:0; position:relative; z-index:3; }
+.it { font-weight:800; font-size:30px; letter-spacing:-.035em; line-height:1.05; }
+.chip { font-family:'JetBrains Mono'; font-size:11px; text-transform:uppercase; padding:5px 10px; border-radius:99px; display:inline-block; }
+
+.sec { display:flex; justify-content:space-between; align-items:baseline; margin:26px 0 10px; }
+.sec h3 { font-weight:800; font-size:22px; letter-spacing:-.03em; margin:0; color:var(--ink); }
+.units { display:grid; grid-template-columns:repeat(6,1fr); gap:10px; }
+.u { background:#fff; border:1px solid var(--line); border-radius:14px; overflow:hidden; display:flex; flex-direction:column; }
+.u .thumb { position:relative; overflow:hidden; aspect-ratio:1/0.82; }
+.u .info { padding:10px 11px 12px; display:flex; flex-direction:column; gap:4px; }
+.u .info b { font-weight:800; font-size:16px; letter-spacing:-.025em; line-height:1.05; }
+.u .info .tease { color:#55544E; font-size:12.5px; font-weight:500; }
+.u.now { outline:2px solid var(--ink); outline-offset:2px; }
+.u.locked .thumb { filter:grayscale(1) contrast(.8); opacity:.45; }
+.u.locked .info b { color:#55544E; }
+.badge { position:absolute; right:8px; top:8px; z-index:4; width:22px; height:22px; border-radius:50%; background:var(--ink); color:var(--lime); font-size:12px; display:flex; align-items:center; justify-content:center; font-weight:900; }
+.num { position:absolute; left:9px; top:8px; z-index:4; }
+.cvr { position:absolute; inset:0; }
+.cvr .b { position:absolute; border-radius:50%; z-index:1; }
+.cvr .g { position:absolute; inset:0; z-index:2; pointer-events:none; mix-blend-mode:multiply;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.07  0 0 0 0 0.07  0 0 0 0 0.06  0 0 0 .5 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>"); }
+@media (prefers-reduced-motion: no-preference) { .cvr .b { animation: drift var(--dur) ease-in-out infinite alternate; } }
+@keyframes drift { to { transform: translate(var(--dx), var(--dy)) scale(var(--ds)); } }
+@media (max-width:980px){ .bento { grid-template-columns:1fr 1fr; } .bento .hero { grid-column:1/-1; } .units { grid-template-columns:repeat(3,1fr);} .hello h1{font-size:60px;} }
+</style>
+
+<div class="hv">
+<h2>Home v3: generative covers, solid cards, English UI</h2>
+<p class="subtitle">Every unit tile carries its own mini cover, so the grid is rich but never repeats. The hero card uses the current unit's cover at full size. Black and lime cards add weight without adding more gradients. The UI is in English; Italian appears only where it's easy and obvious ("Ciao, Daan.").</p>
+
+<div class="app">
+  <div class="nav">
+    <span style="font-weight:900;font-size:20px;letter-spacing:-.04em">italiano<span style="color:var(--pink-ink)">.</span></span>
+    <div class="links"><span class="on">Path</span><span>Review</span><span>Reference</span></div>
+    <span class="mono">A1 → A2</span>
+  </div>
+
+  <div class="hello">
+    <h1>Ciao, Daan.</h1>
+    <div class="stats">
+      <div><b>3<span style="color:#9a998f">/19</span></b><span class="mono">units mastered</span></div>
+      <div><b>142</b><span class="mono">sentences built</span></div>
+      <div><b>86%</b><span class="mono">accuracy, 7 days</span></div>
+    </div>
+  </div>
+
+  <div class="bento">
+    <div class="card hero" style="background:#E3E1DA">
+      <div class="cvr" data-unit="3"></div>
+      <div class="mono" style="position:relative;z-index:3;display:flex;justify-content:space-between"><span>Continue · Unit 03</span><span>Step 4 / 11</span></div>
+      <div style="position:relative;z-index:3;display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap">
+        <h3 class="big">Essere<br>&amp; avere</h3><span class="btn">Resume →</span>
+      </div>
+    </div>
+
+    <div class="card black">
+      <div style="display:flex;justify-content:space-between;align-items:center"><span class="mono" style="color:#BDBCB4">Phrase of the day</span><span class="chip" style="background:var(--pink);color:var(--ink)">informale · tu</span></div>
+      <div>
+        <div class="it">Dai, andiamo a prendere un caffè?</div>
+        <div style="color:#BDBCB4;font-size:14px;margin-top:8px">Come on, shall we go get a coffee?</div>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <span style="color:#BDBCB4;font-size:13px;font-weight:500"><b style="color:var(--lime)">dai</b> = "come on", not "you give"</span>
+        <span class="play"><svg width="16" height="16" viewBox="0 0 16 16"><path d="M4 2l10 6-10 6z" fill="#121210"/></svg></span>
+      </div>
+    </div>
+
+    <div class="card limec">
+      <span class="mono">Review</span>
+      <div><div style="font-weight:900;font-size:80px;letter-spacing:-.06em;line-height:.85">12</div><div style="font-weight:600;font-size:15px;margin-top:8px">mistakes waiting for a second try.</div></div>
+      <span class="btn" style="align-self:flex-start">Start review →</span>
+    </div>
+  </div>
+
+  <div class="sec"><h3>Your path</h3><span class="mono">19 units · grammar foundation</span></div>
+  <div class="units" id="units"></div>
+</div>
+</div>
+
+<script>
+(function(){
+  const U = [["Sounds","c, g, gli, gn, double letters"],["Nouns","gender & plurals"],["Articles","il · lo · la · l'"],["Essere & avere","to be, to have"],["Present tense","-are · -ere · -ire"],["Irregular verbs","vado, faccio, sto"],["Questions","who · what · where"],["Can, want, must","voglio, posso, devo"],["Adjectives","mio, tua, la nostra"],["Prepositions","al · del · nella"],["I like…","mi piace, ci sono"],["Reflexive verbs","mi chiamo, ci vediamo"]];
+  const C = {lime:'#D2FF3C',pink:'#FF4FA8',ultra:'#2E3BFF',lilac:'#C3A6FF',cyan:'#42D9F0',orange:'#FF6B1F'};
+  const partners = ['pink','ultra','cyan','lilac','orange','ultra','pink','cyan','lilac'];
+  const comps = ['orb','horizon','diagonal','column','eclipse','scatter','rise','halo'];
+  const checkpoints = new Set([5,10,14,18]);
+  function rng(seed){ let s = seed*9301+49297; return () => (s = (s*16807) % 2147483647) / 2147483647; }
+  function recipe(i, scale){
+    const r = rng(i+7), p = C[partners[i%partners.length]], p2 = C[partners[(i+3)%partners.length]], L = C.lime;
+    const soft = (18 + Math.round(r()*52)) * scale, comp = comps[(i*3)%comps.length], j = () => (r()-.5)*20;
+    let b;
+    switch(comp){
+      case 'orb': b=[[p,55+j(),45+j(),95,95],[L,80+j(),15+j(),60,60]]; break;
+      case 'horizon': b=[[L,50,88+j()/3,180,75],[p,50+j(),108,130,55],[C.cyan,15+j(),20+j(),40,35]]; break;
+      case 'diagonal': b=[[L,10+j(),5+j(),90,90],[p,95+j(),95+j(),90,90]]; break;
+      case 'column': b=[[p,70+j(),50,45,150],[L,30+j(),40,35,120]]; break;
+      case 'eclipse': b=[[L,58+j(),40+j(),85,85],[p,48+j(),52+j(),75,75]]; break;
+      case 'scatter': b=[[L,20+j(),25+j(),45,45],[p,78+j(),35+j(),40,40],[p2,55+j(),78+j(),50,50],[L,90,90,30,30]]; break;
+      case 'rise': b=[[p,50+j(),120,140,110],[L,50+j(),110,100,80]]; break;
+      case 'halo': b=[[L,50+j(),45+j(),120,120],['#E3E1DA',50,45,55,55],[p,50+j(),45+j(),30,30]]; break;
+    }
+    return {comp, soft, b, grain:.25+r()*.35, dark:checkpoints.has(i), r};
+  }
+  function paint(el, i, scale){
+    const rc = recipe(i, scale);
+    el.parentElement.style.background = rc.dark ? '#121210' : '#E3E1DA';
+    rc.b.forEach(([col,x,y,w,h],k)=>{
+      const d=document.createElement('div'); d.className='b'; const halo = rc.comp==='halo'&&k===1;
+      d.style.cssText=`background:${rc.dark&&halo?'#121210':col};left:${x-w/2}%;top:${y-h/2}%;width:${w}%;height:${h}%;filter:blur(${halo?rc.soft*.6:rc.soft}px);--dx:${(rc.r()-.5)*14}px;--dy:${(rc.r()-.5)*14}px;--ds:${1+rc.r()*.08};--dur:${9+rc.r()*8}s`;
+      el.appendChild(d);
+    });
+    const g=document.createElement('div'); g.className='g'; g.style.opacity = rc.dark? rc.grain*.6 : rc.grain;
+    if(rc.dark){ g.style.mixBlendMode='screen'; g.style.filter='invert(1)'; }
+    el.appendChild(g);
+    return rc;
+  }
+  // hero (full size)
+  const hero = document.querySelector('.hero .cvr'); paint(hero, 3, 1.0);
+  // unit tiles (mini)
+  const root = document.getElementById('units');
+  U.forEach(([name,tease],i)=>{
+    const state = i<3 ? 'done' : i===3 ? 'now' : 'locked';
+    const el = document.createElement('div'); el.className = 'u ' + state;
+    el.innerHTML = `<div class="thumb"><div class="cvr"></div><span class="num mono">${String(i).padStart(2,'0')}</span>${state==='done'?'<span class="badge">✓</span>':''}</div><div class="info"><b>${name}</b><span class="tease">${tease}</span></div>`;
+    root.appendChild(el);
+    const rc = paint(el.querySelector('.cvr'), i, .55);
+    if (rc.dark) el.querySelector('.num').style.color = '#F4F4F1';
+  });
+})();
+</script>

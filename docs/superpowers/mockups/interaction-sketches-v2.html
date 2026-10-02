@@ -1,0 +1,267 @@
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap');
+:root { --lime:#D2FF3C; --ink:#121210; --base:#F4F4F1; --fog:#E3E1DA; --pink:#FF4FA8; --pink-ink:#C70F6E; --ultra:#2E3BFF; --cyan:#42D9F0; --orange:#FF6B1F; --orange-ink:#B93A0A; --line:#E2E2DD; --muted:#5C5B55; }
+.ip h2, .ip > .subtitle { color:var(--text-primary); }
+.ip .app { font-family:'Inter Tight',sans-serif; color:var(--ink); background:var(--base); border-radius:18px; padding:20px; margin-top:1rem; max-width:760px; }
+.mono { font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:.03em; text-transform:uppercase; line-height:1.4; }
+.topbar { display:flex; align-items:center; gap:14px; margin-bottom:16px; }
+.x { width:34px; height:34px; border-radius:50%; border:1px solid var(--line); background:#fff; display:flex; align-items:center; justify-content:center; font-weight:700; }
+.segs { flex:1; display:flex; gap:4px; }
+.segs i { flex:1; height:6px; border-radius:9px; background:var(--fog); transition:background .3s; }
+.segs i.done { background:var(--ink); } .segs i.cur { background:var(--lime); } .segs i.miss { background:var(--orange); }
+.ex { background:#fff; border:1px solid var(--line); border-radius:18px; padding:22px; min-height:330px; display:flex; flex-direction:column; gap:16px; position:relative; transition:transform .25s cubic-bezier(.2,.8,.2,1), opacity .25s; }
+.ex.out { opacity:0; transform:translateY(8px); }
+.ex.shake { animation:shake .32s; }
+@keyframes shake { 25%{transform:translateX(-5px)} 50%{transform:translateX(4px)} 75%{transform:translateX(-2px)} }
+@media (prefers-reduced-motion: reduce){ .ex, .ex.shake { transition:none; animation:none; } }
+.kind { display:flex; gap:6px; align-items:center; flex-wrap:wrap; }
+.chip { font-family:'JetBrains Mono'; font-size:11px; text-transform:uppercase; padding:5px 10px; border-radius:99px; background:var(--fog); }
+.chip.tu { background:var(--pink); } .chip.lei { background:var(--ultra); color:#fff; }
+.prompt { font-weight:800; font-size:30px; letter-spacing:-.035em; line-height:1.1; }
+.prompt .gap { display:inline-block; min-width:80px; border-bottom:3px solid var(--ink); margin:0 4px; }
+.hint { color:var(--muted); font-size:15px; }
+input.ans { width:100%; box-sizing:border-box; font:inherit; font-weight:700; font-size:22px; letter-spacing:-.02em; padding:14px 16px; border:1.5px solid var(--ink); border-radius:12px; background:#fff; color:var(--ink); outline:none; }
+input.ans:focus { box-shadow:0 0 0 4px rgba(210,255,60,.7); }
+input.ans[readonly] { background:var(--base); }
+.accents { display:flex; gap:6px; flex-wrap:wrap; }
+.accents button { font:inherit; font-weight:700; font-size:16px; width:40px; height:38px; border-radius:10px; border:1px solid var(--line); background:#fff; cursor:pointer; }
+.accents button:hover { background:var(--lime); }
+.row { display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap; margin-top:auto; }
+.btn { font:inherit; font-weight:800; font-size:15px; padding:13px 22px; border-radius:99px; border:0; background:var(--ink); color:var(--lime); cursor:pointer; }
+.btn:disabled { opacity:.35; cursor:default; }
+.ghost { font:inherit; font-weight:600; font-size:14px; padding:10px 14px; border-radius:99px; border:1px solid var(--line); background:#fff; cursor:pointer; color:var(--ink); }
+.kbd { font-family:'JetBrains Mono'; font-size:11px; border:1px solid var(--line); border-bottom-width:2px; border-radius:5px; padding:1px 5px; color:var(--muted); }
+.fb { display:none; border-radius:14px; padding:14px 16px; background:var(--base); }
+.fb.show { display:block; }
+.fb .bar { width:44px; height:8px; border-radius:9px; margin-bottom:10px; }
+.fb .v { font-weight:900; font-size:30px; letter-spacing:-.045em; line-height:1; margin-bottom:6px; }
+.fb p { margin:4px 0 0; font-size:15px; line-height:1.45; }
+.diff span.bad { box-shadow:inset 0 -4px 0 var(--orange); }
+.diff span.good { box-shadow:inset 0 -4px 0 var(--lime); }
+.audio { display:flex; gap:10px; align-items:center; }
+.play { width:64px; height:64px; border-radius:50%; background:var(--lime); border:0; cursor:pointer; display:flex; align-items:center; justify-content:center; }
+.speed { display:flex; border:1px solid var(--line); border-radius:99px; overflow:hidden; }
+.speed button { font:inherit; font-size:13px; font-weight:700; padding:8px 12px; border:0; background:#fff; cursor:pointer; color:var(--ink); }
+.speed button.on { background:var(--ink); color:var(--lime); }
+.word { border-bottom:1.5px dotted var(--muted); cursor:help; position:relative; }
+.word:hover::after { content:attr(data-en); position:absolute; left:50%; bottom:130%; transform:translateX(-50%); background:var(--ink); color:#fff; font-size:13px; font-weight:600; letter-spacing:0; padding:6px 9px; border-radius:8px; white-space:nowrap; }
+.done-card { text-align:left; }
+.notes { margin-top:1.4rem; display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:.5rem 1.4rem; }
+.notes p { color:var(--text-secondary); font-size:.85rem; line-height:1.45; margin:0; }
+.notes strong { color:var(--text-primary); }
+</style>
+<style>
+.sk h2, .sk > .subtitle, .sk h3.t { color:var(--text-primary); }
+.flow { display:grid; grid-template-columns:repeat(auto-fill,minmax(210px,1fr)); gap:14px; margin-top:1rem; font-family:'Inter Tight',system-ui,sans-serif; }
+.pg { background:#F4F4F1; border-radius:14px; padding:12px; color:#121210; display:flex; flex-direction:column; gap:7px; min-height:300px; position:relative; }
+.pg .ttl { font-weight:800; font-size:15px; letter-spacing:-.02em; }
+.pg .n { font-family:'JetBrains Mono',monospace; font-size:11px; text-transform:uppercase; color:#5C5B55; }
+.blk { border-radius:8px; background:#fff; border:1px solid #E2E2DD; padding:7px 8px; font-size:12px; font-weight:600; color:#3a3a35; }
+.blk.blur { background:linear-gradient(135deg,#D2FF3C 0%,#E3E1DA 55%,#C3A6FF 100%); border:0; min-height:60px; display:flex; align-items:flex-end; font-weight:900; font-size:16px; letter-spacing:-.03em; color:#121210; }
+.blk.black { background:#121210; color:#F4F4F1; border:0; }
+.blk.lime { background:#D2FF3C; border:0; color:#121210; }
+.blk.line { height:7px; padding:0; background:#E3E1DA; border:0; }
+.grid2 { display:grid; grid-template-columns:1fr 1fr; gap:5px; }
+.grid3 { display:grid; grid-template-columns:repeat(3,1fr); gap:4px; }
+.grid3 .blk { min-height:28px; padding:4px; font-size:11px; }
+.go { margin-top:auto; font-family:'JetBrains Mono',monospace; font-size:11px; text-transform:uppercase; color:#2E3BFF; }
+
+.flow { display:grid; grid-template-columns:repeat(auto-fill,minmax(360px,1fr)); gap:18px 16px; margin-top:1rem; font-family:'Inter Tight',system-ui,sans-serif; }
+.fr .pg { aspect-ratio:16/10; min-height:0; padding:12px; gap:8px; }
+.pg.dark { background:#121210; }
+.pg.dark .nv { color:#F4F4F1; }
+.nv { display:flex; justify-content:space-between; align-items:center; gap:10px; font-size:11px; color:#5C5B55; }
+.nv b { color:#121210; font-weight:900; font-size:13px; }
+.bar { flex:1; height:5px; background:#E3E1DA; border-radius:9px; overflow:hidden; } .bar i { display:block; width:25%; height:100%; background:#D2FF3C; }
+.h1 { font-weight:900; font-size:28px; letter-spacing:-.05em; line-height:1; color:#121210; }
+.c3 { display:grid; grid-template-columns:1.5fr 1fr .8fr; gap:6px; flex:1; }
+.c3 .blk { display:flex; align-items:flex-end; }
+.c6 { display:grid; grid-template-columns:repeat(6,1fr); gap:5px; } .c6 .blk { aspect-ratio:1; background:linear-gradient(135deg,#D2FF3C,#E3E1DA 60%,#FF4FA8); border:0; }
+.c6 .blk:nth-child(n+4) { background:#ECEBE6; }
+.c2 { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+.col { display:flex; flex-direction:column; gap:6px; }
+.blk.big { font-size:15px; font-weight:900; min-height:44px; }
+.center { flex:1; display:flex; align-items:center; justify-content:center; }
+.blk.card { width:62%; min-height:62%; display:flex; flex-direction:column; justify-content:center; gap:3px; font-size:13px; }
+.lab { margin:6px 2px 0; font-size:.85rem; color:var(--text-secondary); } .lab b { color:var(--text-primary); }
+
+.caption { color:var(--text-secondary); font-size:.85rem; line-height:1.45; margin-top:6px; }
+.caption strong { color:var(--text-primary); }
+</style>
+
+<div class="sk">
+<h2>Interaction design: the pages and how they connect</h2>
+<p class="subtitle">Quick sketches of every page in Phase 1, in the order you move through them. Below them is one working exercise card so you can feel the core interaction.</p>
+
+<div class="flow">
+  <div class="fr"><div class="pg"><div class="nv"><b>italiano.</b><span>Path · Review · Reference</span></div>
+    <div class="h1">Ciao, Daan.</div>
+    <div class="c3"><div class="blk blur">Continue: Unit 03</div><div class="blk black">Phrase of the day ▶</div><div class="blk lime">Review · 12</div></div>
+    <div class="c6"><div class="blk"></div><div class="blk"></div><div class="blk"></div><div class="blk"></div><div class="blk"></div><div class="blk"></div></div>
+  </div><p class="lab"><b>1 · Home</b> → resume, or tap any unit</p></div>
+
+  <div class="fr"><div class="pg"><div class="nv"><b>✕</b><span>Unit 02</span></div>
+    <div class="c2" style="flex:1"><div class="blk blur" style="font-size:26px">Articles</div>
+    <div class="col"><div class="blk ">What you'll be able to say: <i>"Hai visto lo zio?"</i></div><div class="blk ">1 Rule · 2 Rule · 3 Rule · Practice · Checkpoint</div><div class="blk ">~25 min · saves your place</div><div class="blk lime">Start →</div></div></div>
+  </div><p class="lab"><b>2 · Unit intro</b> → start</p></div>
+
+  <div class="fr"><div class="pg"><div class="nv"><b>✕</b><div class="bar"><i></i></div><span>Rule 1/3</span></div>
+    <div class="c2" style="flex:1;grid-template-columns:1.4fr 1fr"><div class="col"><div class="blk big">◯lo zaino · il libro</div><div class="blk ">Why: z, s+consonant, gn, ps → lo</div><div class="blk ">Table: il / lo / l' · i / gli</div></div>
+    <div class="col"><div class="blk ">Careful: common trap</div><div class="blk ">How Italians say it ▶</div><div class="blk lime">Next →</div></div></div>
+  </div><p class="lab"><b>3 · The rule</b>: one rule per screen</p></div>
+
+  <div class="fr"><div class="pg"><div class="nv"><b>✕</b><div class="bar"><i style="width:45%"></i></div><span>Examples</span></div>
+    <div class="col" style="flex:1"><div class="blk "><b style="color:#C70F6E">tu</b> · Hai visto lo zio? ▶</div><div class="blk "><b style="color:#2E3BFF">Lei</b> · Ha visto lo zio? ▶</div><div class="blk "><b style="color:#C70F6E">tu</b> · Gli zaini sono qui ▶</div><div class="blk ">Tap a word for its meaning · translation hidden until asked</div></div>
+  </div><p class="lab"><b>4 · Examples</b>: 6–10 real sentences</p></div>
+
+  <div class="fr"><div class="pg"><div class="nv"><b>✕</b><div class="bar"><i style="width:65%"></i></div><span>5/12</span></div>
+    <div class="center"><div class="blk card"><span>Exercise card</span><span style="font-weight:400">type · build · listen · switch register</span><div class="blk lime" style="margin-top:6px">Giusto. + why</div></div></div>
+  </div><p class="lab"><b>5 · Practice</b>: one centred card (try it below ↓)</p></div>
+
+  <div class="fr"><div class="pg dark"><div class="nv"><b>✕</b><span>Checkpoint · no hints</span></div>
+    <div class="center"><div class="blk card">10 mixed questions<div class="blk lime" style="margin-top:6px">9/10, unit mastered ✓</div></div></div>
+  </div><p class="lab"><b>6 · Checkpoint</b>: ≥ 80% to master the unit</p></div>
+
+  <div class="fr"><div class="pg"><div class="nv"><b>italiano.</b><span>Path · <u>Review</u> · Reference</span></div>
+    <div class="c2" style="flex:1"><div class="blk lime" style="font-size:30px;font-weight:900;display:flex;align-items:flex-end">12 due</div>
+    <div class="col"><div class="blk ">Mixed across units</div><div class="blk ">Right → back in 3, 7, 21 days</div><div class="blk ">Wrong → tomorrow again</div><div class="blk black">Start review →</div></div></div>
+  </div><p class="lab"><b>7 · Review</b>: your mistakes, spaced out</p></div>
+
+  <div class="fr"><div class="pg"><div class="nv"><b>italiano.</b><span>Path · Review · <u>Reference</u></span></div>
+    <div class="c2" style="flex:1;grid-template-columns:.8fr 2fr"><div class="col"><div class="blk ">Search: "lo or il?"</div><div class="blk ">Articles</div><div class="blk ">Essere & avere</div><div class="blk ">Present tense</div></div>
+    <div class="col"><div class="blk big">Rule cheat sheet + tables</div><div class="blk ">Verb tables: essere, avere, andare…</div><div class="blk ">Only units you've reached</div></div></div>
+  </div><p class="lab"><b>8 · Reference</b>: the grammar book</p></div>
+</div>
+<p class="caption"><strong>Phone:</strong> same pages in a single column. The bottom tab bar is Path · Review · Reference, and the Check button sits right above the keyboard. <strong>Leaving mid-lesson</strong> saves your exact step, so "Resume" picks up there.</p>
+
+<h3 class="t" style="margin-top:2.2rem">Try it: the practice card (page 5)</h3>
+<p class="subtitle" style="margin-bottom:0">This one works. <b>Enter</b> checks, Enter continues. Try a typo, a missing accent, or a wrong form on purpose. Sound on for the listening card.</p>
+</div>
+
+
+
+<div class="ip">
+
+
+<div class="app">
+  <div class="topbar"><div class="x">✕</div><div class="segs" id="segs"></div><span class="mono" id="count"></span></div>
+  <div class="ex" id="ex"></div>
+</div>
+
+<div class="notes">
+  <p><strong>One thing at a time.</strong> A single focused card, with the keyboard as the main control: Enter checks, Enter continues, Space plays audio. On the phone the Check button sticks above the keyboard.</p>
+  <p><strong>Forgiving where it should be.</strong> A one-letter typo counts as correct but is pointed out. A missing accent counts as "almost": it's accepted, but you're told why the accent matters. Real grammar mistakes get explained.</p>
+  <p><strong>Accents are easy.</strong> Tap the accent bar, or type the letter followed by a backtick, e.g. <span class="kbd">e`</span> → è.</p>
+  <p><strong>Mistakes come back.</strong> A wrong item reappears 2–3 cards later in the same session (the orange segment), then goes into your review queue (repeating after 1, 3, 7 and 21 days).</p>
+  <p><strong>You can overrule the checker.</strong> "I was right" accepts your answer and saves it as a valid alternative for that exercise from then on.</p>
+  <p><strong>Hover (or tap) any dotted Italian word</strong> to see what it means. Translation is always one gesture away, never shown by default.</p>
+</div>
+</div>
+
+<script>
+(function(){
+  const items = [
+    { kind:'type', reg:'tu', label:'Type it', prompt:'Tu ___ stanca?', base:'(essere)', en:'Are you tired?', answers:['sei'],
+      mistakes:{ 'è':'<b>è</b> is for <b>Lei</b> (formal) or he/she. With <b>tu</b> it\'s always <b>sei</b>.', 'sono':'<b>sono</b> is "I am". For <b>tu</b> you need <b>sei</b>.' },
+      why:'<b>essere</b> with <b>tu</b> → <b>sei</b>. In speech the <i>tu</i> usually drops: <i>"Sei stanca?"</i>' },
+    { kind:'build', reg:'lei', label:'Build it', prompt:'Translate: "Are you Italian?"', base:'(to your partner\'s grandmother)', answers:['lei è italiana?','è italiana?','lei è italiana','è italiana'],
+      mistakes:{ 'sei italiana?':'Grandma means <b>Lei</b>, so 3rd person: <b>è</b>, not <i>sei</i>.', 'sei italiana':'Grandma means <b>Lei</b>, so 3rd person: <b>è</b>, not <i>sei</i>.', 'lei è italiano?':'Grandma is a woman, so the adjective is <b>italiana</b>. Formal <i>Lei</i> follows the real person\'s gender.' },
+      why:'Formal <b>Lei</b> uses the same verb form as "she": <b>è</b>. Italians often drop <i>Lei</i> too: <i>"È italiana?"</i>' },
+    { kind:'listen', reg:'tu', label:'Listen & type', say:'Dai, andiamo a prendere un caffè?', answers:['dai, andiamo a prendere un caffè?','dai andiamo a prendere un caffè','dai, andiamo a prendere un caffè','dai andiamo a prendere un caffè?'],
+      why:'<b>Dai</b> = "come on". <b>Andiamo a</b> + verb = "let\'s go and…". Notice how <i>prendere un</i> blurs into <i>"prendereun"</i>.' },
+    { kind:'register', reg:'tu', label:'Switch register', prompt:'<span class="word" data-en="Where do you live?">Dove abiti?</span>', base:'You asked your partner. Now ask their father (formal).', answers:['dove abita?','lei dove abita?','dove abita lei?','dove abita','lei dove abita'],
+      mistakes:{ 'dove abiti?':'That\'s still the <b>tu</b> form. For <b>Lei</b>, switch to the 3rd person: <b>abita</b>.' },
+      why:'<b>tu abiti</b> → <b>Lei abita</b>. Every formal question is the "he/she" form of the verb.' },
+  ];
+  let queue = items.map((_,i)=>i), pos = 0, results = [], state = 'answer', speed = 1;
+  const exEl = document.getElementById('ex'), segs = document.getElementById('segs'), count = document.getElementById('count');
+
+  const norm = s => s.toLowerCase().trim().replace(/\s+/g,' ').replace(/[’`]/g,"'");
+  const stripAcc = s => s.normalize('NFD').replace(/[̀-ͯ]/g,'');
+  const stripPunct = s => s.replace(/[?!.,]/g,'').replace(/\s+/g,' ').trim();
+  function lev(a,b){ const m=[...Array(b.length+1).keys()]; for(let i=1;i<=a.length;i++){ let p=m[0]; m[0]=i; for(let j=1;j<=b.length;j++){ const t=m[j]; m[j]=Math.min(m[j]+1,m[j-1]+1,p+(a[i-1]===b[j-1]?0:1)); p=t; } } return m[b.length]; }
+
+  function judge(it, raw){
+    const a = norm(raw), ap = stripPunct(a);
+    const ans = it.answers.map(norm);
+    if (ans.some(x=>stripPunct(x)===ap)) return {v:'ok'};
+    for (const [k,msg] of Object.entries(it.mistakes||{})) if (stripPunct(norm(k))===ap) return {v:'wrong', msg};
+    if (ans.some(x=>stripAcc(stripPunct(x))===stripAcc(ap))) return {v:'accent'};
+    const best = ans.map(x=>stripPunct(x)).sort((x,y)=>lev(ap,x)-lev(ap,y))[0];
+    if (lev(ap,best) === 1 && best.length > 4) return {v:'typo', best};
+    return {v:'wrong'};
+  }
+  function diff(user, target){
+    const u = stripPunct(norm(user)), t = stripPunct(norm(target));
+    return [...t].map((ch,i)=>`<span class="${u[i]===ch?'':'bad'}">${ch}</span>`).join('');
+  }
+  function speak(text){
+    if (!('speechSynthesis' in window)) return;
+    speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(text); u.lang='it-IT'; u.rate = speed;
+    const v = speechSynthesis.getVoices().filter(v=>v.lang.startsWith('it'));
+    u.voice = v.find(v=>/enhanced|premium|alice|federica/i.test(v.name)) || v[0] || null;
+    speechSynthesis.speak(u);
+  }
+
+  function drawSegs(){
+    segs.innerHTML = queue.map((q,i)=>`<i class="${i<pos ? (results[i]==='miss'?'miss':'done') : i===pos?'cur':''}"></i>`).join('');
+    count.textContent = `${Math.min(pos+1,queue.length)} / ${queue.length}`;
+  }
+  function render(){
+    drawSegs();
+    if (pos >= queue.length) return finish();
+    const it = items[queue[pos]]; state='answer';
+    const regChip = it.reg==='tu' ? '<span class="chip tu">informal · tu</span>' : '<span class="chip lei">formal · Lei</span>';
+    let body = '';
+    if (it.kind==='listen') body = `<div class="audio"><button class="play" id="play" aria-label="Play"><svg width="22" height="22" viewBox="0 0 16 16"><path d="M4 2l10 6-10 6z" fill="#121210"/></svg></button><div class="speed"><button data-s="1" class="${speed===1?'on':''}">Normal</button><button data-s=".7" class="${speed===.7?'on':''}">Slow</button></div><span class="hint">Type what you hear <span class="kbd">Space</span> replays</span></div>`;
+    else body = `<div class="prompt">${it.prompt.replace('___','<span class="gap"></span>')}</div><div class="hint">${it.base||''}</div>`;
+    exEl.innerHTML = `<div class="kind"><span class="chip">${it.label}</span>${regChip}${queue.indexOf(queue[pos])!==pos?'<span class="chip" style="background:var(--orange)">second try</span>':''}</div>
+      ${body}
+      <input class="ans" id="ans" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Type your answer…">
+      <div class="accents">${['à','è','é','ì','ò','ù'].map(c=>`<button data-c="${c}">${c}</button>`).join('')}</div>
+      <div class="fb" id="fb"></div>
+      <div class="row"><span class="hint" id="rowhint"><span class="kbd">Enter</span> to check</span><span style="display:flex;gap:8px"><button class="ghost" id="right" style="display:none">I was right</button><button class="btn" id="go">Check</button></span></div>`;
+    const inp = document.getElementById('ans'); inp.focus({preventScroll:true});
+    inp.addEventListener('input', ()=>{ const v=inp.value, m={'a`':'à','e`':'è','e\'':'é','i`':'ì','o`':'ò','u`':'ù'}; const t=v.slice(-2); if(m[t]) inp.value=v.slice(0,-2)+m[t]; });
+    exEl.querySelectorAll('.accents button').forEach(b=>b.onclick=()=>{ inp.value+=b.dataset.c; inp.focus({preventScroll:true}); });
+    document.getElementById('go').onclick = act;
+    if (it.kind==='listen'){ document.getElementById('play').onclick=()=>{speak(it.say); inp.focus({preventScroll:true});}; exEl.querySelectorAll('.speed button').forEach(b=>b.onclick=()=>{ speed=+b.dataset.s; exEl.querySelectorAll('.speed button').forEach(x=>x.classList.toggle('on',x===b)); speak(it.say); inp.focus({preventScroll:true}); }); setTimeout(()=>speak(it.say),350); }
+  }
+  function act(){
+    if (state==='answer') check(); else next();
+  }
+  function check(){
+    const it = items[queue[pos]], inp = document.getElementById('ans'); if(!inp.value.trim()) return;
+    const r = judge(it, inp.value), fb = document.getElementById('fb'), target = it.answers[0];
+    inp.readOnly = true; state='feedback';
+    let html='';
+    if (r.v==='ok') html = `<div class="bar" style="background:var(--lime)"></div><div class="v">Giusto.</div><p>${it.why}</p>`;
+    else if (r.v==='typo') html = `<div class="bar" style="background:var(--lime)"></div><div class="v">Giusto, small typo.</div><p class="diff" style="font-weight:700;font-size:18px">${diff(inp.value,r.best)}</p><p>${it.why}</p>`;
+    else if (r.v==='accent') html = `<div class="bar" style="background:var(--cyan)"></div><div class="v">Almost: mind the accent.</div><p>Accents change meaning in Italian: <b>è</b> = "is", <b>e</b> = "and". Correct: <b>${target}</b></p>`;
+    else { html = `<div class="bar" style="background:var(--orange)"></div><div class="v">Quasi.</div><p>${r.msg || 'Not quite.'}</p><p class="diff" style="font-weight:700;font-size:18px;margin-top:8px">${diff(inp.value,target)}</p><p>${it.why}</p>`;
+      exEl.classList.remove('shake'); void exEl.offsetWidth; exEl.classList.add('shake');
+      if (queue.indexOf(queue[pos])===pos) queue.splice(Math.min(pos+3, queue.length), 0, queue[pos]);
+      document.getElementById('right').style.display='inline-block';
+      document.getElementById('right').onclick=()=>{ it.answers.push(inp.value); results[pos]='ok'; const idx=queue.lastIndexOf(queue[pos]); if(idx>pos) queue.splice(idx,1); fb.innerHTML=`<div class="bar" style="background:var(--lime)"></div><div class="v">Noted.</div><p>"${inp.value}" is now an accepted answer for this exercise. (In the real app this also flags it for me to double-check.)</p>`; document.getElementById('right').style.display='none'; drawSegs(); };
+    }
+    results[pos] = (r.v==='wrong') ? 'miss' : 'ok';
+    fb.innerHTML = html; fb.classList.add('show');
+    document.getElementById('go').textContent='Continue →';
+    document.getElementById('rowhint').innerHTML='<span class="kbd">Enter</span> to continue';
+    if (it.kind==='listen') speak(it.say);
+  }
+  function next(){ exEl.classList.add('out'); setTimeout(()=>{ pos++; exEl.classList.remove('out'); render(); },200); }
+  function finish(){
+    const misses = results.filter(r=>r==='miss').length;
+    exEl.innerHTML = `<div class="done-card"><span class="chip" style="background:var(--lime)">Session done</span><div class="prompt" style="margin-top:14px">Bravo. ${queue.length} cards, ${misses} into your review queue.</div><p class="hint" style="margin-top:8px">The mistakes come back tomorrow, then in 3, 7 and 21 days, until they stick.</p><div class="row" style="margin-top:20px"><span></span><button class="btn" id="again">Try again</button></div></div>`;
+    document.getElementById('again').onclick=()=>{ location.reload(); };
+  }
+  document.addEventListener('keydown', e=>{
+    if (e.key==='Enter'){ e.preventDefault(); act(); }
+    if (e.key===' ' && document.activeElement?.id!=='ans'){ const it=items[queue[pos]]; if(it&&it.kind==='listen'){ e.preventDefault(); speak(it.say);} }
+  });
+  if ('speechSynthesis' in window) speechSynthesis.onvoiceschanged = ()=>{};
+  render();
+})();
+</script>
