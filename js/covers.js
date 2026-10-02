@@ -113,3 +113,20 @@ export function renderCover(el, index, { scale = 1 } = {}) {
   grain.style.opacity = String(rc.dark ? rc.grain * 0.6 : rc.grain);
   el.appendChild(grain);
 }
+
+const LIGHT = new Set([COLORS.lime, COLORS.pink, COLORS.cyan, COLORS.lilac, COLORS.orange, COLORS.fog]);
+
+/**
+ * Whether the cover is a light colour at (x%, y%), i.e. whether text placed there
+ * should be ink. Reads the topmost blob whose ellipse contains the point, else the field.
+ */
+export function lightAt(index, x, y) {
+  const rc = coverRecipe(index);
+  for (let k = rc.blobs.length - 1; k >= 0; k--) {
+    const b = rc.blobs[k];
+    const dx = (x - b.x) / (b.w / 2);
+    const dy = (y - b.y) / (b.h / 2);
+    if (dx * dx + dy * dy <= 1) return LIGHT.has(b.color);
+  }
+  return !rc.dark;
+}

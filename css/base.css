@@ -50,6 +50,9 @@ img, svg { max-width: 100%; }
   padding: var(--sp-4) 0;
 }
 .nav__logo {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--tap);
   font-weight: 900;
   font-size: 20px;
   letter-spacing: -0.04em;
