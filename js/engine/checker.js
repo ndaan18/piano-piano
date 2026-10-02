@@ -22,28 +22,40 @@ export function normalize(s) {
 export function applyAccentShortcut(value) {
   const grave = value.match(/^([\s\S]*)([aeiouAEIOU])`$/);
   if (grave) return grave[1] + GRAVE[grave[2]];
-  const acute = value.match(/^([\s\S]*)([eE])'$/);
+  const acute = value.match(/^([\s\S]*)([eE])['’]$/);
   if (acute) return acute[1] + (acute[2] === 'e' ? 'é' : 'É');
   return value;
 }
 
 const stripAccents = (s) => s.normalize('NFD').replace(/[̀-ͯ]/g, '');
 
-function levenshtein(a, b) {
-  if (a === b) return 0;
-  let prev = Array.from({ length: b.length + 1 }, (_, j) => j);
-  for (let i = 1; i <= a.length; i++) {
-    const cur = [i];
-    for (let j = 1; j <= b.length; j++) {
-      cur[j] = Math.min(
-        prev[j] + 1,
-        cur[j - 1] + 1,
-        prev[j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1),
-      );
-    }
-    prev = cur;
+const isWordEnd = (s, i) => i + 1 === s.length || s[i + 1] === ' ';
+const isGlue = (c) => c === "'" || c === ' ';
+
+/**
+ * True when `n` differs from `a` by exactly one edit that is tolerable as a typo.
+ * Word endings carry grammar (ragazzo/ragazza), and apostrophes/spaces carry
+ * elision (un'amica / un amica / l'amico / lamico), so an edit on the final
+ * character of any word, or involving an apostrophe or space, is never a typo.
+ * Where equivalent edits exist (repeated letters), all of them must be tolerable.
+ */
+function isTolerableTypo(a, n) {
+  const diff = a.length - n.length;
+  if (Math.abs(diff) > 1) return false;
+  const [long, short] = diff >= 0 ? [a, n] : [n, a];
+  let p = 0;
+  while (p < short.length && long[p] === short[p]) p++;
+  if (diff === 0) {
+    if (p === a.length || a.slice(p + 1) !== n.slice(p + 1)) return false;
+    return !isGlue(a[p]) && !isGlue(n[p]) && !isWordEnd(a, p);
   }
-  return prev[b.length];
+  if (long.slice(p + 1) !== short.slice(p)) return false;
+  let s = 0;
+  while (s < short.length && long[long.length - 1 - s] === short[short.length - 1 - s]) s++;
+  for (let i = long.length - 1 - s; i <= p; i++) {
+    if (isGlue(long[i]) || isWordEnd(long, i)) return false;
+  }
+  return true;
 }
 
 /**
@@ -66,7 +78,7 @@ export function isPass(verdict) {
 
 export function judge(exercise, input, extraAnswers = []) {
   const target = exercise.answers[0];
-  const accepted = [...exercise.answers, ...extraAnswers].map(normalize);
+  const accepted = [...exercise.answers, ...(extraAnswers || [])].map(normalize);
   const n = normalize(input);
 
   // 2. exact
@@ -86,8 +98,8 @@ export function judge(exercise, input, extraAnswers = []) {
     return { verdict: 'accent', message: ACCENT_MESSAGE, target };
   }
 
-  // 5. edit distance 1, target longer than 4 characters
-  const close = accepted.find((a) => a.length > 4 && levenshtein(a, n) === 1);
+  // 5. edit distance 1, target longer than 4 characters, not on a word ending or apostrophe/space
+  const close = accepted.find((a) => a.length > 4 && isTolerableTypo(a, n));
   if (close) {
     return { verdict: 'typo', message: 'Giusto, small typo.', target, diff: diffChars(input, close) };
   }

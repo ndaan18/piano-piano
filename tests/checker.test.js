@@ -84,3 +84,31 @@ test('typo diff is computed against the closest accepted answer', () => {
   assert.equal(r.target, 'buongiorno');
   assert.equal(r.diff.map((d) => d.ch).join(''), 'buonasera');
 });
+
+test('typo is refused when the edit is on a word ending (grammar)', () => {
+  assert.equal(judge({ answers: ['ragazza'] }, 'ragazzo').verdict, 'wrong');
+  assert.equal(judge({ answers: ['ragazza'] }, 'ragazz').verdict, 'wrong');
+  assert.equal(judge({ answers: ['ragazza'] }, 'ragazzaa').verdict, 'wrong');
+  assert.equal(judge({ answers: ['buona sera'] }, 'buonn sera').verdict, 'wrong');
+  assert.equal(judge({ answers: ['buona sera'] }, 'buona sero').verdict, 'wrong');
+});
+test('typo is refused when the edit involves an apostrophe or space', () => {
+  assert.equal(judge({ answers: ["un'amica"] }, 'un amica').verdict, 'wrong');
+  assert.equal(judge({ answers: ["l'amico"] }, 'lamico').verdict, 'wrong');
+  assert.equal(judge({ answers: ['buona sera'] }, 'buonasera').verdict, 'wrong');
+  assert.ok(judge({ answers: ["un'amica"] }, 'un amica').diff.some((d) => !d.ok));
+});
+test('typo is still given for mid-word edits (substitution, deletion, insertion)', () => {
+  assert.equal(judge({ answers: ['stanco'] }, 'stinco').verdict, 'typo');
+  assert.equal(judge({ answers: ['prendere'] }, 'prendre').verdict, 'typo');
+  assert.equal(judge({ answers: ['prendere'] }, 'prenddere').verdict, 'typo');
+  assert.equal(judge({ answers: ['buona sera'] }, 'buoma sera').verdict, 'typo');
+  assert.equal(judge({ answers: ['buona sera'] }, 'buona seera').verdict, 'typo');
+});
+test("applyAccentShortcut: curly e’ (iOS smart punctuation) gives é", () => {
+  assert.equal(applyAccentShortcut('perche’'), 'perché');
+});
+test('judge tolerates null extraAnswers', () => {
+  assert.equal(judge(ex, 'x', null).verdict, 'wrong');
+  assert.equal(judge(ex, 'sei', null).verdict, 'correct');
+});
