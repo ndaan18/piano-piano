@@ -117,6 +117,24 @@ test('small pools: tiny prior pool is used and the rest topped up from the lesso
   assert.equal(ids(s).filter((id) => id.startsWith('old-')).length, 2);
 });
 
+test('small pools: pool of lesson-owned ids or duplicates still yields 20 for a 30-exercise lesson', () => {
+  const l = lesson('big', 30);
+  const owned = l.exercises.slice(0, 5).map((e) => e.id);
+  const a = buildLessonSession(l, owned, { rng: seeded(9) });
+  assert.equal(a.length, 20);
+  assert.equal(new Set(ids(a)).size, 20);
+  const b = buildLessonSession(l, ['o', 'o', 'o', 'o', 'o'], { rng: seeded(9) });
+  assert.equal(b.length, 20);
+  assert.equal(new Set(ids(b)).size, 20);
+  assert.equal(ids(b).filter((id) => id === 'o').length, 1);
+});
+
+test('prior share stays capped at 25%: 6-exercise lesson + big pool -> 11', () => {
+  const s = buildLessonSession(lesson('tiny', 6), prior(10), { rng: seeded(2) });
+  assert.equal(s.length, 11);
+  assert.equal(ids(s).filter((id) => id.startsWith('old-')).length, 5);
+});
+
 test('small pools: prior ids duplicating lesson ids are not repeated; empty lesson is safe', () => {
   const l = lesson('dup', 6);
   const s = buildLessonSession(l, [l.exercises[0].id, 'old-1'], { rng: seeded(4) });

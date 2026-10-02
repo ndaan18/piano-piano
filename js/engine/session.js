@@ -72,11 +72,11 @@ export function buildLessonSession(lesson, priorPool, { rng = Math.random, size 
   const exercises = lesson.exercises || [];
   const share = split(size);
   // Prior cards live in the second half, so there can't be more of them than lesson cards.
-  const priorCount = Math.min(share.prior, (priorPool || []).length, exercises.length);
-  const lessonCount = Math.min(exercises.length, size - priorCount);
-
+  // Draw first: duplicates / lesson-owned ids in the pool are dropped, and the
+  // lesson then tops up whatever the pool couldn't supply.
   const lessonIds = new Set(exercises.map((e) => e.id));
-  const priorIds = drawPrior(priorPool, priorCount, weak, lessonIds, rng);
+  const priorIds = drawPrior(priorPool, Math.min(share.prior, exercises.length), weak, lessonIds, rng);
+  const lessonCount = Math.min(exercises.length, size - priorIds.length);
 
   // Pick a random subset, then order by rung (stable, so equal rungs keep random order).
   const chosen = shuffle(exercises, rng)
