@@ -102,7 +102,7 @@ const SLIPS = {
   mangi: { mangii: ONE_I('mangi'), manghi: SOFT_NO_H('mangi') },
   mangia: { manga: KEEP_I('mangia'), manghia: SOFT_NO_H('mangia') },
   studi: { studii: ONE_I('studi') },
-  studia: { studa: KEEP_I('studia') },
+  studia: { studa: 'Keep the i of the stem: studi- + a = studia.' },
   legge: { leggie: GG_SOFT('legge'), lege: GG_DOUBLE('legge'), legghe: GG_NO_H('legge') },
   leggi: { legi: GG_DOUBLE('leggi'), legghi: GG_NO_H('leggi') },
   leggo: { leggio: GG_HARD('leggo'), lego: GG_DOUBLE('leggo'), leggho: GG_NO_H('leggo') },
@@ -169,7 +169,7 @@ const unit = {
             { word: 'parla', kind: 'circle', color: 'pink' },
             { word: 'parlano', kind: 'underline', color: 'ultra' },
           ],
-          why: 'Most Italian verbs end in -are, and they all work the same way. Take off -are to get the stem (parl-), then add an ending that says who: -o, -i, -a, -iamo, -ate, -ano. Because the ending says who, Italians usually drop io, tu and noi: Parlo italiano = I speak Italian. One present covers English "I speak", "I\'m speaking" and "do you speak?": there is no "do" in Italian questions, only a rising voice. Parli inglese? = Do you speak English?',
+          why: 'Most Italian verbs end in -are, and almost all of them are regular (andare, dare, stare and fare come in Unit 5). Take off -are to get the stem (parl-), then add an ending that says who: -o, -i, -a, -iamo, -ate, -ano. Because the ending says who, Italians usually drop io, tu and noi: Parlo italiano = I speak Italian. One present covers English "I speak", "I\'m speaking" and "do you speak?": there is no "do" in Italian questions, only a rising voice. Parli inglese? = Do you speak English?',
           table: {
             head: ['verb', 'ending', 'parlare', 'English'],
             rows: [
@@ -186,7 +186,7 @@ const unit = {
           howItaliansSayIt: {
             it: 'Arrivo, arrivo!',
             en: 'Coming, coming!',
-            note: 'When someone calls you, Italians answer with the present of arrivare ("arrive"), not "come". The -o already says it\'s you, so no io. Italian uses the present for things happening right now, where English says "I\'m …-ing".',
+            note: 'When someone calls you, Italians often answer with the present of arrivare ("arrive") rather than "come". The -o already says it\'s you, so no io. Italian uses the present for things happening right now, where English says "I\'m …-ing".',
           },
         },
       ],
@@ -328,12 +328,11 @@ const unit = {
         },
         {
           id: 'u4-l1-e13', type: 'type', reg: 'neutral', rung: 2, ruleId: 'u4-r1',
-          prompt: 'Il treno ___ in ritardo.', base: '(arrivare)', en: 'The train is arriving late.',
+          prompt: 'Il treno ___ adesso.', base: '(arrivare)', en: 'The train is arriving now.',
           answers: ['arriva'],
           mistakes: {
             arrivano: 'arrivano is "they arrive". One train: arriva.',
             arrivi: 'arrivi is "you arrive". The train: arriva.',
-            'è': 'You need arrivare here, not essere: il treno arriva in ritardo.',
           },
           why: WHY_ARE_3,
         },
@@ -436,7 +435,7 @@ const unit = {
         {
           id: 'u4-l1-e22', type: 'register', reg: 'lei', rung: 3, ruleId: 'u4-r1',
           prompt: 'Parli inglese?', base: 'You asked Luca. Now ask a woman at the station (formal).', en: 'Do you speak English?',
-          answers: ['Parla inglese?', 'Lei parla inglese?', 'Scusi, parla inglese?', 'Mi scusi, parla inglese?', 'Signora, parla inglese?'],
+          answers: ['Parla inglese?', 'Lei parla inglese?', 'Scusi, parla inglese?', 'Mi scusi, parla inglese?', 'Scusi, Lei parla inglese?', 'Signora, parla inglese?'],
           mistakes: {
             'Parli inglese?': 'That is still the tu form. With Lei: parla.',
             'Scusi, parli inglese?': 'scusi is right, but parli is tu. With Lei: parla.',
@@ -574,7 +573,7 @@ const unit = {
         {
           id: 'u4-l1-e33', type: 'build', reg: 'neutral', rung: 4, ruleId: 'u4-r1',
           prompt: 'Translate: "Coming!"', base: '(Giulia calls you from the kitchen)', en: 'Coming!',
-          answers: ['Arrivo!', 'Arrivo, arrivo!', 'Vengo!'],
+          answers: ['Arrivo!', 'Arrivo, arrivo!', 'Vengo!', 'Vengo, vengo!'],
           mistakes: {
             'Arriva!': 'arriva is "he/she is coming". For yourself: arrivo.',
             'Arrivi!': 'arrivi is "you arrive". For yourself: arrivo.',
@@ -906,7 +905,7 @@ const unit = {
         {
           id: 'u4-l2-e22', type: 'register', reg: 'lei', rung: 3, ruleId: 'u4-r2',
           prompt: 'Cosa prendi?', base: 'You asked Giulia at the bar. Now ask her grandmother (formal).', en: 'What will you have?',
-          answers: ['Cosa prende?', 'Che cosa prende?', 'Che prende?', 'Lei cosa prende?', 'Signora, cosa prende?', 'Cosa prende, signora?'],
+          answers: ['Cosa prende?', 'Che cosa prende?', 'Che prende?', 'Lei cosa prende?', 'Signora, cosa prende?', 'Signora, che cosa prende?', 'Cosa prende, signora?'],
           mistakes: {
             'Cosa prendi?': 'That is still the tu form. With Lei: prende.',
             'Signora, cosa prendi?': 'With signora you use Lei: prende.',
@@ -1035,7 +1034,7 @@ const unit = {
           mistakes: {
             'Vive da solo?': 'That is the Lei form. To Marco: vivi.',
             'Vivi da sola?': 'Marco is a man: da solo.',
-            'Viva da solo?': 'That is not a form of vivere. To Marco: vivi.',
+            'Viva da solo?': "viva isn't the tu form. To Marco: vivi.",
           },
           why: WHY_ERE_TU + ' "On your own" is da solo (da sola for a woman).',
         },
@@ -1253,11 +1252,10 @@ const unit = {
         {
           id: 'u4-l3-e11', type: 'type', reg: 'lei', rung: 2, ruleId: 'u4-r3',
           prompt: 'Signora, ___ freddo?', base: '(sentire: "do you feel")', en: 'Madam, do you feel cold?',
-          answers: ['sente'],
+          answers: ['sente', 'ha'],
           mistakes: {
             senti: 'senti is the tu form. A signora gets Lei: sente.',
             sentisce: NO_ISC('sentire', 'sente'),
-            ha: 'Ha freddo? is also right, but here use sentire: sente.',
           },
           why: WHY_IRE + ' Sente freddo? and Ha freddo? (Unit 3) both mean "Are you cold?".',
         },
@@ -1521,7 +1519,7 @@ const unit = {
         {
           id: 'u4-l3-e33', type: 'build', reg: 'tu', rung: 4, ruleId: 'u4-r3',
           prompt: 'Translate: "Are you asleep?"', base: '(whispering to Giulia at 7 a.m.)', en: 'Are you asleep?',
-          answers: ['Dormi?', 'Tu dormi?', 'Stai dormendo?', 'Amore, dormi?'],
+          answers: ['Dormi?', 'Tu dormi?', 'Stai dormendo?', 'Amore, dormi?', 'Dormi, amore?'],
           mistakes: {
             'Dorme?': 'That is the Lei form. To Giulia: dormi?',
             'Sei dormi?': 'No sei: "are you asleep?" is just dormi?',
@@ -1588,7 +1586,7 @@ const unit = {
             { word: 'io', kind: 'underline', color: 'ultra' },
             { word: 'Mangi', kind: 'circle', color: 'pink' },
           ],
-          why: 'A few -are verbs change their spelling to keep their sound. Verbs in -care and -gare have a hard c or g ("k", and g as in "go"), so they add h before an ending that starts with i: cerco, cerchi, cerchiamo; pago, paghi, paghiamo. Verbs in -ciare and -giare have an i only to make c or g soft, and that i isn\'t repeated before an ending that starts with i: mangio, mangi, mangiamo; comincio, cominci, cominciamo. And since the ending already says who, Italians leave out io, tu and noi unless they want to stress or contrast the person: Pago io! = I\'ll pay (me, not you).',
+          why: 'A few -are verbs change their spelling to keep their sound. Verbs in -care and -gare have a hard c or g ("k", and g as in "go"), so they add h before an ending that starts with i: cerco, cerchi, cerchiamo; pago, paghi, paghiamo. Most verbs in -ciare and -giare (mangiare, cominciare) have an i only to make c or g soft, and that i isn\'t repeated before an ending that starts with i: mangio, mangi, mangiamo; comincio, cominci, cominciamo. And since the ending already says who, Italians leave out io, tu and noi unless they want to stress or contrast the person: Pago io! = I\'ll pay (me, not you).',
           table: {
             head: ['verb', 'cercare (look for)', 'pagare (pay)', 'mangiare (eat)'],
             rows: [
@@ -1800,15 +1798,14 @@ const unit = {
         {
           id: 'u4-l4-e18', type: 'transform', reg: 'tu', rung: 3, ruleId: 'u4-r4',
           prompt: 'Pago io.', base: 'Now ask Marco: "Are YOU paying?"', en: 'Are you paying?',
-          answers: ['Paghi tu?', 'Marco, paghi tu?', 'Paghi tu, Marco?', 'Tu paghi?'],
+          answers: ['Paghi tu?', 'Marco, paghi tu?', 'Paghi tu, Marco?', 'Tu paghi?', 'Paghi?', 'Marco, paghi?', 'Paghi, Marco?'],
           mistakes: {
             'Pagi tu?': GH('paghi'),
             'Marco, pagi tu?': GH('paghi'),
             'Pagi tu, Marco?': GH('paghi'),
             'Paga tu?': 'paga is "he/she pays" or Lei. With tu: paghi.',
-            'Paghi?': 'Keep tu to put the stress on Marco: Paghi tu?',
           },
-          why: WHY_GH + ' tu after the verb stresses the person, like io in Pago io.',
+          why: WHY_GH + ' Paghi? alone is correct; tu after the verb adds the stress ("are YOU paying?"), like io in Pago io.',
         },
         {
           id: 'u4-l4-e19', type: 'transform', reg: 'tu', rung: 3, ruleId: 'u4-r4',
@@ -1824,25 +1821,23 @@ const unit = {
         },
         {
           id: 'u4-l4-e20', type: 'transform', reg: 'neutral', rung: 3, ruleId: 'u4-r4',
-          prompt: 'Io cerco la stazione.', base: 'Say it the way Italians usually would: no contrast here, so drop io.', en: "I'm looking for the station.",
-          answers: ['Cerco la stazione.'],
+          prompt: 'Pago con la carta.', base: 'Now say "we" (noi).', en: "We're paying by card.",
+          answers: ['Paghiamo con la carta.', 'Noi paghiamo con la carta.'],
           mistakes: {
-            'Io cerco la stazione.': 'Not wrong, but io adds stress ("I, not you"). For a plain statement: Cerco la stazione.',
-            'Cerca la stazione.': 'cerca is "he/she looks for". For yourself: cerco.',
-            'Cercho la stazione.': H_ONLY_I('cerco'),
+            'Pagate con la carta.': 'pagate is "you pay" (plural). "We pay" is paghiamo.',
+            'Pagano con la carta.': 'pagano is "they pay". "We pay" is paghiamo.',
           },
-          why: WHY_DROP,
+          why: WHY_GH + ' noi is optional: the -iamo ending already says "we", so Italians usually leave it out.',
         },
         {
           id: 'u4-l4-e21', type: 'transform', reg: 'tu', rung: 3, ruleId: 'u4-r4',
-          prompt: 'Lavoro. Dormi.', base: 'Giulia is still in bed. Join the two: "I\'M working and YOU\'RE sleeping!" (pronouns for contrast)', en: "I'm working and you're sleeping!",
-          answers: ['Io lavoro e tu dormi!', 'Io lavoro, tu dormi!'],
+          prompt: 'Lavoro. Dormi.', base: 'Giulia is still in bed. Join the two with e to complain: "I\'M working and YOU\'RE sleeping!"', en: "I'm working and you're sleeping!",
+          answers: ['Io lavoro e tu dormi!', 'Io lavoro, tu dormi!', 'Lavoro e tu dormi!', 'Io lavoro e dormi!', 'Lavoro e dormi!'],
           mistakes: {
-            'Lavoro e dormi!': 'For contrast, keep the pronouns: io lavoro e tu dormi.',
-            'Io lavoro e dormi!': 'Keep tu too, to contrast the two people: e tu dormi.',
             'Io lavoro e tu dorme!': 'dorme is "he/she sleeps". With tu: dormi.',
+            'Io lavoro e tu dormo!': 'dormo is "I sleep". With tu: dormi.',
           },
-          why: WHY_DROP + ' Here the contrast is the point, so both pronouns stay.',
+          why: WHY_DROP + ' Here the contrast is the point, so Italians would say both pronouns: Io lavoro e tu dormi! Without them the sentence is still correct, just flatter.',
         },
         {
           id: 'u4-l4-e22', type: 'transform', reg: 'tu', rung: 3, ruleId: 'u4-r4',
@@ -1898,7 +1893,7 @@ const unit = {
         {
           id: 'u4-l4-e26', type: 'register', reg: 'lei', rung: 3, ruleId: 'u4-r4',
           prompt: 'Studi o lavori?', base: 'You asked a guy at a party. Now ask a stranger on the train (formal).', en: 'Do you study or work?',
-          answers: ['Studia o lavora?', 'Lei studia o lavora?'],
+          answers: ['Studia o lavora?', 'Lei studia o lavora?', 'Scusi, studia o lavora?'],
           mistakes: {
             'Studi o lavori?': 'That is still the tu form. With Lei: studia o lavora?',
             'Studia o lavori?': 'Both verbs switch to Lei: studia o lavora?',
@@ -1912,13 +1907,11 @@ const unit = {
         {
           id: 'u4-l4-e27', type: 'build', reg: 'neutral', rung: 4, ruleId: 'u4-r4',
           prompt: 'Translate: "I\'ll pay!"', base: '(at the bar with Marco, reaching for your wallet)', en: "I'll pay!",
-          answers: ['Pago io!', 'Offro io!'],
+          answers: ['Pago io!', 'No, pago io!', 'Offro io!', 'Io pago!', 'Pago!'],
           mistakes: {
-            'Io pago!': 'Understandable, but Italians say Pago io!: io after the verb is what puts the stress on you.',
-            'Pago!': 'Without io this is just "I pay". To stress that it\'s you: Pago io!',
             'Paga io!': 'paga is "he/she pays". With io: pago.',
           },
-          why: WHY_STRESS,
+          why: WHY_STRESS + ' Io pago! and Pago! are correct too, but reaching for the bill, Italians say Pago io! (or No, pago io!).',
         },
         {
           id: 'u4-l4-e28', type: 'build', reg: 'lei', rung: 4, ruleId: 'u4-r4',
@@ -2033,7 +2026,7 @@ const unit = {
   ],
   scene: {
     title: 'A Sunday morning at home',
-    setting: "Sunday morning in Giulia's flat in Bologna. You and Giulia make breakfast and plan the day. Then her grandmother phones: Giulia's parents are on tu terms with you now, but with her grandmother you still use Lei.",
+    setting: "Sunday morning in Giulia's flat in Bologna. You and Giulia make breakfast and plan the day. Then her grandmother phones. Giulia's parents are on tu terms with you now. The grandmother uses tu with you, as older people often do with someone young, but you still use Lei with her until she invites you to switch.",
     lines: [
       { speaker: 'Giulia', it: 'Buongiorno! Dormi ancora?', en: 'Morning! Are you still asleep?', reg: 'tu' },
       { speaker: 'You', it: 'Sì! La domenica dormo fino a tardi.', en: 'Yes! On Sundays I sleep in.', reg: 'neutral' },
@@ -2043,7 +2036,7 @@ const unit = {
       { speaker: 'You', it: 'Va bene. Io lavo i piatti e tu pulisci il tavolo.', en: "OK. I'll wash the dishes and you clean the table.", reg: 'tu' },
       { speaker: 'Giulia', it: 'Oh, il telefono! È la nonna. Rispondi tu? Ho le mani bagnate.', en: "Oh, the phone! It's Grandma. Can you get it? My hands are wet.", reg: 'tu' },
       { speaker: 'You', it: 'Pronto? Buongiorno, signora! Come sta?', en: 'Hello? Good morning! How are you?', reg: 'lei' },
-      { speaker: 'Nonna', it: "Bene, grazie! Ma Lei parla già bene l'italiano!", en: 'Fine, thank you! But you already speak good Italian!', reg: 'lei' },
+      { speaker: 'Nonna', it: "Bene, grazie! Ma parli già bene l'italiano!", en: 'Fine, thank you! But you already speak good Italian!', reg: 'tu' },
       { speaker: 'You', it: 'Grazie! Ma quando parlate in dialetto, non capisco niente.', en: "Thank you! But when you all speak dialect, I don't understand a thing.", reg: 'neutral' },
       { speaker: 'Nonna', it: 'Piano piano! Allora, oggi pranzate da me? Preparo le tagliatelle.', en: "Little by little! So, are you two having lunch at mine today? I'm making tagliatelle.", reg: 'neutral' },
       { speaker: 'You', it: 'Volentieri, grazie! Portiamo noi il dolce.', en: "We'd love to, thank you! We'll bring dessert.", reg: 'neutral' },
@@ -2061,14 +2054,14 @@ const unit = {
         why: WHY_ISC,
       },
       {
-        id: 'u4-s-e02', type: 'recognise', reg: 'lei', rung: 1, ruleId: 'u4-r1',
-        prompt: "Ma Lei ___ già bene l'italiano!", base: '"But you already speak good Italian!" (the grandmother to you)', en: 'But you already speak good Italian!',
-        answers: ['parla'], options: ['parla', 'parli', 'parlo'],
+        id: 'u4-s-e02', type: 'recognise', reg: 'tu', rung: 1, ruleId: 'u4-r1',
+        prompt: "Ma ___ già bene l'italiano!", base: '"But you already speak good Italian!" (the grandmother to you)', en: 'But you already speak good Italian!',
+        answers: ['parli'], options: ['parli', 'parla', 'parlo'],
         mistakes: {
-          parli: 'parli is tu. The grandmother uses Lei with you, and Lei takes parla.',
-          parlo: 'parlo is "I speak". She is talking to you: Lei parla.',
+          parla: 'parla is the Lei form. The grandmother uses tu with you: parli.',
+          parlo: 'parlo is "I speak". She is talking to you: parli.',
         },
-        why: WHY_ARE_LEI,
+        why: WHY_ARE_TU + ' Older people often use tu with someone young, who still answers with Lei (Come sta?) until invited to switch.',
       },
       {
         id: 'u4-s-e03', type: 'type', reg: 'neutral', rung: 2, ruleId: 'u4-r2',
@@ -2146,13 +2139,13 @@ const unit = {
         why: WHY_ISC + ' "Not" is non, right before the verb.',
       },
       {
-        id: 'u4-s-e09', type: 'listen', reg: 'lei', rung: 5, ruleId: 'u4-r1',
-        prompt: "Ma Lei parla già bene l'italiano!", base: '', en: 'But you already speak good Italian!',
-        answers: ["Ma Lei parla già bene l'italiano!"],
+        id: 'u4-s-e09', type: 'listen', reg: 'tu', rung: 5, ruleId: 'u4-r1',
+        prompt: "Ma parli già bene l'italiano!", base: '', en: 'But you already speak good Italian!',
+        answers: ["Ma parli già bene l'italiano!"],
         mistakes: {
-          "Ma Lei parli già bene l'italiano!": 'You heard parla: Lei takes the "she" form.',
+          "Ma parla già bene l'italiano!": 'You heard parli: the grandmother uses tu with you.',
         },
-        why: WHY_ARE_LEI,
+        why: WHY_ARE_TU + ' Older people often use tu with someone young, who still answers with Lei (Come sta?) until invited to switch.',
       },
       {
         id: 'u4-s-e10', type: 'listen', reg: 'tu', rung: 5, ruleId: 'u4-r2',
