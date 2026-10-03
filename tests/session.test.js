@@ -207,6 +207,18 @@ test('checkpoint: lessons with unequal eligible counts still fill to 15', () => 
   assert.ok(ids(s).includes('a1'));
 });
 
+test('checkpoint order is shuffled, not lesson by lesson in turn', () => {
+  const u = { id: 4, lessons: [lesson('a', 10), lesson('b', 10), lesson('c', 10)] };
+  const lessonOf = (id) => u.lessons.find((l) => l.exercises.some((e) => e.id === id)).id;
+  const cyclic = (seq) => seq.every((l, i) => i < 3 || l === seq[i - 3]);
+  const seqs = [1, 2, 3, 4, 5].map((seed) => ids(buildCheckpoint(u, { rng: seeded(seed) })).map(lessonOf));
+  assert.ok(seqs.some((seq) => !cyclic(seq)), 'lessons still come round in a fixed rotation');
+  for (const seq of seqs) {
+    // still balanced across lessons: 5 cards each
+    for (const l of ['a', 'b', 'c']) assert.equal(seq.filter((x) => x === l).length, 5);
+  }
+});
+
 test('small pools: review with no due cards -> []', () => {
   assert.deepEqual(buildReviewSession([]), []);
 });

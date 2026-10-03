@@ -113,7 +113,8 @@ export function buildMixedSession(unit, priorPool, { rng = Math.random, size = M
 
 export function buildCheckpoint(unit, { rng = Math.random } = {}) {
   const lists = lessonExercises(unit).map((ex) => shuffle(ex.filter((e) => e.rung >= 2), rng));
-  return roundRobin(lists, CHECKPOINT_SIZE).map((e) => card(e.id, false));
+  // round-robin keeps every lesson represented; the shuffle hides which lesson is next
+  return shuffle(roundRobin(lists, CHECKPOINT_SIZE), rng).map((e) => card(e.id, false));
 }
 
 export function buildReviewSession(dueIds, { limit = REVIEW_LIMIT } = {}) {

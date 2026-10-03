@@ -80,6 +80,8 @@
 
 @media (prefers-reduced-motion: no-preference) {
   .cover__blob { animation: drift var(--dur) ease-in-out infinite alternate; }
+  /* only the one full-size cover drifts; mini tile covers stay still */
+  .tile .cover__blob { animation: none; }
 }
 @keyframes drift { to { transform: translate(var(--dx), var(--dy)) scale(var(--ds)); } }
 
