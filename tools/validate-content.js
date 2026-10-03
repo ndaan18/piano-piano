@@ -18,7 +18,9 @@ const PATTERN_CHARS = /[[\]{}|]/;
 const nonEmpty = (s) => typeof s === 'string' && s.trim() !== '';
 const answerText = (a) => (typeof a === 'string' ? a : a?.text);
 // Whole word or phrase, after normalisation (so punctuation and case do not matter).
-const containsPhrase = (say, target) => ` ${normalize(say)} `.includes(` ${normalize(target)} `);
+// An apostrophe is a word boundary on both sides: "Dov'è l'uscita?" contains è and uscita.
+const phraseWords = (s) => ` ${normalize(s).replace(/'/g, ' ')} `;
+const containsPhrase = (say, target) => phraseWords(say).includes(phraseWords(target));
 
 /** Checks the answers list; returns the plain texts of every expanded answer. */
 function checkAnswers(ex, id, errors) {

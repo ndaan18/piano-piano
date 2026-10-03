@@ -330,6 +330,26 @@ test('audioFirst recognise: a multi-word answer matches as a phrase, ignoring pu
   assert.deepEqual(validateUnit(u), []);
 });
 
+test("audioFirst recognise: an apostrophe is a word boundary in say (l'amico, dov'è)", () => {
+  for (const [answer, other, say] of [['amico', 'amica', "Ecco l'amico."], ['è', 'e', "Dov'è la chiave?"], ["l'uscita", 'uscita', "Dov'è l'uscita?"]]) {
+    const u = audioFirstUnit();
+    const ex = u.lessons[0].exercises[0];
+    ex.answers = [answer];
+    ex.options = [answer, other];
+    ex.say = say;
+    assert.deepEqual(validateUnit(u), [], `${answer} in ${say}`);
+  }
+});
+
+test("audioFirst recognise: after an apostrophe, a longer word still does not contain the answer", () => {
+  const u = audioFirstUnit();
+  const ex = u.lessons[0].exercises[0];
+  ex.answers = ['amico'];
+  ex.options = ['amico', 'amica'];
+  ex.say = "Ecco l'amicone.";
+  assert.ok(hasMessageWith(validateUnit(u), 'say must contain'));
+});
+
 test('Unit 0: a type answer that is just c fails the gap shape', () => {
   const u = unit0();
   u.lessons[0].exercises[0].answers = ['c'];
