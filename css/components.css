@@ -257,7 +257,8 @@
 }
 .stats__of { color: var(--muted); }
 
-.bento { display: grid; grid-template-columns: 1.5fr 1fr 0.8fr; gap: 12px; }
+.bento { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr) minmax(0, 0.8fr); gap: 12px; }
+.bento > * { min-width: 0; }
 .bento > .card {
   min-height: 290px;
   display: flex;
@@ -305,7 +306,8 @@
 .tile:hover { border-color: var(--ink); }
 
 /* ---------- unit intro ---------- */
-.unit { display: grid; grid-template-columns: 1.15fr 1fr; gap: 14px; align-items: start; }
+.unit { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: 14px; align-items: start; }
+.unit > * { min-width: 0; }
 .unit__hero {
   position: relative;
   overflow: hidden;
@@ -371,13 +373,13 @@ a.step:hover { border-color: var(--ink); }
 .unit__meta { color: var(--muted); }
 
 @media (max-width: 980px) {
-  .bento { grid-template-columns: 1fr 1fr; }
+  .bento { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .bento__hero { grid-column: 1 / -1; }
   .path { grid-template-columns: repeat(3, 1fr); }
 }
 
 @media (max-width: 760px) {
-  .unit { grid-template-columns: 1fr; }
+  .unit { grid-template-columns: minmax(0, 1fr); }
   .unit__hero { min-height: 320px; }
 }
 
@@ -385,7 +387,7 @@ a.step:hover { border-color: var(--ink); }
   .hello { margin-top: 10px; }
   .stats { gap: 18px; }
   .stats dd { font-size: 28px; }
-  .bento { grid-template-columns: 1fr; }
+  .bento { grid-template-columns: minmax(0, 1fr); }
   .bento > .card { min-height: 0; }
   .bento > .bento__hero { min-height: 250px; }
   .bento__title { font-size: 44px; }
@@ -425,7 +427,8 @@ a.step:hover { border-color: var(--ink); }
 .lesson__go { display: flex; justify-content: flex-end; }
 
 /* ---------- rule screen (lesson-v4, marks style B) ---------- */
-.rule { display: grid; grid-template-columns: 1.35fr 1fr; gap: 14px; align-items: start; }
+.rule { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr); gap: 14px; align-items: start; }
+.rule > * { min-width: 0; }
 .rule__sheet { padding: 22px 24px; display: flex; flex-direction: column; gap: 18px; }
 .rule__label { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; }
 .rule__title { color: var(--muted); font-weight: 400; }
@@ -455,7 +458,8 @@ a.step:hover { border-color: var(--ink); }
 .mk--pink svg { color: var(--pink); }
 .mk--ultra svg { color: var(--ultra); }
 
-.rtable-wrap { overflow-x: auto; }
+/* a wide table scrolls inside its own wrapper, never the page */
+.rtable-wrap { max-width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
 .rtable { width: 100%; border-collapse: collapse; border-top: 1.5px solid var(--ink); font-size: 15px; }
 .rtable th, .rtable td { text-align: left; vertical-align: top; padding: 8px 12px 8px 0; border-bottom: 1px solid var(--line); }
 .rtable thead th { font-family: var(--font-mono); font-size: var(--fs-mono); font-weight: 400; text-transform: uppercase; color: var(--muted); }
@@ -597,7 +601,7 @@ a.step:hover { border-color: var(--ink); }
 .ldone__go { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
 
 @media (max-width: 860px) {
-  .rule { grid-template-columns: 1fr; }
+  .rule { grid-template-columns: minmax(0, 1fr); }
 }
 
 @media (max-width: 599px) {
@@ -698,7 +702,8 @@ body.page--ink { background: var(--ink); color: var(--base); }
 }
 
 /* ---------- reference + settings ---------- */
-.ref { display: grid; grid-template-columns: 260px 1fr; gap: var(--sp-5); align-items: start; margin-top: 10px; }
+.ref { display: grid; grid-template-columns: 260px minmax(0, 1fr); gap: var(--sp-5); align-items: start; margin-top: 10px; }
+.ref__main, .ref__side { min-width: 0; }
 .ref__side { position: sticky; top: var(--sp-3); display: flex; flex-direction: column; gap: var(--sp-4); }
 .ref__title { font-weight: 900; font-size: clamp(32px, 4vw, 44px); letter-spacing: -0.05em; line-height: 0.95; }
 .ref__search { display: flex; flex-direction: column; gap: 6px; }
@@ -762,7 +767,7 @@ body.page--ink { background: var(--ink); color: var(--base); }
 .btn--danger { background: var(--card); color: var(--orange-ink); border: 1.5px solid var(--orange-ink); }
 
 @media (max-width: 860px) {
-  .ref { grid-template-columns: 1fr; gap: var(--sp-4); }
+  .ref { grid-template-columns: minmax(0, 1fr); gap: var(--sp-4); }
   .ref__side { position: static; }
   .ref__units { flex-direction: row; flex-wrap: wrap; }
   .ref__unit { width: auto; }
