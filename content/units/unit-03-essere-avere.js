@@ -329,7 +329,7 @@ export default {
         // Rung 3: switch register
         {
           id: 'u3-l1-e22', type: 'register', reg: 'lei', rung: 3, ruleId: 'u3-r1',
-          prompt: 'Sei a casa?', base: 'You asked Giulia on the phone. Now ask her mother.', en: 'Are you at home?',
+          prompt: 'Sei a casa?', base: "You asked Giulia on the phone. Now ask her mother, whom you haven't met yet.", en: 'Are you at home?',
           answers: ['È a casa?', 'Lei è a casa?', 'Signora, è a casa?'],
           mistakes: {
             'Sei a casa?': 'That is still the tu form. With Lei, essere is è.',
@@ -771,7 +771,7 @@ export default {
         // Rung 3: switch register
         {
           id: 'u3-l2-e22', type: 'register', reg: 'lei', rung: 3, ruleId: 'u3-r2',
-          prompt: 'Hai un momento?', base: 'You asked Giulia. Now ask her father.', en: 'Do you have a moment?',
+          prompt: 'Hai un momento?', base: 'You asked Giulia. Now ask her father, whom you are meeting for the first time.', en: 'Do you have a moment?',
           answers: ['Ha un momento?', 'Lei ha un momento?', 'Signor Conti, ha un momento?'],
           mistakes: {
             'Hai un momento?': 'That is still the tu form. For Lei, avere is ha.',
@@ -1177,7 +1177,7 @@ export default {
         },
         {
           id: 'u3-l3-e21', type: 'register', reg: 'lei', rung: 3, ruleId: 'u3-r3',
-          prompt: 'Sei pronto, Marco?', base: "You asked Giulia's brother. Now ask her father, signor Conti.", en: 'Are you ready, Mr Conti?',
+          prompt: 'Sei pronto, Marco?', base: "You asked Giulia's brother. Now ask her father, signor Conti, on your first visit.", en: 'Are you ready, Mr Conti?',
           answers: ['È pronto, signor Conti?', 'Signor Conti, è pronto?', 'È pronto?', 'Lei è pronto?'],
           mistakes: {
             'Sei pronto, signor Conti?': 'With Lei, essere is è: È pronto, signor Conti?',
@@ -1188,7 +1188,7 @@ export default {
         },
         {
           id: 'u3-l3-e22', type: 'register', reg: 'lei', rung: 3, ruleId: 'u3-r3',
-          prompt: 'Scusa, hai un minuto?', base: 'You asked Giulia. Now ask her father.', en: 'Excuse me, have you got a minute?',
+          prompt: 'Scusa, hai un minuto?', base: 'You asked Giulia. Now ask her father, on your first visit.', en: 'Excuse me, have you got a minute?',
           answers: ['Scusi, ha un minuto?', 'Mi scusi, ha un minuto?'],
           mistakes: {
             'Scusa, ha un minuto?': 'ha is right, but scusa is tu. With Lei: scusi.',
@@ -1290,7 +1290,7 @@ export default {
         },
         {
           id: 'u3-l3-e31', type: 'register', reg: 'lei', rung: 3, ruleId: 'u3-r3',
-          prompt: 'Mamma, sei stanca?', base: "Giulia asked her mother. Now you ask Giulia's mother.", en: 'Are you tired, madam?',
+          prompt: 'Mamma, sei stanca?', base: "Giulia asked her mother. Now you ask Giulia's mother, whom you were only introduced to a minute ago.", en: 'Are you tired, madam?',
           answers: ['Signora, è stanca?', 'È stanca, signora?', 'È stanca?', 'Lei è stanca?'],
           mistakes: {
             'Signora, sei stanca?': 'You give her Lei until she offers tu: è stanca?',
@@ -1676,7 +1676,7 @@ export default {
         // Rung 3: switch register
         {
           id: 'u3-l4-e22', type: 'register', reg: 'lei', rung: 3, ruleId: 'u3-r4',
-          prompt: 'Hai fame?', base: 'You asked Giulia. Now ask her mother.', en: 'Are you hungry?',
+          prompt: 'Hai fame?', base: 'You asked Giulia. Now ask her mother, whom you are meeting for the first time.', en: 'Are you hungry?',
           answers: ['Ha fame?', 'Lei ha fame?', 'Signora, ha fame?'],
           mistakes: {
             'Hai fame?': 'That is still the tu form. With Lei: ha fame?',

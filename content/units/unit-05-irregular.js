@@ -465,7 +465,7 @@ const unit = {
         },
         {
           id: 'u5-l1-e25', type: 'register', reg: 'tu', rung: 3, ruleId: 'u5-r1',
-          prompt: 'Da dove viene?', base: 'You asked an older lady on the train. Now ask a student at a party.', en: 'Where are you from?',
+          prompt: 'Da dove viene?', base: 'You asked an older lady on the train. Now ask a student your age at a party.', en: 'Where are you from?',
           answers: ['Da dove vieni?', 'Tu da dove vieni?', 'Da dove vieni tu?', 'E tu, da dove vieni?'],
           mistakes: {
             'Da dove viene?': 'That is still the Lei form. With tu: vieni.',

@@ -380,7 +380,7 @@ test('gap rules do not apply to other unit ids', () => {
 });
 
 test('a register card whose base names the register is rejected', () => {
-  for (const base of ['(formal)', 'Now say it to the waiter (Lei).', '(tu)']) {
+  for (const base of ['(formal)', 'Now say it to the waiter (Lei).', 'Say it formally.', 'Now say it with tu.', '(tu)']) {
     const u = fixture();
     u.lessons[0].exercises[5].base = base;
     const errors = validateUnit(u);

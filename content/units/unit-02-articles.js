@@ -329,7 +329,7 @@ export default {
         // Rung 3: switch register
         {
           id: 'u2-l1-e19', type: 'register', reg: 'lei', rung: 3, ruleId: 'u2-r1',
-          prompt: 'Hai lo zaino?', base: 'You asked your partner. Now ask their father.', en: 'Do you have the backpack?',
+          prompt: 'Hai lo zaino?', base: "You asked your partner. Now ask their father, whom you've just met.", en: 'Do you have the backpack?',
           answers: ['Ha lo zaino?', 'Lei ha lo zaino?'],
           mistakes: {
             'Hai lo zaino?': 'That is still the tu form. For Lei, avere becomes ha.',
@@ -340,7 +340,7 @@ export default {
         },
         {
           id: 'u2-l1-e20', type: 'register', reg: 'lei', rung: 3, ruleId: 'u2-r1',
-          prompt: "Prendi l'aperitivo con noi?", base: 'You asked your partner. Now ask their mother.', en: 'Are you having the aperitivo with us?',
+          prompt: "Prendi l'aperitivo con noi?", base: "You asked your partner. Now ask their mother, whom you've just met.", en: 'Are you having the aperitivo with us?',
           answers: ["Prende l'aperitivo con noi?", "Lei prende l'aperitivo con noi?"],
           mistakes: {
             "Prendi l'aperitivo con noi?": 'That is still the tu form. For Lei, prendi becomes prende.',
@@ -754,7 +754,7 @@ export default {
         // Rung 3: switch register
         {
           id: 'u2-l2-e23', type: 'register', reg: 'lei', rung: 3, ruleId: 'u2-r2',
-          prompt: 'Hai i biglietti?', base: 'You asked your partner about the concert tickets. Now ask their father.', en: 'Do you have the tickets?',
+          prompt: 'Hai i biglietti?', base: "You asked your partner about the concert tickets. Now ask their father, whom you've just met.", en: 'Do you have the tickets?',
           answers: ['Ha i biglietti?', 'Lei ha i biglietti?'],
           mistakes: {
             'Hai i biglietti?': 'That is still the tu form. For Lei, avere becomes ha.',

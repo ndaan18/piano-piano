@@ -12,7 +12,7 @@ const MIN_PER_RULE = 30;
 const MAX_EXPANSIONS = 64;
 const UNIT0_GAP_LESSONS = new Set(['u0-l1', 'u0-l2', 'u0-l3']);
 const GAP_SHAPE = /^[bcdfghlmnpqrstvz]+i?[aeiouàèéìòù]$/;
-const REGISTER_NAMED = /\b(in)?formal\b|\(tu\)|\(Lei\)/i; // a register card's base names who you talk to, never the register
+const REGISTER_NAMED = /\b(in)?formal(ly)?\b|\(tu\)|\(Lei\)|\bwith (tu|Lei)\b/i; // a register card's base names who you talk to, never the register
 const PATTERN_CHARS = /[[\]{}|]/;
 
 const nonEmpty = (s) => typeof s === 'string' && s.trim() !== '';
