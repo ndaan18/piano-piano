@@ -51,7 +51,7 @@ const H_HO = 'o without the h means "or". ho, from avere, always keeps its silen
 const SAI = 'sai means "you know". "You are" is sei.';
 const SETE = 'sete means "thirst". "You are" (plural) is siete, with an i.';
 const SETTE = 'sette is "seven". Thirst has one t: sete.';
-const ANI = 'Years has a double n: anni.';
+const ANI = 'The word for years, anni, has a double n.';
 
 export default {
   id: 3,
@@ -74,7 +74,7 @@ export default {
             { word: 'è', kind: 'circle', color: 'pink' },
             { word: 'sono', kind: 'circle', color: 'ultra' },
           ],
-          why: 'essere means "to be". Like "to be" in English it is irregular, so learn the six forms by heart. The verb already says who it is, so Italians usually drop io, tu and noi: Sono a casa = I\'m at home. Add the pronoun only for contrast: Io sono di Utrecht, lui è di Bologna.',
+          why: 'essere means "to be". Like "to be" in English it is irregular, so learn the six forms by heart. The verb already says who it is, so Italians usually drop io, tu and noi: Sono a casa = I\'m at home. Add the pronoun for contrast or emphasis: Io sono di Utrecht, lui è di Bologna.',
           table: {
             head: ['verb', 'essere', 'English'],
             rows: [
@@ -176,7 +176,7 @@ export default {
           why: WHY_E3,
         },
         {
-          id: 'u3-l1-e08', type: 'recognise', reg: 'tu', rung: 1, ruleId: 'u3-r1',
+          id: 'u3-l1-e08', type: 'recognise', reg: 'neutral', rung: 1, ruleId: 'u3-r1',
           prompt: 'Tu e Marco ___ di Bologna, vero?', base: '"You and Marco are from Bologna, right?"', en: 'You and Marco are from Bologna, right?',
           answers: ['siete'], options: ['siete', 'siamo', 'sono'],
           mistakes: {
@@ -605,7 +605,7 @@ export default {
             abbiamo: 'abbiamo is "we have". You are asking the hotel: avete.',
             hanno: 'hanno is "they have". Speaking to the hotel: avete.',
           },
-          why: 'Asking a hotel, shop or restaurant what it has, Italians use voi (you, the business): avete? scusi is for the one person you are talking to.',
+          why: 'Asking a hotel, shop or restaurant what it has, Italians usually use voi (you, the business): avete? scusi is for the one person you are talking to.',
         },
         {
           id: 'u3-l2-e07', type: 'recognise', reg: 'lei', rung: 1, ruleId: 'u3-r2',
@@ -806,12 +806,12 @@ export default {
         },
         {
           id: 'u3-l2-e25', type: 'register', reg: 'tu', rung: 3, ruleId: 'u3-r2',
-          prompt: 'Ha il numero di Giulia?', base: "You asked Giulia's mother. Now ask Marco (informal).", en: "Have you got Giulia's number?",
-          answers: ['Hai il numero di Giulia?', 'Tu hai il numero di Giulia?'],
+          prompt: 'Ha il numero di Luca?', base: "You asked Giulia's mother. Now ask Marco (informal).", en: "Have you got Luca's number?",
+          answers: ['Hai il numero di Luca?', 'Tu hai il numero di Luca?'],
           mistakes: {
-            'Ha il numero di Giulia?': 'That is the Lei form. With tu: hai.',
-            'Ai il numero di Giulia?': 'ai means "to the". "You have" is hai.',
-            'Tu ai il numero di Giulia?': H_HAI,
+            'Ha il numero di Luca?': 'That is the Lei form. With tu: hai.',
+            'Ai il numero di Luca?': 'ai means "to the". "You have" is hai.',
+            'Tu ai il numero di Luca?': H_HAI,
           },
           why: 'Lei ha → tu hai.',
         },
@@ -1106,7 +1106,7 @@ export default {
         },
         {
           id: 'u3-l3-e15', type: 'type', reg: 'tu', rung: 2, ruleId: 'u3-r3',
-          prompt: 'Marco, ___ il numero di Giulia?', base: '(avere)', en: "Marco, have you got Giulia's number?",
+          prompt: 'Marco, ___ il numero di Sara?', base: '(avere)', en: "Marco, have you got Sara's number?",
           answers: ['hai'],
           mistakes: {
             ha: 'ha is the Lei form. Giulia\'s brother gets tu: hai.',
@@ -1153,12 +1153,13 @@ export default {
         {
           id: 'u3-l3-e19', type: 'transform', reg: 'neutral', rung: 3, ruleId: 'u3-r3',
           prompt: 'Scusa, sei di qui?', base: 'You asked a woman your age. Now ask two people at the bus stop.', en: 'Excuse me, are you from around here?',
-          answers: ['Scusate, siete di qui?', 'Scusi, siete di qui?'],
+          answers: ['Scusate, siete di qui?', 'Scusate, voi siete di qui?', 'Scusi, siete di qui?'],
           mistakes: {
             'Scusa, siete di qui?': 'scusa is for one person you call tu. To two people: scusate.',
             'Scusate, sei di qui?': 'sei is for one person. Two people: siete.',
             'Scusate, sete di qui?': 'sete means "thirst". "You are" (plural) is siete, with an i.',
             'Scusi, sete di qui?': SETE,
+            'Scusate, voi sete di qui?': SETE,
           },
           why: WHY_VOI_ALL,
         },
@@ -1568,11 +1569,11 @@ export default {
         },
         {
           id: 'u3-l4-e12', type: 'type', reg: 'tu', rung: 2, ruleId: 'u3-r4',
-          prompt: 'Quanti anni ___, Giulia?', base: '(avere)', en: 'How old are you, Giulia?',
+          prompt: 'Quanti anni ___, Sara?', base: '(avere)', en: 'How old are you, Sara?',
           answers: ['hai'],
           mistakes: {
             sei: 'Age uses avere: quanti anni hai?',
-            ha: 'ha is the Lei form. Giulia gets tu: hai.',
+            ha: 'ha is the Lei form. Sara is a friend: hai.',
           },
           why: WHY_AGE,
         },
@@ -1757,7 +1758,7 @@ export default {
         // Rung 4: build from English
         {
           id: 'u3-l4-e28', type: 'build', reg: 'neutral', rung: 4, ruleId: 'u3-r4',
-          prompt: 'Translate: "I\'m thirty."', base: "(Giulia's mother asks how old you are)", en: "I'm thirty.",
+          prompt: 'Translate: "I\'m thirty."', base: '(someone at a party asks your age: say thirty)', en: "I'm thirty.",
           answers: ["Ho trent'anni.", 'Ho trenta anni.', 'Ho 30 anni.', "Io ho trent'anni.", 'Ne ho trenta.'],
           mistakes: {
             "Sono trent'anni.": "Age uses avere: ho trent'anni.",
@@ -1768,7 +1769,7 @@ export default {
             'Ho trenta.': "Keep the word anni: ho trent'anni.",
             'Ho 30.': 'Keep the word anni: ho 30 anni.',
             'Ho trentanni.': "trenta + anni shortens with an apostrophe: trent'anni.",
-            "Ho trent'ani.": 'Years has a double n: anni. (ani means something quite different!)',
+            "Ho trent'ani.": 'The word for years, anni, has a double n. (ani means something quite different!)',
             "O trent'anni.": H_HO,
             'O trenta anni.': H_HO,
             'O 30 anni.': H_HO,
@@ -1795,13 +1796,16 @@ export default {
         },
         {
           id: 'u3-l4-e30', type: 'build', reg: 'lei', rung: 4, ruleId: 'u3-r4',
-          prompt: 'Translate: "We\'re in a hurry."', base: '(to the waiter, asking for the bill)', en: "We're in a hurry.",
-          answers: ['Abbiamo fretta.', 'Noi abbiamo fretta.', 'Scusi, abbiamo fretta.', 'Siamo di fretta.', 'Scusi, siamo di fretta.'],
+          prompt: 'Translate: "Excuse me, we\'re in a hurry."', base: '(to the waiter, asking for the bill)', en: "Excuse me, we're in a hurry.",
+          answers: ['Scusi, abbiamo fretta.', 'Mi scusi, abbiamo fretta.', 'Scusi, siamo di fretta.', 'Mi scusi, siamo di fretta.'],
           mistakes: {
-            'Siamo fretta.': 'fretta is a noun: abbiamo fretta (or siamo di fretta).',
-            'Avete fretta.': 'avete is "you have" (plural). "We" is abbiamo.',
+            'Scusa, abbiamo fretta.': 'scusa is for tu. To the waiter, say scusi.',
+            'Abbiamo fretta.': 'Right verb, but start with "Excuse me": to the waiter, Scusi, abbiamo fretta.',
+            'Scusa, siamo di fretta.': 'scusa is for tu. To the waiter, say scusi.',
+            'Scusi, siamo fretta.': 'fretta is a noun: abbiamo fretta (or siamo di fretta).',
+            'Scusi, avete fretta.': 'avete is "you have" (plural). "We" is abbiamo.',
           },
-          why: WHY_PAURA,
+          why: WHY_PAURA + ' scusi is the Lei form, for the waiter. (To a group, as in Scusate, abbiamo fretta, it is scusate.)',
         },
         {
           id: 'u3-l4-e31', type: 'build', reg: 'tu', rung: 4, ruleId: 'u3-r4',
@@ -1994,7 +1998,7 @@ export default {
           'Giulia ha ventinove.': 'Keep the word anni: ha ventinove anni.',
           'Giulia ha 29.': 'Keep the word anni: ha 29 anni.',
           'Giulia a ventinove anni.': 'a means "to" or "at". "Has" is ha.',
-          'Giulia ha ventinove ani.': 'Years has a double n: anni.',
+          'Giulia ha ventinove ani.': ANI,
           'Giulia a 29 anni.': H_HA,
           'Giulia ha 29 ani.': ANI,
         },
