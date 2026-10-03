@@ -4,7 +4,8 @@
 export const UNITS = [
   { id: 0, slug: 'sounds', title: 'Sounds', teaser: 'c, g, gli, gn, double letters',
     load: () => import('./units/unit-00-sounds.js').then((m) => m.default) },
-  { id: 1, slug: 'nouns', title: 'Nouns', teaser: 'gender & plurals', load: null },
+  { id: 1, slug: 'nouns', title: 'Nouns', teaser: 'gender & plurals',
+    load: () => import('./units/unit-01-nouns.js').then((m) => m.default) },
   { id: 2, slug: 'articles', title: 'Articles', teaser: "il · lo · la · l'",
     load: () => import('./units/unit-02-articles.js').then((m) => m.default) },
   { id: 3, slug: 'essere-avere', title: 'Essere & avere', teaser: 'to be, to have', load: null },
