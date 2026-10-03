@@ -30,6 +30,9 @@ export const SKIP_ALL_AFTER = 3; // consecutive "Can't listen now" before "Skip 
 /** An audio card plays a sentence before it is answered: every listen card, and any card with `say`. */
 export const isAudioCard = (ex) => ex?.type === 'listen' || !!ex?.say;
 
+/** A register card hides its chip until answered, unless it has hints; the feedback then shows it. */
+export const showRegChipBefore = (ex, hints) => ex.type !== 'register' || !!hints;
+
 /** What the card speaks: the listen prompt, else `say`, else the gap sentence filled in, else the first answer. */
 export function spokenText(ex) {
   if (ex.type === 'listen') return ex.prompt;
@@ -254,7 +257,7 @@ function cardHTML(ex, card, { hints, mode, skips }) {
   const audio = isAudioCard(ex);
   const kind = `
     <div class="pc__kind">
-      <span class="chip">${TYPE_LABELS[ex.type] || esc(ex.type)}</span>${regChip(ex.reg)}
+      <span class="chip">${TYPE_LABELS[ex.type] || esc(ex.type)}</span>${showRegChipBefore(ex, hints) ? regChip(ex.reg) : ''}
       ${card.retry ? '<span class="chip chip--retry">second try</span>' : ''}
     </div>`;
 
@@ -266,7 +269,7 @@ function cardHTML(ex, card, { hints, mode, skips }) {
       <div class="speed" role="group" aria-label="Speed">
         <button type="button" data-rate="1">Normal</button><button type="button" data-rate="${SLOW_RATE}">Slow</button>
       </div>
-      <span class="pc__hint">${ex.type === 'recognise' ? 'Pick' : 'Type'} what you hear<span class="pc__keys"> · <kbd class="kbd">Space</kbd> replays until you start typing</span></span>
+      <span class="pc__hint">${ex.type === 'recognise' ? 'Pick' : 'Type'} what you hear<span class="pc__keys"> · <kbd class="kbd">Space</kbd> ${ex.type === 'recognise' ? 'replays' : 'replays until you start typing'}</span></span>
     </div>`
     : '';
   const body = ex.type === 'listen'
@@ -339,6 +342,7 @@ export function runSession(root, cards, { mode = 'practice', lookup, store, audi
   let lastInput = '';
   let before; // the card's SRS state before this answer, for "I was right"
   let voice = false; // an Italian voice is installed; known before the first card
+  let hintsOn = false; // the current card shows its hint (guided practice)
   let skips = 0; // consecutive "Can't listen now"; reset by answering a card
 
   root.innerHTML = `
@@ -386,6 +390,7 @@ export function runSession(root, cards, { mode = 'practice', lookup, store, audi
     picked = null;
     before = undefined;
     const hints = !!card.hints && mode !== 'checkpoint';
+    hintsOn = hints;
     cardEl.className = 'pc';
     cardEl.style.animation = 'none'; // replay the entry animation for each card
     void cardEl.offsetWidth;
@@ -528,15 +533,21 @@ export function runSession(root, cards, { mode = 'practice', lookup, store, audi
   function setFeedback(tone, html) {
     const fb = $('[data-fb]');
     fb.className = `fb fb--${tone}`;
-    fb.innerHTML = html + (voice
+    fb.innerHTML = html + (voice && (mode !== 'checkpoint' || isAudioCard(ex))
       ? `<button class="btn btn--ghost fb__hear" type="button" data-hear>${PLAY_ICON}Hear it</button>`
       : '');
     fb.querySelector('[data-hear]')?.addEventListener('click', hear);
   }
 
+  // the verdict, with the register chip beside it when the card hid it before answering
+  function verdictHTML(title) {
+    const verdict = `<p class="fb__verdict">${esc(title)}</p>`;
+    return showRegChipBefore(ex, hintsOn) ? verdict : `<div class="fb__head">${verdict}${regChip(ex.reg)}</div>`;
+  }
+
   function showFeedback(res, answers) {
     const f = feedbackFor(res, ex, mode);
-    const parts = [`<span class="fb__bar"></span><p class="fb__verdict">${esc(f.title)}</p>`];
+    const parts = [`<span class="fb__bar"></span>${verdictHTML(f.title)}`];
     if (res.note) parts.push(`<p class="fb__body">${esc(res.note)}</p>`);
     if (f.showTarget) {
       const marks = f.marked ? answerMarks(res, answers) : answerMarks({ target: res.target }, []);
@@ -554,7 +565,7 @@ export function runSession(root, cards, { mode = 'practice', lookup, store, audi
     session = overruleAnswer(session);
     store.update((d) => applyOverrule(d, { card, input: lastInput, before, mode, now: new Date() }));
     onProgress?.(snapshot());
-    setFeedback('ok', `<span class="fb__bar"></span><p class="fb__verdict">Noted.</p>
+    setFeedback('ok', `<span class="fb__bar"></span>${verdictHTML('Noted.')}
       <p class="fb__body">“<span lang="it">${esc(lastInput)}</span>” now counts as correct for this card. It's saved to your reports so the content can be fixed.</p>`);
     $('[data-right]').hidden = true;
     $('[data-go]').focus({ preventScroll: true });

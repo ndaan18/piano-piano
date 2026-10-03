@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {
   startSession, recordAnswer, overruleAnswer, nextCard, isFinished, segmentStates, shouldGrade,
   feedbackFor, markTarget, answerMarks, applyAnswer, applyOverrule, accentBody, restoreSession,
-  isAudioCard, spokenText, skipCard, dropCards, practisedCount, SKIP_ALL_AFTER,
+  isAudioCard, spokenText, skipCard, dropCards, practisedCount, SKIP_ALL_AFTER, showRegChipBefore,
 } from '../js/ui/practice-card.js';
 import { judge, diffChars, ACCENT_MESSAGE } from '../js/engine/checker.js';
 import { defaultState } from '../js/store.js';
@@ -271,4 +271,10 @@ test('practisedCount counts first attempts only', () => {
   assert.equal(practisedCount([{ retry: true }]), 0);
   assert.equal(practisedCount([{ retry: false }, { retry: true }, { retry: false }]), 2);
   assert.equal(SKIP_ALL_AFTER, 3);
+});
+
+test('showRegChipBefore: a register card hides its chip until answered, unless it has hints', () => {
+  assert.equal(showRegChipBefore({ type: 'register' }, false), false);
+  assert.equal(showRegChipBefore({ type: 'register' }, true), true);
+  assert.equal(showRegChipBefore({ type: 'type' }, false), true);
 });

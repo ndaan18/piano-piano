@@ -153,6 +153,7 @@
 .fb--wrong .fb__bar { background: var(--orange); }
 .fb__verdict { font-weight: 900; font-size: 30px; letter-spacing: -0.045em; line-height: 1; }
 .fb--wrong .fb__verdict { color: var(--orange-ink); }
+.fb__head { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
 .fb__target { font-weight: 700; font-size: 18px; letter-spacing: -0.015em; }
 .fb__en { color: var(--muted); font-size: 14px; }
 .diff .bad { box-shadow: inset 0 -4px 0 var(--orange); }

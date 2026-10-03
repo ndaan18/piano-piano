@@ -434,7 +434,7 @@ const unit = {
         // Rung 3: switch register
         {
           id: 'u4-l1-e22', type: 'register', reg: 'lei', rung: 3, ruleId: 'u4-r1',
-          prompt: 'Parli inglese?', base: 'You asked Luca. Now ask a woman at the station (formal).', en: 'Do you speak English?',
+          prompt: 'Parli inglese?', base: 'You asked Luca. Now ask a woman at the station.', en: 'Do you speak English?',
           answers: ['Parla inglese?', 'Lei parla inglese?', 'Scusi, parla inglese?', 'Mi scusi, parla inglese?', 'Scusi, Lei parla inglese?', 'Signora, parla inglese?'],
           mistakes: {
             'Parli inglese?': 'That is still the tu form. With Lei: parla.',
@@ -447,7 +447,7 @@ const unit = {
         },
         {
           id: 'u4-l1-e23', type: 'register', reg: 'lei', rung: 3, ruleId: 'u4-r1',
-          prompt: 'Abiti qui vicino?', base: 'You asked Sara. Now ask an older neighbour on the stairs (formal).', en: 'Do you live near here?',
+          prompt: 'Abiti qui vicino?', base: 'You asked Sara. Now ask an older neighbour on the stairs.', en: 'Do you live near here?',
           answers: ['Abita qui vicino?', 'Lei abita qui vicino?', 'Scusi, abita qui vicino?', 'Signora, abita qui vicino?'],
           mistakes: {
             'Abiti qui vicino?': 'That is still the tu form. With Lei: abita.',
@@ -459,7 +459,7 @@ const unit = {
         },
         {
           id: 'u4-l1-e24', type: 'register', reg: 'tu', rung: 3, ruleId: 'u4-r1',
-          prompt: "Signora, aspetta l'autobus?", base: 'You asked an older lady at the bus stop. Now ask Giulia (informal).', en: 'Are you waiting for the bus?',
+          prompt: "Signora, aspetta l'autobus?", base: 'You asked an older lady at the bus stop. Now ask Giulia.', en: 'Are you waiting for the bus?',
           answers: ["Giulia, aspetti l'autobus?", "Aspetti l'autobus?", "Aspetti l'autobus, Giulia?", "Tu aspetti l'autobus?"],
           mistakes: {
             "Giulia, aspetta l'autobus?": 'aspetta is the Lei form. To Giulia: aspetti.',
@@ -471,7 +471,7 @@ const unit = {
         },
         {
           id: 'u4-l1-e25', type: 'register', reg: 'tu', rung: 3, ruleId: 'u4-r1',
-          prompt: 'Scusi, lavora qui?', base: 'You asked a man in a shop. Now ask a guy your age at a bar (informal).', en: 'Excuse me, do you work here?',
+          prompt: 'Scusi, lavora qui?', base: 'You asked a man in a shop. Now ask a guy your age at a bar.', en: 'Excuse me, do you work here?',
           answers: ['Scusa, lavori qui?', 'Lavori qui?', 'Tu lavori qui?', 'Scusa, tu lavori qui?'],
           mistakes: {
             'Scusa, lavora qui?': 'scusa is right, but lavora is Lei. With tu: lavori.',
@@ -482,7 +482,7 @@ const unit = {
         },
         {
           id: 'u4-l1-e26', type: 'register', reg: 'lei', rung: 3, ruleId: 'u4-r1',
-          prompt: 'Guardi la partita?', base: "You asked Marco. Now ask Giulia's grandfather (formal).", en: 'Are you watching the match?',
+          prompt: 'Guardi la partita?', base: "You asked Marco. Now ask Giulia's grandfather.", en: 'Are you watching the match?',
           answers: ['Guarda la partita?', 'Lei guarda la partita?'],
           mistakes: {
             'Guardi la partita?': 'That is still the tu form. With Lei: guarda.',
@@ -904,7 +904,7 @@ const unit = {
         // Rung 3: switch register
         {
           id: 'u4-l2-e22', type: 'register', reg: 'lei', rung: 3, ruleId: 'u4-r2',
-          prompt: 'Cosa prendi?', base: 'You asked Giulia at the bar. Now ask her grandmother (formal).', en: 'What will you have?',
+          prompt: 'Cosa prendi?', base: 'You asked Giulia at the bar. Now ask her grandmother.', en: 'What will you have?',
           answers: ['Cosa prende?', 'Che cosa prende?', 'Che prende?', 'Lei cosa prende?', 'Signora, cosa prende?', 'Signora, che cosa prende?', 'Cosa prende, signora?'],
           mistakes: {
             'Cosa prendi?': 'That is still the tu form. With Lei: prende.',
@@ -917,7 +917,7 @@ const unit = {
         },
         {
           id: 'u4-l2-e23', type: 'register', reg: 'tu', rung: 3, ruleId: 'u4-r2',
-          prompt: 'Legge il giornale, signor Bianchi?', base: 'You asked the neighbour. Now ask Marco (informal).', en: 'Are you reading the newspaper, Marco?',
+          prompt: 'Legge il giornale, signor Bianchi?', base: 'You asked the neighbour. Now ask Marco.', en: 'Are you reading the newspaper, Marco?',
           answers: ['Leggi il giornale, Marco?', 'Marco, leggi il giornale?', 'Leggi il giornale?', 'Tu leggi il giornale?'],
           mistakes: {
             'Legge il giornale, Marco?': 'That is the Lei form. To Marco: leggi.',
@@ -928,7 +928,7 @@ const unit = {
         },
         {
           id: 'u4-l2-e24', type: 'register', reg: 'lei', rung: 3, ruleId: 'u4-r2',
-          prompt: 'Vivi qui?', base: 'You asked a guy at a party. Now ask an older lady at the market (formal).', en: 'Do you live here?',
+          prompt: 'Vivi qui?', base: 'You asked a guy at a party. Now ask an older lady at the market.', en: 'Do you live here?',
           answers: ['Vive qui?', 'Lei vive qui?', 'Signora, vive qui?', 'Scusi, vive qui?', 'Abita qui?', 'Lei abita qui?', 'Signora, abita qui?'],
           mistakes: {
             'Vivi qui?': 'That is still the tu form. With Lei: vive.',
@@ -940,7 +940,7 @@ const unit = {
         },
         {
           id: 'u4-l2-e25', type: 'register', reg: 'lei', rung: 3, ruleId: 'u4-r2',
-          prompt: 'Prendi un caffè?', base: "You offered Luca a coffee. Now offer one to Giulia's grandfather (formal).", en: 'Will you have a coffee?',
+          prompt: 'Prendi un caffè?', base: "You offered Luca a coffee. Now offer one to Giulia's grandfather.", en: 'Will you have a coffee?',
           answers: ['Prende un caffè?', 'Lei prende un caffè?'],
           mistakes: {
             'Prendi un caffè?': 'That is still the tu form. With Lei: prende.',
@@ -951,7 +951,7 @@ const unit = {
         },
         {
           id: 'u4-l2-e26', type: 'register', reg: 'tu', rung: 3, ruleId: 'u4-r2',
-          prompt: "Prende l'autobus, signora?", base: 'You asked an older lady at the stop. Now ask Giulia (informal).', en: 'Are you taking the bus?',
+          prompt: "Prende l'autobus, signora?", base: 'You asked an older lady at the stop. Now ask Giulia.', en: 'Are you taking the bus?',
           answers: ["Prendi l'autobus, Giulia?", "Giulia, prendi l'autobus?", "Prendi l'autobus?", "Tu prendi l'autobus?"],
           mistakes: {
             "Prende l'autobus, Giulia?": 'That is the Lei form. To Giulia: prendi.',
@@ -1382,7 +1382,7 @@ const unit = {
         // Rung 3: switch register
         {
           id: 'u4-l3-e22', type: 'register', reg: 'lei', rung: 3, ruleId: 'u4-r3',
-          prompt: 'Preferisci il vino rosso o bianco?', base: "You asked Marco. Now ask Giulia's grandfather (formal).", en: 'Do you prefer red or white wine?',
+          prompt: 'Preferisci il vino rosso o bianco?', base: "You asked Marco. Now ask Giulia's grandfather.", en: 'Do you prefer red or white wine?',
           answers: ['Preferisce il vino rosso o bianco?', 'Lei preferisce il vino rosso o bianco?'],
           mistakes: {
             'Preferisci il vino rosso o bianco?': 'That is still the tu form. With Lei: preferisce.',
@@ -1394,7 +1394,7 @@ const unit = {
         },
         {
           id: 'u4-l3-e23', type: 'register', reg: 'tu', rung: 3, ruleId: 'u4-r3',
-          prompt: 'Dorme bene, signora?', base: "You asked Giulia's grandmother. Now ask Giulia (informal).", en: 'Do you sleep well?',
+          prompt: 'Dorme bene, signora?', base: "You asked Giulia's grandmother. Now ask Giulia.", en: 'Do you sleep well?',
           answers: ['Dormi bene, Giulia?', 'Giulia, dormi bene?', 'Dormi bene?', 'Tu dormi bene?'],
           mistakes: {
             'Dorme bene, Giulia?': 'That is the Lei form. To Giulia: dormi.',
@@ -1405,7 +1405,7 @@ const unit = {
         },
         {
           id: 'u4-l3-e24', type: 'register', reg: 'lei', rung: 3, ruleId: 'u4-r3',
-          prompt: 'Scusa, a che ora parti?', base: 'You asked a guy at the hostel. Now ask an older lady at the hotel breakfast (formal).', en: 'Excuse me, what time are you leaving?',
+          prompt: 'Scusa, a che ora parti?', base: 'You asked a guy at the hostel. Now ask an older lady at the hotel breakfast.', en: 'Excuse me, what time are you leaving?',
           answers: ['Scusi, a che ora parte?', 'Mi scusi, a che ora parte?', 'Scusi, Lei a che ora parte?', 'Scusi, signora, a che ora parte?'],
           mistakes: {
             'Scusi, a che ora parti?': 'scusi is right, but parti is tu. With Lei: parte.',
@@ -1416,7 +1416,7 @@ const unit = {
         },
         {
           id: 'u4-l3-e25', type: 'register', reg: 'tu', rung: 3, ruleId: 'u4-r3',
-          prompt: 'Sente freddo, signora?', base: "You asked Giulia's grandmother. Now ask Giulia (informal).", en: 'Are you cold?',
+          prompt: 'Sente freddo, signora?', base: "You asked Giulia's grandmother. Now ask Giulia.", en: 'Are you cold?',
           answers: [
             'Senti freddo, Giulia?', 'Giulia, senti freddo?', 'Senti freddo?', 'Tu senti freddo?',
             'Hai freddo, Giulia?', 'Giulia, hai freddo?', 'Hai freddo?',
@@ -1433,7 +1433,7 @@ const unit = {
         },
         {
           id: 'u4-l3-e26', type: 'register', reg: 'lei', rung: 3, ruleId: 'u4-r3',
-          prompt: "Capisci l'inglese?", base: "You asked Marco. Now ask Giulia's grandfather (formal).", en: 'Do you understand English?',
+          prompt: "Capisci l'inglese?", base: "You asked Marco. Now ask Giulia's grandfather.", en: 'Do you understand English?',
           answers: ["Capisce l'inglese?", "Lei capisce l'inglese?"],
           mistakes: {
             "Capisci l'inglese?": 'That is still the tu form. With Lei: capisce.',
@@ -1855,7 +1855,7 @@ const unit = {
         // Rung 3: switch register
         {
           id: 'u4-l4-e23', type: 'register', reg: 'lei', rung: 3, ruleId: 'u4-r4',
-          prompt: 'Cosa cerchi?', base: 'You asked Giulia. Now ask an older lady who looks lost (formal).', en: 'What are you looking for?',
+          prompt: 'Cosa cerchi?', base: 'You asked Giulia. Now ask an older lady who looks lost.', en: 'What are you looking for?',
           answers: ['Cosa cerca?', 'Che cosa cerca?', 'Lei cosa cerca?', 'Signora, cosa cerca?', 'Scusi, cosa cerca?', 'Cosa cerca, signora?'],
           mistakes: {
             'Cosa cerchi?': 'That is still the tu form. With Lei: cerca.',
@@ -1868,7 +1868,7 @@ const unit = {
         },
         {
           id: 'u4-l4-e24', type: 'register', reg: 'lei', rung: 3, ruleId: 'u4-r4',
-          prompt: 'Mangi con noi?', base: "You asked Luca. Now ask Giulia's grandmother (formal).", en: 'Will you eat with us?',
+          prompt: 'Mangi con noi?', base: "You asked Luca. Now ask Giulia's grandmother.", en: 'Will you eat with us?',
           answers: ['Mangia con noi?', 'Lei mangia con noi?', 'Signora, mangia con noi?', 'Mangia con noi, signora?'],
           mistakes: {
             'Mangi con noi?': 'That is still the tu form. With Lei: mangia.',
@@ -1879,7 +1879,7 @@ const unit = {
         },
         {
           id: 'u4-l4-e25', type: 'register', reg: 'tu', rung: 3, ruleId: 'u4-r4',
-          prompt: 'Paga con la carta?', base: 'The cashier asked a customer. Now ask Giulia (informal).', en: 'Are you paying by card?',
+          prompt: 'Paga con la carta?', base: 'The cashier asked a customer. Now ask Giulia.', en: 'Are you paying by card?',
           answers: ['Paghi con la carta?', 'Tu paghi con la carta?', 'Giulia, paghi con la carta?', 'Paghi con la carta, Giulia?'],
           mistakes: {
             'Pagi con la carta?': GH('paghi'),
@@ -1892,7 +1892,7 @@ const unit = {
         },
         {
           id: 'u4-l4-e26', type: 'register', reg: 'lei', rung: 3, ruleId: 'u4-r4',
-          prompt: 'Studi o lavori?', base: 'You asked a guy at a party. Now ask a stranger on the train (formal).', en: 'Do you study or work?',
+          prompt: 'Studi o lavori?', base: 'You asked a guy at a party. Now ask a stranger on the train.', en: 'Do you study or work?',
           answers: ['Studia o lavora?', 'Lei studia o lavora?', 'Scusi, studia o lavora?'],
           mistakes: {
             'Studi o lavori?': 'That is still the tu form. With Lei: studia o lavora?',
@@ -2088,7 +2088,7 @@ const unit = {
       },
       {
         id: 'u4-s-e05', type: 'register', reg: 'lei', rung: 3, ruleId: 'u4-r2',
-        prompt: 'Prendi un caffè o preferisci un tè?', base: 'Giulia asked you. Now ask her grandmother when she visits (formal).', en: 'Will you have a coffee, or would you rather have tea?',
+        prompt: 'Prendi un caffè o preferisci un tè?', base: 'Giulia asked you. Now ask her grandmother when she visits.', en: 'Will you have a coffee, or would you rather have tea?',
         answers: [
           'Prende un caffè o preferisce un tè?', 'Lei prende un caffè o preferisce un tè?',
           'Signora, prende un caffè o preferisce un tè?',

@@ -378,3 +378,24 @@ test('gap rules do not apply to other unit ids', () => {
   u.lessons[0].exercises[0].answers = ['c'];
   assert.ok(!hasMessageWith(validateUnit(u), 'gap shape'));
 });
+
+test('a register card whose base names the register is rejected', () => {
+  for (const base of ['(formal)', 'Now say it to the waiter (Lei).', '(tu)']) {
+    const u = fixture();
+    u.lessons[0].exercises[5].base = base;
+    const errors = validateUnit(u);
+    assert.ok(hasMessageWith(errors, 'register base names the register'), `${base}: ${errors.join('\n')}`);
+  }
+});
+
+test('a register card whose base names the person is accepted', () => {
+  const u = fixture();
+  u.lessons[0].exercises[5].base = "Now say it to your partner's grandmother.";
+  assert.deepEqual(validateUnit(u), []);
+});
+
+test('the register-base rule applies to register cards only', () => {
+  const u = fixture();
+  u.lessons[0].exercises[2].base = '(formal)'; // a transform card
+  assert.deepEqual(validateUnit(u), []);
+});

@@ -266,38 +266,6 @@ export default {
           why: WHY_PLURAL_HARD,
         },
 
-        // Rung 3: switch register
-        {
-          id: 'u0-l1-e23', type: 'register', reg: 'lei', rung: 3, ruleId: 'u0-r1',
-          prompt: 'Come ti chiami?', base: 'You asked a child. Now ask the receptionist (formal).', en: "What's your name?",
-          answers: ['Come si chiama?', 'Lei come si chiama?'],
-          mistakes: {
-            'Come ti chiami?': 'That is still the tu form. For Lei, ti chiami becomes si chiama.',
-            'Come si ciama?': 'cia would be soft, "CHAH-ma". chiama has a hard k: chi.',
-          },
-          why: 'tu ti chiami → Lei si chiama. The ch stays: chiama is "KYAH-ma".',
-        },
-        {
-          id: 'u0-l1-e24', type: 'register', reg: 'lei', rung: 3, ruleId: 'u0-r1',
-          prompt: 'Scusa, che ore sono?', base: 'You asked a friend. Now ask a stranger in the street (formal).', en: 'Excuse me, what time is it?',
-          answers: ['Scusi, che ore sono?', 'Mi scusi, che ore sono?'],
-          mistakes: {
-            'Scusa, che ore sono?': 'scusa is for tu. A stranger gets scusi.',
-            'Scusi, ce ore sono?': 'ce is soft, "cheh". "What" is che, with a hard k.',
-          },
-          why: 'scusa (tu) → scusi (Lei). che keeps its hard k: "keh".',
-        },
-        {
-          id: 'u0-l1-e25', type: 'register', reg: 'tu', rung: 3, ruleId: 'u0-r1',
-          prompt: 'Signora, Le piace il gelato?', base: 'You asked your partner\'s mother. Now ask your partner (informal), without "Signora".', en: 'Do you like ice cream?',
-          answers: ['Ti piace il gelato?'],
-          mistakes: {
-            'Le piace il gelato?': 'Le is for Lei. With tu, it is ti piace.',
-            'Ti piace il ghelato?': 'gh is hard. gelato has a soft g: ge.',
-          },
-          why: 'Le piace (Lei) → ti piace (tu). gelato keeps its soft g, and piace its soft c.',
-        },
-
         // Rung 4: build from English
         {
           id: 'u0-l1-e26', type: 'build', reg: 'neutral', rung: 4, ruleId: 'u0-r1',
@@ -649,38 +617,6 @@ export default {
           why: 'famiglia → famiglie: the a becomes e, and the i stays to keep the "lli" sound.',
         },
 
-        // Rung 3: switch register
-        {
-          id: 'u0-l2-e23', type: 'register', reg: 'lei', rung: 3, ruleId: 'u0-r2',
-          prompt: "Scusa, dov'è il bagno?", base: 'You asked a friend. Now ask a waiter (formal).', en: "Excuse me, where's the bathroom?",
-          answers: ["Scusi, dov'è il bagno?", "Mi scusi, dov'è il bagno?", "Scusi, dove è il bagno?"],
-          mistakes: {
-            "Scusa, dov'è il bagno?": 'scusa is for tu. A waiter gets scusi.',
-            "Sciusi, dov'è il bagno?": 'sci + u would be "shoo". scusi is "SKOO-zee": just sc before u.',
-          },
-          why: 'scusa (tu) → scusi (Lei). Both start with "sk": sc before u.',
-        },
-        {
-          id: 'u0-l2-e24', type: 'register', reg: 'lei', rung: 3, ruleId: 'u0-r2',
-          prompt: 'Conosci Firenze?', base: "You asked your partner's friend. Now ask your partner's father (formal).", en: 'Do you know Florence?',
-          answers: ['Conosce Firenze?', 'Lei conosce Firenze?'],
-          mistakes: {
-            'Conosci Firenze?': 'That is still the tu form. For Lei, conosci becomes conosce.',
-            'Conosche Firenze?': 'sch is "sk". conosce is "ko-NO-sheh": sc before e.',
-          },
-          why: 'tu conosci → Lei conosce. Both keep the "sh" sound: sc before i or e.',
-        },
-        {
-          id: 'u0-l2-e25', type: 'register', reg: 'tu', rung: 3, ruleId: 'u0-r2',
-          prompt: 'Le presento mia moglie.', base: 'You introduced your wife to an older neighbour. Now introduce her to a friend (informal).', en: 'Let me introduce my wife.',
-          answers: ['Ti presento mia moglie.'],
-          mistakes: {
-            'Le presento mia moglie.': 'Le is for Lei. With tu, it is ti presento.',
-            'Ti presento mia molie.': 'The "lly" sound is gli: moglie.',
-          },
-          why: 'Le presento (Lei) → ti presento (tu). moglie keeps gli, "MO-lyeh".',
-        },
-
         // Rung 4: build from English
         {
           id: 'u0-l2-e26', type: 'build', reg: 'lei', rung: 4, ruleId: 'u0-r2',
@@ -1012,38 +948,6 @@ export default {
           answers: ['Erre, o, doppia esse, i.', 'Erre, o, esse, esse, i.', 'Erre, o, due esse, i.'],
           mistakes: { 'Erre, o, esse, i.': 'Rossi has a double s: say doppia esse.' },
           why: 'For a double letter, Italians say doppia: doppia esse.',
-        },
-
-        // Rung 3: switch register
-        {
-          id: 'u0-l3-e25', type: 'register', reg: 'lei', rung: 3, ruleId: 'u0-r3',
-          prompt: 'Vuoi un cappuccino?', base: "You asked your partner. Now ask your partner's grandmother (formal).", en: 'Would you like a cappuccino?',
-          answers: ['Vuole un cappuccino?', 'Lei vuole un cappuccino?'],
-          mistakes: {
-            'Vuoi un cappuccino?': 'That is still the tu form. For Lei, vuoi becomes vuole.',
-            'Vuole un capuccino?': 'cappuccino has a long pp and a long cc: cap-puc-ci-no.',
-          },
-          why: 'tu vuoi → Lei vuole (Unit 5). cappuccino keeps both doubles.',
-        },
-        {
-          id: 'u0-l3-e26', type: 'register', reg: 'lei', rung: 3, ruleId: 'u0-r3',
-          prompt: 'Hai sete?', base: "You asked your partner. Now ask your partner's father (formal).", en: 'Are you thirsty?',
-          answers: ['Ha sete?', 'Lei ha sete?'],
-          mistakes: {
-            'Hai sete?': 'That is still the tu form. For Lei, hai becomes ha.',
-            'Ha sette?': 'sette is seven. Thirst is sete, one t.',
-          },
-          why: 'tu hai → Lei ha. Thirst stays sete, with one t.',
-        },
-        {
-          id: 'u0-l3-e27', type: 'register', reg: 'tu', rung: 3, ruleId: 'u0-r3',
-          prompt: 'Ha freddo?', base: "You asked your partner's grandmother. Now ask your partner (informal).", en: 'Are you cold?',
-          answers: ['Hai freddo?', 'Tu hai freddo?'],
-          mistakes: {
-            'Ha freddo?': 'That is the Lei form. With tu, it is hai.',
-            'Hai fredo?': 'freddo has a long dd: fred-do.',
-          },
-          why: 'Lei ha → tu hai. freddo keeps its long dd.',
         },
 
         // Rung 4: build from English
@@ -1388,41 +1292,6 @@ export default {
           answers: ['Ci vediamo venerdì.'],
           mistakes: { 'Ci vediamo venerdi.': 'venerdì is stressed on the last i: write ì.' },
           why: WHY_FINAL,
-        },
-
-        // Rung 3: switch register
-        {
-          id: 'u0-l4-e24', type: 'register', reg: 'lei', rung: 3, ruleId: 'u0-r4',
-          prompt: 'Sei di qui?', base: 'You asked a young person at a party. Now ask an older woman on the train (formal).', en: 'Are you from here?',
-          answers: ['È di qui?', 'Lei è di qui?'],
-          mistakes: {
-            'Sei di qui?': 'That is still the tu form. For Lei, sei becomes è.',
-            'E di qui?': 'Without the accent, e means "and". "Are you" (Lei) is È.',
-            "E' di qui?": "E' with an apostrophe is a typing shortcut, not Italian spelling: write È.",
-            'È di quì?': 'qui has one syllable, so it takes no accent: qui.',
-          },
-          why: 'tu sei → Lei è. A capital È keeps its accent too.',
-        },
-        {
-          id: 'u0-l4-e25', type: 'register', reg: 'lei', rung: 3, ruleId: 'u0-r4',
-          prompt: 'Perché non vieni?', base: "You asked your partner. Now ask your partner's mother (formal).", en: "Why aren't you coming?",
-          answers: ['Perché non viene?', 'Lei perché non viene?', 'Perché Lei non viene?'],
-          mistakes: {
-            'Perché non vieni?': 'That is still the tu form. For Lei, vieni becomes viene.',
-            'Perche non viene?': 'perché needs its accent: per-KEH.',
-          },
-          why: 'tu vieni → Lei viene. perché keeps its accent.',
-        },
-        {
-          id: 'u0-l4-e26', type: 'register', reg: 'tu', rung: 3, ruleId: 'u0-r4',
-          prompt: 'Signora, è già pronta?', base: 'You asked your partner\'s mother. Now ask your partner (informal), without "Signora".', en: 'Are you ready already?',
-          answers: ['Sei già pronta?', 'Sei già pronto?', 'Tu sei già pronta?', 'Tu sei già pronto?'],
-          mistakes: {
-            'È già pronta?': 'That is the Lei form. With tu, essere is sei.',
-            'Sei gia pronta?': 'già carries an accent on the a.',
-            'Sei gia pronto?': 'già carries an accent on the a.',
-          },
-          why: 'Lei è → tu sei. già (already) keeps its accent.',
         },
 
         // Rung 4: build from English

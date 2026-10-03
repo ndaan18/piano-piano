@@ -425,7 +425,7 @@ const unit = {
         // Rung 3: switch register
         {
           id: 'u5-l1-e22', type: 'register', reg: 'lei', rung: 3, ruleId: 'u5-r1',
-          prompt: 'Dove vai?', base: 'You asked Marco. Now ask an older man at the station (formal).', en: 'Where are you going?',
+          prompt: 'Dove vai?', base: 'You asked Marco. Now ask an older man at the station.', en: 'Where are you going?',
           answers: [
             'Dove va?', 'Lei dove va?', 'Dove va Lei?', 'Scusi, dove va?', 'Mi scusi, dove va?', 'Scusi, Lei dove va?',
             'Signore, dove va?', 'Dove sta andando?', 'Scusi, dove sta andando?',
@@ -440,7 +440,7 @@ const unit = {
         },
         {
           id: 'u5-l1-e23', type: 'register', reg: 'lei', rung: 3, ruleId: 'u5-r1',
-          prompt: 'Vieni a pranzo domenica?', base: 'You asked Luca. Now invite signor Bianchi, the neighbour (formal).', en: 'Are you coming for lunch on Sunday?',
+          prompt: 'Vieni a pranzo domenica?', base: 'You asked Luca. Now invite signor Bianchi, the neighbour.', en: 'Are you coming for lunch on Sunday?',
           answers: [
             'Viene a pranzo domenica?', 'Lei viene a pranzo domenica?', 'Domenica viene a pranzo?',
             'Signor Bianchi, viene a pranzo domenica?', 'Viene a pranzo domenica, signor Bianchi?',
@@ -454,7 +454,7 @@ const unit = {
         },
         {
           id: 'u5-l1-e24', type: 'register', reg: 'tu', rung: 3, ruleId: 'u5-r1',
-          prompt: 'Signora, va in centro?', base: 'You asked a neighbour. Now ask Sara (informal).', en: 'Are you going into town?',
+          prompt: 'Signora, va in centro?', base: 'You asked a neighbour. Now ask Sara.', en: 'Are you going into town?',
           answers: ['Sara, vai in centro?', 'Vai in centro?', 'Vai in centro, Sara?', 'Tu vai in centro?', 'Sara, tu vai in centro?'],
           mistakes: {
             'Sara, va in centro?': 'va is the Lei form. To Sara: vai.',
@@ -465,7 +465,7 @@ const unit = {
         },
         {
           id: 'u5-l1-e25', type: 'register', reg: 'tu', rung: 3, ruleId: 'u5-r1',
-          prompt: 'Da dove viene?', base: 'You asked an older lady on the train. Now ask a student at a party (informal).', en: 'Where are you from?',
+          prompt: 'Da dove viene?', base: 'You asked an older lady on the train. Now ask a student at a party.', en: 'Where are you from?',
           answers: ['Da dove vieni?', 'Tu da dove vieni?', 'Da dove vieni tu?', 'E tu, da dove vieni?'],
           mistakes: {
             'Da dove viene?': 'That is still the Lei form. With tu: vieni.',
@@ -868,7 +868,7 @@ const unit = {
         // Rung 3: switch register
         {
           id: 'u5-l2-e22', type: 'register', reg: 'lei', rung: 3, ruleId: 'u5-r2',
-          prompt: 'Come stai?', base: "You asked Sara. Now ask Giulia's grandmother (formal).", en: 'How are you?',
+          prompt: 'Come stai?', base: "You asked Sara. Now ask Giulia's grandmother.", en: 'How are you?',
           answers: ['Come sta?', 'Lei come sta?', 'Come sta Lei?', 'Signora, come sta?', 'Come sta, signora?'],
           mistakes: {
             'Come stai?': 'That is still the tu form. With Lei: come sta?',
@@ -879,7 +879,7 @@ const unit = {
         },
         {
           id: 'u5-l2-e23', type: 'register', reg: 'lei', rung: 3, ruleId: 'u5-r2',
-          prompt: 'Che lavoro fai?', base: "You asked a guy at a party. Now ask an older man at Giulia's parents' dinner (formal).", en: 'What do you do for a living?',
+          prompt: 'Che lavoro fai?', base: "You asked a guy at a party. Now ask an older man at Giulia's parents' dinner.", en: 'What do you do for a living?',
           answers: ['Che lavoro fa?', 'Lei che lavoro fa?', 'Che lavoro fa Lei?', 'E Lei che lavoro fa?'],
           mistakes: {
             'Che lavoro fai?': 'That is still the tu form. With Lei: fa.',
@@ -889,7 +889,7 @@ const unit = {
         },
         {
           id: 'u5-l2-e24', type: 'register', reg: 'tu', rung: 3, ruleId: 'u5-r2',
-          prompt: 'Signora, cosa fa stasera?', base: 'You asked a neighbour. Now ask Sara (informal).', en: 'What are you doing tonight?',
+          prompt: 'Signora, cosa fa stasera?', base: 'You asked a neighbour. Now ask Sara.', en: 'What are you doing tonight?',
           answers: [
             'Sara, cosa fai stasera?', 'Cosa fai stasera?', 'Cosa fai stasera, Sara?', 'Stasera cosa fai?',
             'Che fai stasera?', 'Sara, che fai stasera?', 'Che cosa fai stasera?', 'Sara, che cosa fai stasera?',
@@ -903,7 +903,7 @@ const unit = {
         },
         {
           id: 'u5-l2-e25', type: 'register', reg: 'lei', rung: 3, ruleId: 'u5-r2',
-          prompt: 'Stai bene?', base: 'You asked Marco. Now ask an older lady who has just tripped on the stairs (formal).', en: 'Are you OK?',
+          prompt: 'Stai bene?', base: 'You asked Marco. Now ask an older lady who has just tripped on the stairs.', en: 'Are you OK?',
           answers: ['Sta bene?', 'Signora, sta bene?', 'Sta bene, signora?', 'Lei sta bene?', 'Scusi, sta bene?'],
           mistakes: {
             'Stai bene?': 'That is still the tu form. With Lei: sta bene?',
@@ -1312,7 +1312,7 @@ const unit = {
         // Rung 3: switch register
         {
           id: 'u5-l3-e22', type: 'register', reg: 'lei', rung: 3, ruleId: 'u5-r3',
-          prompt: "Sai dov'è la stazione?", base: 'You asked Luca. Now ask a woman in the street (formal).', en: 'Do you know where the station is?',
+          prompt: "Sai dov'è la stazione?", base: 'You asked Luca. Now ask a woman in the street.', en: 'Do you know where the station is?',
           answers: [
             "Sa dov'è la stazione?", "Scusi, sa dov'è la stazione?", "Mi scusi, sa dov'è la stazione?",
             "Lei sa dov'è la stazione?", "Scusi, Lei sa dov'è la stazione?", "Signora, sa dov'è la stazione?",
@@ -1327,7 +1327,7 @@ const unit = {
         },
         {
           id: 'u5-l3-e23', type: 'register', reg: 'tu', rung: 3, ruleId: 'u5-r3',
-          prompt: 'Scusi, come dice?', base: "You didn't catch what an older lady said. Now you didn't catch Giulia (informal).", en: 'Sorry, what did you say?',
+          prompt: 'Scusi, come dice?', base: "You didn't catch what an older lady said. Now you didn't catch what Giulia said.", en: 'Sorry, what did you say?',
           answers: ['Scusa, come dici?', 'Come dici?', 'Scusa, cosa dici?', 'Cosa dici?', 'Scusa, che dici?', 'Che dici?'],
           mistakes: {
             'Scusa, come dice?': 'scusa is right, but dice is Lei. With tu: dici.',
@@ -1338,7 +1338,7 @@ const unit = {
         },
         {
           id: 'u5-l3-e24', type: 'register', reg: 'lei', rung: 3, ruleId: 'u5-r3',
-          prompt: 'Esci adesso?', base: 'You asked Sara. Now ask signor Bianchi, who has his coat on (formal).', en: 'Are you going out now?',
+          prompt: 'Esci adesso?', base: 'You asked Sara. Now ask signor Bianchi, who has his coat on.', en: 'Are you going out now?',
           answers: ['Esce adesso?', 'Lei esce adesso?', 'Signor Bianchi, esce adesso?', 'Esce adesso, signor Bianchi?'],
           mistakes: {
             'Esci adesso?': 'That is still the tu form. With Lei: esce.',
@@ -1349,7 +1349,7 @@ const unit = {
         },
         {
           id: 'u5-l3-e25', type: 'register', reg: 'lei', rung: 3, ruleId: 'u5-r3',
-          prompt: 'Mi dai una mano?', base: 'You asked Marco. Now ask a man at the station to help with your suitcase (formal).', en: 'Could you give me a hand?',
+          prompt: 'Mi dai una mano?', base: 'You asked Marco. Now ask a man at the station to help with your suitcase.', en: 'Could you give me a hand?',
           answers: ['Mi dà una mano?', 'Scusi, mi dà una mano?', 'Mi scusi, mi dà una mano?', 'Signore, mi dà una mano?', 'Scusi, mi dà una mano, per favore?'],
           mistakes: {
             'Mi dai una mano?': 'That is still the tu form. With Lei: dà.',
@@ -1551,7 +1551,7 @@ const unit = {
       },
       {
         id: 'u5-s-e06', type: 'register', reg: 'lei', rung: 3, ruleId: 'u5-r1',
-        prompt: 'Vieni anche tu?', base: 'Giulia asked you. Now ask signor Bianchi, the neighbour, who is at the bar too (formal).', en: 'Are you coming too?',
+        prompt: 'Vieni anche tu?', base: 'Giulia asked you. Now ask signor Bianchi, the neighbour, who is at the bar too.', en: 'Are you coming too?',
         answers: ['Viene anche Lei?', 'Signor Bianchi, viene anche Lei?', 'Viene anche Lei, signor Bianchi?', 'Anche Lei viene?'],
         mistakes: {
           'Vieni anche Lei?': 'Lei is right, but vieni is tu. With Lei: viene.',

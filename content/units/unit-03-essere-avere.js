@@ -329,7 +329,7 @@ export default {
         // Rung 3: switch register
         {
           id: 'u3-l1-e22', type: 'register', reg: 'lei', rung: 3, ruleId: 'u3-r1',
-          prompt: 'Sei a casa?', base: 'You asked Giulia on the phone. Now ask her mother (formal).', en: 'Are you at home?',
+          prompt: 'Sei a casa?', base: 'You asked Giulia on the phone. Now ask her mother.', en: 'Are you at home?',
           answers: ['È a casa?', 'Lei è a casa?', 'Signora, è a casa?'],
           mistakes: {
             'Sei a casa?': 'That is still the tu form. With Lei, essere is è.',
@@ -340,7 +340,7 @@ export default {
         },
         {
           id: 'u3-l1-e23', type: 'register', reg: 'lei', rung: 3, ruleId: 'u3-r1',
-          prompt: 'Sei di Bologna?', base: "You asked Giulia's friend Luca. Now ask her grandfather (formal).", en: 'Are you from Bologna?',
+          prompt: 'Sei di Bologna?', base: "You asked Giulia's friend Luca. Now ask Giulia's grandfather.", en: 'Are you from Bologna?',
           answers: ['È di Bologna?', 'Lei è di Bologna?'],
           mistakes: {
             'Sei di Bologna?': 'That is still the tu form. With Lei, essere is è.',
@@ -350,7 +350,7 @@ export default {
         },
         {
           id: 'u3-l1-e24', type: 'register', reg: 'tu', rung: 3, ruleId: 'u3-r1',
-          prompt: 'È pronto, signor Conti?', base: "You asked Giulia's father. Now ask Giulia (informal).", en: 'Are you ready, Giulia?',
+          prompt: 'È pronto, signor Conti?', base: "You asked Giulia's father. Now ask Giulia.", en: 'Are you ready, Giulia?',
           answers: ['Sei pronta, Giulia?', 'Giulia, sei pronta?', 'Sei pronta?', 'Tu sei pronta?'],
           mistakes: {
             'Sei pronto, Giulia?': 'Right verb, but Giulia is a woman: pronta.',
@@ -364,7 +364,7 @@ export default {
         },
         {
           id: 'u3-l1-e25', type: 'register', reg: 'lei', rung: 3, ruleId: 'u3-r1',
-          prompt: 'Scusa, sei italiano?', base: 'You asked a guy your age at a party. Now ask an older man on the train (formal).', en: 'Excuse me, are you Italian?',
+          prompt: 'Scusa, sei italiano?', base: 'You asked a guy your age at a party. Now ask an older man on the train.', en: 'Excuse me, are you Italian?',
           answers: ['Scusi, è italiano?', 'Mi scusi, è italiano?', 'Scusi, Lei è italiano?'],
           mistakes: {
             'Scusa, è italiano?': 'è is right, but scusa is for tu. With Lei: scusi.',
@@ -771,7 +771,7 @@ export default {
         // Rung 3: switch register
         {
           id: 'u3-l2-e22', type: 'register', reg: 'lei', rung: 3, ruleId: 'u3-r2',
-          prompt: 'Hai un momento?', base: "You asked Giulia. Now ask her father (formal).", en: 'Do you have a moment?',
+          prompt: 'Hai un momento?', base: 'You asked Giulia. Now ask her father.', en: 'Do you have a moment?',
           answers: ['Ha un momento?', 'Lei ha un momento?', 'Signor Conti, ha un momento?'],
           mistakes: {
             'Hai un momento?': 'That is still the tu form. For Lei, avere is ha.',
@@ -784,7 +784,7 @@ export default {
         },
         {
           id: 'u3-l2-e23', type: 'register', reg: 'tu', rung: 3, ruleId: 'u3-r2',
-          prompt: 'Ha una penna?', base: 'You asked the receptionist. Now ask Giulia (informal).', en: 'Have you got a pen?',
+          prompt: 'Ha una penna?', base: 'You asked the receptionist. Now ask Giulia.', en: 'Have you got a pen?',
           answers: ['Hai una penna?', 'Tu hai una penna?'],
           mistakes: {
             'Ha una penna?': 'That is the Lei form. With tu, avere is hai.',
@@ -795,7 +795,7 @@ export default {
         },
         {
           id: 'u3-l2-e24', type: 'register', reg: 'lei', rung: 3, ruleId: 'u3-r2',
-          prompt: 'Hai fratelli?', base: "You asked Giulia's friend Sara. Now ask Giulia's grandmother (formal).", en: 'Do you have brothers and sisters?',
+          prompt: 'Hai fratelli?', base: "You asked Giulia's friend Sara. Now ask Giulia's grandmother.", en: 'Do you have brothers and sisters?',
           answers: ['Ha fratelli?', 'Lei ha fratelli?'],
           mistakes: {
             'Hai fratelli?': 'That is still the tu form. For Lei, avere is ha.',
@@ -806,7 +806,7 @@ export default {
         },
         {
           id: 'u3-l2-e25', type: 'register', reg: 'tu', rung: 3, ruleId: 'u3-r2',
-          prompt: 'Ha il numero di Luca?', base: "You asked Giulia's mother. Now ask Marco (informal).", en: "Have you got Luca's number?",
+          prompt: 'Ha il numero di Luca?', base: "You asked Giulia's mother. Now ask Marco.", en: "Have you got Luca's number?",
           answers: ['Hai il numero di Luca?', 'Tu hai il numero di Luca?'],
           mistakes: {
             'Ha il numero di Luca?': 'That is the Lei form. With tu: hai.',
@@ -817,7 +817,7 @@ export default {
         },
         {
           id: 'u3-l2-e26', type: 'register', reg: 'neutral', rung: 3, ruleId: 'u3-r2',
-          prompt: 'Hai una macchina?', base: 'You asked Marco. Now ask Marco and his girlfriend together (voi).', en: 'Do you (two) have a car?',
+          prompt: 'Hai una macchina?', base: 'You asked Marco. Now ask Marco and his girlfriend together.', en: 'Do you (two) have a car?',
           answers: ['Avete una macchina?', 'Voi avete una macchina?'],
           mistakes: {
             'Hanno una macchina?': 'hanno is "they have". Speaking to them: avete.',
@@ -1167,7 +1167,7 @@ export default {
         // Rung 3: switch register
         {
           id: 'u3-l3-e20', type: 'register', reg: 'lei', rung: 3, ruleId: 'u3-r3',
-          prompt: 'Come stai?', base: "You asked Giulia. Now ask her grandmother (formal).", en: 'How are you?',
+          prompt: 'Come stai?', base: 'You asked Giulia. Now ask her grandmother.', en: 'How are you?',
           answers: ['Come sta?', 'Lei come sta?', 'Come sta, signora?', 'Signora, come sta?'],
           mistakes: {
             'Come stai?': 'That is still the tu form. With Lei: come sta?',
@@ -1177,7 +1177,7 @@ export default {
         },
         {
           id: 'u3-l3-e21', type: 'register', reg: 'lei', rung: 3, ruleId: 'u3-r3',
-          prompt: 'Sei pronto, Marco?', base: "You asked Giulia's brother. Now ask her father, signor Conti (formal).", en: 'Are you ready, Mr Conti?',
+          prompt: 'Sei pronto, Marco?', base: "You asked Giulia's brother. Now ask her father, signor Conti.", en: 'Are you ready, Mr Conti?',
           answers: ['È pronto, signor Conti?', 'Signor Conti, è pronto?', 'È pronto?', 'Lei è pronto?'],
           mistakes: {
             'Sei pronto, signor Conti?': 'With Lei, essere is è: È pronto, signor Conti?',
@@ -1188,7 +1188,7 @@ export default {
         },
         {
           id: 'u3-l3-e22', type: 'register', reg: 'lei', rung: 3, ruleId: 'u3-r3',
-          prompt: 'Scusa, hai un minuto?', base: "You asked Giulia. Now ask her father (formal).", en: 'Excuse me, have you got a minute?',
+          prompt: 'Scusa, hai un minuto?', base: 'You asked Giulia. Now ask her father.', en: 'Excuse me, have you got a minute?',
           answers: ['Scusi, ha un minuto?', 'Mi scusi, ha un minuto?'],
           mistakes: {
             'Scusa, ha un minuto?': 'ha is right, but scusa is tu. With Lei: scusi.',
@@ -1201,7 +1201,7 @@ export default {
         },
         {
           id: 'u3-l3-e23', type: 'register', reg: 'tu', rung: 3, ruleId: 'u3-r3',
-          prompt: 'Lei è molto gentile.', base: "You said it to Giulia's mother. Now say it to Giulia (informal).", en: "You're very kind.",
+          prompt: 'Lei è molto gentile.', base: "You said it to Giulia's mother. Now say it to Giulia.", en: "You're very kind.",
           answers: ['Sei molto gentile.', 'Tu sei molto gentile.', 'Sei gentilissima.'],
           mistakes: {
             'Lei sei molto gentile.': 'Drop Lei: with tu it is sei molto gentile.',
@@ -1214,7 +1214,7 @@ export default {
         },
         {
           id: 'u3-l3-e24', type: 'register', reg: 'tu', rung: 3, ruleId: 'u3-r3',
-          prompt: 'Come sta, signora?', base: 'You asked a neighbour. Now ask your friend Luca (informal).', en: 'How are you, Luca?',
+          prompt: 'Come sta, signora?', base: 'You asked a neighbour. Now ask your friend Luca.', en: 'How are you, Luca?',
           answers: ['Come stai, Luca?', 'Luca, come stai?', 'Ciao Luca, come stai?', 'Come stai?'],
           mistakes: {
             'Come sta, Luca?': 'sta is the Lei form. To a friend: come stai?',
@@ -1224,7 +1224,7 @@ export default {
         },
         {
           id: 'u3-l3-e25', type: 'register', reg: 'lei', rung: 3, ruleId: 'u3-r3',
-          prompt: 'Hai bisogno di aiuto?', base: "You asked Giulia in the kitchen. Now ask her grandmother (formal).", en: 'Do you need any help?',
+          prompt: 'Hai bisogno di aiuto?', base: 'You asked Giulia in the kitchen. Now ask her grandmother.', en: 'Do you need any help?',
           answers: ['Ha bisogno di aiuto?', 'Lei ha bisogno di aiuto?', 'Signora, ha bisogno di aiuto?'],
           mistakes: {
             'Hai bisogno di aiuto?': 'That is still the tu form. With Lei: ha.',
@@ -1236,7 +1236,7 @@ export default {
         },
         {
           id: 'u3-l3-e26', type: 'register', reg: 'lei', rung: 3, ruleId: 'u3-r3',
-          prompt: 'Di dove sei?', base: 'You asked a student at the language school. Now ask the older man next to you on the train (formal).', en: 'Where are you from?',
+          prompt: 'Di dove sei?', base: 'You asked a student at the language school. Now ask the older man next to you on the train.', en: 'Where are you from?',
           answers: ["Di dov'è?", 'Di dove è?', "Lei di dov'è?", "Di dov'è Lei?"],
           mistakes: {
             'Di dove sei?': 'That is still the tu form. With Lei: di dov\'è?',
@@ -1246,7 +1246,7 @@ export default {
         },
         {
           id: 'u3-l3-e27', type: 'register', reg: 'tu', rung: 3, ruleId: 'u3-r3',
-          prompt: 'Signora, è di Bologna?', base: "You asked Giulia's grandmother. Now ask Giulia's friend Sara (informal).", en: 'Sara, are you from Bologna?',
+          prompt: 'Signora, è di Bologna?', base: "You asked Giulia's grandmother. Now ask Giulia's friend Sara.", en: 'Sara, are you from Bologna?',
           answers: ['Sara, sei di Bologna?', 'Sei di Bologna, Sara?', 'Sei di Bologna?'],
           mistakes: {
             'Sara, è di Bologna?': 'è is the Lei form. Sara is a friend: sei.',
@@ -1258,7 +1258,7 @@ export default {
         },
         {
           id: 'u3-l3-e28', type: 'register', reg: 'neutral', rung: 3, ruleId: 'u3-r3',
-          prompt: 'Hai tempo stasera?', base: 'You asked Giulia. Now ask her parents together (voi).', en: 'Are you (both) free tonight?',
+          prompt: 'Hai tempo stasera?', base: 'You asked Giulia. Now ask her parents together.', en: 'Are you (both) free tonight?',
           answers: ['Avete tempo stasera?', 'Voi avete tempo stasera?'],
           mistakes: {
             'Ha tempo stasera?': 'ha is Lei, for one person. Two people: avete.',
@@ -1268,7 +1268,7 @@ export default {
         },
         {
           id: 'u3-l3-e29', type: 'register', reg: 'tu', rung: 3, ruleId: 'u3-r3',
-          prompt: "Scusi, ha l'ora?", base: 'You asked an older lady. Now ask a teenager at the station (informal).', en: 'Excuse me, have you got the time?',
+          prompt: "Scusi, ha l'ora?", base: 'You asked an older lady. Now ask a teenager at the station.', en: 'Excuse me, have you got the time?',
           answers: ["Scusa, hai l'ora?", "Scusami, hai l'ora?"],
           mistakes: {
             "Scusa, ha l'ora?": 'scusa is right, but ha is Lei. With tu: hai.',
@@ -1280,7 +1280,7 @@ export default {
         },
         {
           id: 'u3-l3-e30', type: 'register', reg: 'lei', rung: 3, ruleId: 'u3-r3',
-          prompt: 'Sei di qui?', base: 'You asked a guy at a party. Now ask the waiter (formal).', en: 'Are you from around here?',
+          prompt: 'Sei di qui?', base: 'You asked a guy at a party. Now ask the waiter.', en: 'Are you from around here?',
           answers: ['È di qui?', 'Lei è di qui?'],
           mistakes: {
             'Sei di qui?': 'That is still the tu form. With a waiter: è di qui?',
@@ -1290,7 +1290,7 @@ export default {
         },
         {
           id: 'u3-l3-e31', type: 'register', reg: 'lei', rung: 3, ruleId: 'u3-r3',
-          prompt: 'Mamma, sei stanca?', base: 'Giulia asked her mother. Now you ask her: you still use Lei.', en: 'Are you tired, madam?',
+          prompt: 'Mamma, sei stanca?', base: "Giulia asked her mother. Now you ask Giulia's mother.", en: 'Are you tired, madam?',
           answers: ['Signora, è stanca?', 'È stanca, signora?', 'È stanca?', 'Lei è stanca?'],
           mistakes: {
             'Signora, sei stanca?': 'You give her Lei until she offers tu: è stanca?',
@@ -1676,7 +1676,7 @@ export default {
         // Rung 3: switch register
         {
           id: 'u3-l4-e22', type: 'register', reg: 'lei', rung: 3, ruleId: 'u3-r4',
-          prompt: 'Hai fame?', base: "You asked Giulia. Now ask her mother (formal).", en: 'Are you hungry?',
+          prompt: 'Hai fame?', base: 'You asked Giulia. Now ask her mother.', en: 'Are you hungry?',
           answers: ['Ha fame?', 'Lei ha fame?', 'Signora, ha fame?'],
           mistakes: {
             'Hai fame?': 'That is still the tu form. With Lei: ha fame?',
@@ -1689,7 +1689,7 @@ export default {
         },
         {
           id: 'u3-l4-e23', type: 'register', reg: 'lei', rung: 3, ruleId: 'u3-r4',
-          prompt: 'Hai freddo?', base: "You asked Giulia. Now ask her grandmother (formal).", en: 'Are you cold?',
+          prompt: 'Hai freddo?', base: 'You asked Giulia. Now ask her grandmother.', en: 'Are you cold?',
           answers: ['Ha freddo?', 'Lei ha freddo?', 'Signora, ha freddo?'],
           mistakes: {
             'Hai freddo?': 'That is still the tu form. With Lei: ha freddo?',
@@ -1702,7 +1702,7 @@ export default {
         },
         {
           id: 'u3-l4-e24', type: 'register', reg: 'tu', rung: 3, ruleId: 'u3-r4',
-          prompt: 'Ha ragione, signor Conti.', base: "You said it to Giulia's father. Now say it to Giulia (informal).", en: "You're right, Giulia.",
+          prompt: 'Ha ragione, signor Conti.', base: "You said it to Giulia's father. Now say it to Giulia.", en: "You're right, Giulia.",
           answers: ['Hai ragione, Giulia.', 'Giulia, hai ragione.', 'Hai ragione.', 'Hai ragione tu.'],
           mistakes: {
             'Ha ragione, Giulia.': 'ha is the Lei form. Giulia gets tu: hai.',
@@ -1716,7 +1716,7 @@ export default {
         },
         {
           id: 'u3-l4-e25', type: 'register', reg: 'lei', rung: 3, ruleId: 'u3-r4',
-          prompt: 'Quanti anni hai?', base: "You asked Giulia's little cousin. Now ask her grandfather, who is proud of his age (formal).", en: 'How old are you?',
+          prompt: 'Quanti anni hai?', base: "You asked Giulia's little cousin. Now ask her grandfather, who is proud of his age.", en: 'How old are you?',
           answers: ['Quanti anni ha?', 'Lei quanti anni ha?'],
           mistakes: {
             'Quanti anni hai?': 'That is still the tu form. With Lei: quanti anni ha?',
@@ -1730,7 +1730,7 @@ export default {
         },
         {
           id: 'u3-l4-e26', type: 'register', reg: 'tu', rung: 3, ruleId: 'u3-r4',
-          prompt: 'Ha sete, signora?', base: 'You asked a neighbour. Now ask your friend Luca (informal).', en: 'Are you thirsty, Luca?',
+          prompt: 'Ha sete, signora?', base: 'You asked a neighbour. Now ask your friend Luca.', en: 'Are you thirsty, Luca?',
           answers: ['Hai sete, Luca?', 'Luca, hai sete?', 'Hai sete?'],
           mistakes: {
             'Ha sete, Luca?': 'ha is the Lei form. A friend gets tu: hai.',
@@ -1745,7 +1745,7 @@ export default {
         },
         {
           id: 'u3-l4-e27', type: 'register', reg: 'lei', rung: 3, ruleId: 'u3-r4',
-          prompt: 'Hai fretta?', base: 'You asked Giulia. Now ask the taxi driver (formal).', en: 'Are you in a hurry?',
+          prompt: 'Hai fretta?', base: 'You asked Giulia. Now ask the taxi driver.', en: 'Are you in a hurry?',
           answers: ['Ha fretta?', 'Lei ha fretta?', 'È di fretta?'],
           mistakes: {
             'Hai fretta?': 'That is still the tu form. With Lei: ha fretta?',
@@ -1976,7 +1976,7 @@ export default {
       },
       {
         id: 'u3-s-e05', type: 'register', reg: 'tu', rung: 3, ruleId: 'u3-r3',
-        prompt: 'Grazie, signora, Lei è molto gentile.', base: 'Anna has just said "Dammi del tu!". Say it to her again, now with tu.', en: "Thank you, Anna, you're very kind.",
+        prompt: 'Grazie, signora, Lei è molto gentile.', base: 'Giulia\'s mother, Anna, has just said "Dammi del tu!". Say it to her again.', en: "Thank you, Anna, you're very kind.",
         answers: ['Grazie, Anna, sei molto gentile.', 'Grazie, sei molto gentile.', 'Grazie, Anna, sei gentilissima.'],
         mistakes: {
           'Grazie, Anna, Lei è molto gentile.': 'She has offered tu: switch to sei.',

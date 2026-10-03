@@ -329,7 +329,7 @@ export default {
         // Rung 3: switch register
         {
           id: 'u2-l1-e19', type: 'register', reg: 'lei', rung: 3, ruleId: 'u2-r1',
-          prompt: 'Hai lo zaino?', base: "You asked your partner. Now ask their father (formal).", en: 'Do you have the backpack?',
+          prompt: 'Hai lo zaino?', base: 'You asked your partner. Now ask their father.', en: 'Do you have the backpack?',
           answers: ['Ha lo zaino?', 'Lei ha lo zaino?'],
           mistakes: {
             'Hai lo zaino?': 'That is still the tu form. For Lei, avere becomes ha.',
@@ -340,7 +340,7 @@ export default {
         },
         {
           id: 'u2-l1-e20', type: 'register', reg: 'lei', rung: 3, ruleId: 'u2-r1',
-          prompt: "Prendi l'aperitivo con noi?", base: 'You asked your partner. Now ask their mother (formal).', en: 'Are you having the aperitivo with us?',
+          prompt: "Prendi l'aperitivo con noi?", base: 'You asked your partner. Now ask their mother.', en: 'Are you having the aperitivo with us?',
           answers: ["Prende l'aperitivo con noi?", "Lei prende l'aperitivo con noi?"],
           mistakes: {
             "Prendi l'aperitivo con noi?": 'That is still the tu form. For Lei, prendi becomes prende.',
@@ -351,7 +351,7 @@ export default {
         },
         {
           id: 'u2-l1-e21', type: 'register', reg: 'tu', rung: 3, ruleId: 'u2-r1',
-          prompt: "Ha l'ombrello?", base: "You asked your partner's grandmother. Now ask your partner (informal).", en: 'Do you have the umbrella?',
+          prompt: "Ha l'ombrello?", base: "You asked your partner's grandmother. Now ask your partner.", en: 'Do you have the umbrella?',
           answers: ["Hai l'ombrello?", "Tu hai l'ombrello?"],
           mistakes: {
             "Ha l'ombrello?": 'That is the Lei form. With tu, avere becomes hai.',
@@ -754,7 +754,7 @@ export default {
         // Rung 3: switch register
         {
           id: 'u2-l2-e23', type: 'register', reg: 'lei', rung: 3, ruleId: 'u2-r2',
-          prompt: 'Hai i biglietti?', base: "You asked your partner about the concert tickets. Now ask their father (formal).", en: 'Do you have the tickets?',
+          prompt: 'Hai i biglietti?', base: 'You asked your partner about the concert tickets. Now ask their father.', en: 'Do you have the tickets?',
           answers: ['Ha i biglietti?', 'Lei ha i biglietti?'],
           mistakes: {
             'Hai i biglietti?': 'That is still the tu form. For Lei, avere becomes ha.',
@@ -764,7 +764,7 @@ export default {
         },
         {
           id: 'u2-l2-e24', type: 'register', reg: 'tu', rung: 3, ruleId: 'u2-r2',
-          prompt: 'Prende gli gnocchi?', base: "You asked your partner's grandmother at the restaurant. Now ask your partner (informal).", en: 'Are you having the gnocchi?',
+          prompt: 'Prende gli gnocchi?', base: "You asked your partner's grandmother at the restaurant. Now ask your partner.", en: 'Are you having the gnocchi?',
           answers: ['Prendi gli gnocchi?', 'Tu prendi gli gnocchi?'],
           mistakes: {
             'Prende gli gnocchi?': 'That is the Lei form. With tu, prende becomes prendi.',
@@ -1124,7 +1124,7 @@ export default {
         // Rung 3: switch register
         {
           id: 'u2-l3-e23', type: 'register', reg: 'tu', rung: 3, ruleId: 'u2-r3',
-          prompt: 'Ha un minuto?', base: "You asked a neighbour. Now ask your partner's brother (informal).", en: 'Do you have a minute?',
+          prompt: 'Ha un minuto?', base: "You asked a neighbour. Now ask your partner's brother.", en: 'Do you have a minute?',
           answers: ['Hai un minuto?', 'Tu hai un minuto?'],
           mistakes: {
             'Ha un minuto?': 'That is the Lei form. With tu, avere becomes hai.',
@@ -1134,7 +1134,7 @@ export default {
         },
         {
           id: 'u2-l3-e24', type: 'register', reg: 'lei', rung: 3, ruleId: 'u2-r3',
-          prompt: 'Hai un ombrello?', base: 'You asked your partner. Now ask the hotel receptionist (formal).', en: 'Do you have an umbrella?',
+          prompt: 'Hai un ombrello?', base: 'You asked your partner. Now ask the hotel receptionist.', en: 'Do you have an umbrella?',
           answers: ['Ha un ombrello?', 'Lei ha un ombrello?', 'Scusi, ha un ombrello?'],
           mistakes: {
             'Hai un ombrello?': 'That is still the tu form. For Lei, avere becomes ha.',
@@ -1469,7 +1469,7 @@ export default {
         // Rung 3: switch register
         {
           id: 'u2-l4-e23', type: 'register', reg: 'lei', rung: 3, ruleId: 'u2-r4',
-          prompt: 'Ciao, Paolo! Come stai?', base: "You greeted your partner's cousin in the morning. Now greet the neighbour, Mr Rossi (formal).", en: 'Good morning, Mr Rossi! How are you?',
+          prompt: 'Ciao, Paolo! Come stai?', base: "You greeted your partner's cousin in the morning. Now greet the neighbour, Mr Rossi.", en: 'Good morning, Mr Rossi! How are you?',
           answers: ['Buongiorno, signor Rossi! Come sta?', 'Salve, signor Rossi! Come sta?'],
           mistakes: {
             'Buongiorno, il signor Rossi! Come sta?': 'When you speak to him, drop the article: signor Rossi.',
@@ -1480,7 +1480,7 @@ export default {
         },
         {
           id: 'u2-l4-e24', type: 'register', reg: 'lei', rung: 3, ruleId: 'u2-r4',
-          prompt: "Scusa, sai dov'è la stazione?", base: 'You asked a student. Now ask an older lady (formal), and call her signora.', en: 'Excuse me, madam, do you know where the station is?',
+          prompt: "Scusa, sai dov'è la stazione?", base: 'You asked a student. Now ask an older lady, and call her signora.', en: 'Excuse me, madam, do you know where the station is?',
           answers: ["Scusi, signora, sa dov'è la stazione?", "Mi scusi, signora, sa dov'è la stazione?", "Signora, scusi, sa dov'è la stazione?"],
           mistakes: {
             "Scusi, la signora, sa dov'è la stazione?": 'When you speak to her, no article: Scusi, signora.',

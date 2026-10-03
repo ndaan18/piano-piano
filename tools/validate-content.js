@@ -12,6 +12,7 @@ const MIN_PER_RULE = 30;
 const MAX_EXPANSIONS = 64;
 const UNIT0_GAP_LESSONS = new Set(['u0-l1', 'u0-l2', 'u0-l3']);
 const GAP_SHAPE = /^[bcdfghlmnpqrstvz]+i?[aeiouàèéìòù]$/;
+const REGISTER_NAMED = /\b(in)?formal\b|\(tu\)|\(Lei\)/i; // a register card's base names who you talk to, never the register
 const PATTERN_CHARS = /[[\]{}|]/;
 
 const nonEmpty = (s) => typeof s === 'string' && s.trim() !== '';
@@ -72,6 +73,9 @@ function checkExercise(ex, where, ruleIds, errors, unit, lesson) {
     if (nonEmpty(ex.say) && normalize(String(ex.prompt ?? '').replace(/_{2,}/, target)) !== normalize(ex.say)) {
       errors.push(`${id}: gap must match say ("${ex.prompt}" with "${target}" is not "${ex.say}")`);
     }
+  }
+  if (ex.type === 'register' && REGISTER_NAMED.test(String(ex.base ?? ''))) {
+    errors.push(`${id}: register base names the register ("${ex.base}"); name who you are talking to instead`);
   }
   if (NEEDS_CONTEXT.has(ex.type) && !nonEmpty(ex.base) && !nonEmpty(ex.en)) {
     errors.push(`${id}: ${ex.type} needs a base or en context line`);
