@@ -2,27 +2,76 @@
 // over every loadable unit: `node tools/validate-content.js` (or `npm run validate`).
 
 import { pathToFileURL } from 'node:url';
+import { expandAnswer, normalize } from '../js/engine/checker.js';
 
 const TYPES = new Set(['recognise', 'type', 'transform', 'build', 'listen', 'register']);
 const REGS = new Set(['tu', 'lei', 'neutral']);
 const NEEDS_CONTEXT = new Set(['transform', 'build', 'register']);
 const MIN_PER_RULE = 30;
 
-const nonEmpty = (s) => typeof s === 'string' && s.trim() !== '';
+const MAX_EXPANSIONS = 64;
+const UNIT0_GAP_LESSONS = new Set(['u0-l1', 'u0-l2', 'u0-l3']);
+const GAP_SHAPE = /^[bcdfghlmnpqrstvz]+i?[aeiouàèéìòù]$/;
+const PATTERN_CHARS = /[[\]{}|]/;
 
-function checkExercise(ex, where, ruleIds, errors) {
+const nonEmpty = (s) => typeof s === 'string' && s.trim() !== '';
+const answerText = (a) => (typeof a === 'string' ? a : a?.text);
+// Whole word or phrase, after normalisation (so punctuation and case do not matter).
+const containsPhrase = (say, target) => ` ${normalize(say)} `.includes(` ${normalize(target)} `);
+
+/** Checks the answers list; returns the plain texts of every expanded answer. */
+function checkAnswers(ex, id, errors) {
+  const entries = Array.isArray(ex.answers) ? ex.answers : [];
+  const texts = [];
+  entries.forEach((entry) => {
+    const text = answerText(entry);
+    if (!nonEmpty(text)) {
+      errors.push(`${id}: empty answer`);
+      return;
+    }
+    try {
+      const expanded = expandAnswer(text);
+      if (expanded.length > MAX_EXPANSIONS) errors.push(`${id}: answer "${text}" expands to ${expanded.length} strings (max ${MAX_EXPANSIONS})`);
+      texts.push(...expanded);
+    } catch {
+      errors.push(`${id}: unbalanced pattern in answer "${text}"`);
+    }
+  });
+  const first = answerText(entries[0]);
+  if (nonEmpty(first) && PATTERN_CHARS.test(first)) errors.push(`${id}: answers[0] must be plain text (no [ ] { } |)`);
+  return texts;
+}
+
+function checkExercise(ex, where, ruleIds, errors, unit, lesson) {
   const id = ex.id || where;
   if (!TYPES.has(ex.type)) errors.push(`${id}: unknown type "${ex.type}"`);
   if (!REGS.has(ex.reg)) errors.push(`${id}: reg "${ex.reg}" is not tu, lei or neutral`);
   if (!Number.isInteger(ex.rung) || ex.rung < 1 || ex.rung > 5) errors.push(`${id}: rung "${ex.rung}" is not 1–5`);
-  const answers = Array.isArray(ex.answers) ? ex.answers.filter(nonEmpty) : [];
-  if (answers.length === 0) errors.push(`${id}: missing answers`);
+  const hasAnswers = Array.isArray(ex.answers) && ex.answers.some((a) => nonEmpty(answerText(a)));
+  if (!hasAnswers) errors.push(`${id}: missing answers`);
+  const answers = checkAnswers(ex, id, errors);
+  for (const key of Object.keys(ex.mistakes || {})) {
+    if (PATTERN_CHARS.test(key)) errors.push(`${id}: mistake keys must be plain text ("${key}")`);
+  }
+  const target = answerText(ex.answers?.[0]);
   if (!nonEmpty(ex.why)) errors.push(`${id}: missing why`);
   if (!ruleIds.has(ex.ruleId)) errors.push(`${id}: unknown ruleId "${ex.ruleId}"`);
   if (ex.type === 'recognise') {
     const options = Array.isArray(ex.options) ? ex.options : [];
     if (options.length < 2 || options.length > 4) errors.push(`${id}: recognise needs 2–4 options`);
     if (!options.some((o) => answers.includes(o))) errors.push(`${id}: recognise options don't include an answer`);
+  }
+  if (unit?.audioFirst && (ex.type === 'recognise' || ex.type === 'type')) {
+    if (!nonEmpty(ex.say)) errors.push(`${id}: needs say (${ex.type} card in an audioFirst unit)`);
+    else if (ex.type === 'recognise' && nonEmpty(target) && !containsPhrase(ex.say, target)) {
+      errors.push(`${id}: say must contain the answer "${target}" as a whole word or phrase`);
+    }
+  }
+  if (unit?.audioFirst && unit.id === 0 && UNIT0_GAP_LESSONS.has(lesson?.id) && ex.type === 'type' && nonEmpty(target)) {
+    if (!GAP_SHAPE.test(target.toLowerCase())) errors.push(`${id}: gap shape: "${target}" must be the letter group through the vowel you hear`);
+    if (nonEmpty(ex.say) && normalize(String(ex.prompt ?? '').replace(/_{2,}/, target)) !== normalize(ex.say)) {
+      errors.push(`${id}: gap must match say ("${ex.prompt}" with "${target}" is not "${ex.say}")`);
+    }
   }
   if (NEEDS_CONTEXT.has(ex.type) && !nonEmpty(ex.base) && !nonEmpty(ex.en)) {
     errors.push(`${id}: ${ex.type} needs a base or en context line`);
@@ -56,11 +105,11 @@ export function validateUnit(unit, warnings = []) {
 
   const perRule = new Map([...ruleIds].map((id) => [id, 0]));
   const exercises = [];
-  lessons.forEach((lesson) => (lesson.exercises || []).forEach((ex, i) => exercises.push([ex, `${lesson.id} exercise #${i + 1}`])));
-  (unit?.scene?.exercises || []).forEach((ex, i) => exercises.push([ex, `scene exercise #${i + 1}`]));
-  for (const [ex, where] of exercises) {
+  lessons.forEach((lesson) => (lesson.exercises || []).forEach((ex, i) => exercises.push([ex, `${lesson.id} exercise #${i + 1}`, lesson])));
+  (unit?.scene?.exercises || []).forEach((ex, i) => exercises.push([ex, `scene exercise #${i + 1}`, null]));
+  for (const [ex, where, lesson] of exercises) {
     unique(ex.id, where);
-    checkExercise(ex, where, ruleIds, errors);
+    checkExercise(ex, where, ruleIds, errors, unit, lesson);
     if (perRule.has(ex.ruleId)) perRule.set(ex.ruleId, perRule.get(ex.ruleId) + 1);
   }
 
