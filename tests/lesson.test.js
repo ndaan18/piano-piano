@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { lessonSteps, resumeStep, priorPool, weakIds, stepLabel } from '../js/pages/lesson.js';
+import { lessonSteps, resumeStep, savesStep, declinesResume, priorPool, weakIds, stepLabel } from '../js/pages/lesson.js';
 
 const ex = (id) => ({ id });
 const unit = (id, lessons, scene = []) => ({
@@ -30,6 +30,25 @@ test('resumeStep returns the saved step for this route only', () => {
   assert.equal(resumeStep({ route: '#/lesson/2/u2-l1', step: 'rule-7' }, '#/lesson/2/u2-l1', steps), 'rule-0');
   assert.equal(resumeStep({ route: '#/lesson/2/u2-l1', step: 'done' }, '#/lesson/2/u2-l1', steps), 'rule-0');
   assert.equal(resumeStep(null, '#/lesson/2/u2-l1', steps), 'rule-0');
+});
+
+test('savesStep: the first step and done are never a place to resume', () => {
+  const steps = ['rule-0', 'rule-1', 'examples', 'practice', 'done'];
+  assert.equal(savesStep('rule-0', steps), false);
+  assert.equal(savesStep('done', steps), false);
+  assert.equal(savesStep('rule-1', steps), true);
+  assert.equal(savesStep('examples', steps), true);
+  assert.equal(savesStep('practice', steps), true);
+});
+
+test('declinesResume: only a stale saved place for this same route is declined', () => {
+  const steps = ['rule-0', 'examples', 'practice', 'done'];
+  const route = '#/lesson/2/u2-l1';
+  assert.equal(declinesResume({ route, step: 'rule-7' }, route, steps), true);
+  assert.equal(declinesResume({ route, step: 'done' }, route, steps), true);
+  assert.equal(declinesResume({ route, step: 'examples' }, route, steps), false);
+  assert.equal(declinesResume({ route: '#/lesson/2/u2-l2', step: 'rule-7' }, route, steps), false);
+  assert.equal(declinesResume(null, route, steps), false);
 });
 
 test('priorPool: earlier lessons of the unit and earlier units, seen cards only', () => {

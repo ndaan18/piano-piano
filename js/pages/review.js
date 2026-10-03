@@ -6,6 +6,7 @@ import { dueIds, localDate } from '../engine/srs.js';
 import { buildReviewSession, REVIEW_LIMIT } from '../engine/session.js';
 import { esc } from '../ui/dom.js';
 import { runSession, restoreSession } from '../ui/practice-card.js';
+import { dropResume } from './unit.js';
 
 const ROUTE = '#/review';
 const DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
@@ -94,6 +95,7 @@ export async function mount(root, params, { store, audio }) {
 
   const state = store.get();
   let saved = state.resume?.route === ROUTE ? restoreSession(state.resume.session, lookup) : null;
+  if (!saved) dropResume(store, ROUTE); // a saved review that can't be restored
   let stopSession = null;
   let alive = true;
 

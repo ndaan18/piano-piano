@@ -79,14 +79,22 @@ export function stepOpen(unit, progress, kind) {
  * yet; returns null without redirecting if the page was left while loading.
  */
 export async function loadUnitStep(root, params, store, kind) {
+  // a page that redirects away also declines a saved place pointing at it
+  const away = (to) => { dropResume(store, location.hash); location.replace(to); return null; };
   const meta = /^\d+$/.test(params.u) ? UNITS.find((m) => m.id === Number(params.u)) : undefined;
-  if (!meta) { location.replace('#/'); return null; }
+  if (!meta) return away('#/');
   const u = meta.id;
-  if (!isUnlocked(u, store.get().units)) { location.replace(`#/unit/${u}`); return null; }
+  if (!isUnlocked(u, store.get().units)) return away(`#/unit/${u}`);
   const unit = await loadUnit(u);
   if (!root.isConnected) return null;
-  if (!unit || (kind && !stepOpen(unit, store.get().units[u], kind))) { location.replace(`#/unit/${u}`); return null; }
+  if (!unit || (kind && !stepOpen(unit, store.get().units[u], kind))) return away(`#/unit/${u}`);
   return { meta, u, unit };
+}
+
+/** Clears the saved place if it points at `route` (a page declined or can't restore it). */
+export function dropResume(store, route) {
+  if (store.get().resume?.route !== route) return;
+  store.update((d) => { d.resume = null; });
 }
 
 /** Updates a unit's progress record (created with defaults if missing) inside store.update. */

@@ -6,8 +6,8 @@ import { exerciseIndex } from '../../content/index.js';
 import { SLOW_RATE } from '../audio.js';
 import { esc, PLAY_ICON, regChip } from '../ui/dom.js';
 import { runSession, restoreSession } from '../ui/practice-card.js';
-import { pad2, loadUnitStep, updateProgress } from './unit.js';
-import { resumeStep } from './lesson.js';
+import { pad2, loadUnitStep, updateProgress, dropResume } from './unit.js';
+import { resumeStep, savesStep, declinesResume } from './lesson.js';
 
 const STEPS = ['listen', 'read', 'practice', 'done'];
 const LABELS = { listen: 'Listen', read: 'Read along', practice: 'Practice', done: 'Done' };
@@ -105,7 +105,7 @@ export async function mount(root, params, { store, audio }) {
 
   function go(next) {
     step = next;
-    if (step !== 'done') saveStep(step);
+    if (savesStep(step, STEPS)) saveStep(step);
     window.scrollTo(0, 0);
     render();
   }
@@ -205,7 +205,8 @@ export async function mount(root, params, { store, audio }) {
     });
   }
 
-  if (!(step === 'practice' && saved)) saveStep(step);
+  if (declinesResume(state.resume, route, STEPS)) dropResume(store, route);
+  else if (step === 'practice' && state.resume?.session && !saved) saveStep('practice'); // keep the place, drop a snapshot that no longer fits
   render();
 
   audio.hasItalianVoice().then((ok) => {

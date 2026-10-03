@@ -2,7 +2,8 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { pickVoice } from '../js/audio.js';
 import { phraseOfTheDay, weekAccuracy, currentUnit } from '../js/pages/home.js';
-import { unitSteps, nextStep, unitFromRoute, safeRoute } from '../js/pages/unit.js';
+import { unitSteps, nextStep, unitFromRoute, safeRoute, dropResume } from '../js/pages/unit.js';
+import { createStore } from '../js/store.js';
 
 const voice = (name, lang, voiceURI = name) => ({ name, lang, voiceURI });
 
@@ -117,4 +118,17 @@ test('safeRoute accepts plain app routes and rejects anything that could break o
   assert.equal(safeRoute('#/unit/0?x=1'), null);
   assert.equal(safeRoute(null), null);
   assert.equal(safeRoute({ route: '#/' }), null);
+});
+
+test('dropResume clears the saved place only when it is this route', () => {
+  const store = createStore(null);
+  store.update((d) => { d.resume = { route: '#/lesson/0/u0-l1', step: 'rule-1' }; });
+  dropResume(store, '#/lesson/0/u0-l2');
+  assert.equal(store.get().resume.route, '#/lesson/0/u0-l1');
+  dropResume(store, '#/lesson/0/u0-l1');
+  assert.equal(store.get().resume, null);
+  let writes = 0;
+  store.subscribe(() => { writes++; });
+  dropResume(store, '#/review');
+  assert.equal(writes, 0);
 });

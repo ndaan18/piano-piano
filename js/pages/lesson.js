@@ -8,7 +8,7 @@ import { SLOW_RATE } from '../audio.js';
 import { esc, PLAY_ICON, regChip } from '../ui/dom.js';
 import { renderRuleSentence } from '../ui/marks.js';
 import { runSession, restoreSession, scoreResults } from '../ui/practice-card.js';
-import { pad2, loadUnitStep, updateProgress } from './unit.js';
+import { pad2, loadUnitStep, updateProgress, dropResume } from './unit.js';
 
 // ---------- pure helpers ----------
 
@@ -32,6 +32,20 @@ export function stepLabel(step, steps) {
 export function resumeStep(resume, route, steps) {
   const step = resume?.route === route ? resume.step : null;
   return step && step !== 'done' && steps.includes(step) ? step : steps[0];
+}
+
+/**
+ * Whether reaching `step` is worth saving as the place to resume: never the first
+ * step (opening a lesson from Reference or home must not replace the saved place)
+ * and never done.
+ */
+export function savesStep(step, steps) {
+  return steps.indexOf(step) > 0 && step !== 'done';
+}
+
+/** True when the saved place is this route but its step can't be used here. */
+export function declinesResume(resume, route, steps) {
+  return resume?.route === route && resumeStep(resume, route, steps) !== resume.step;
 }
 
 /**
@@ -178,7 +192,11 @@ async function mountLesson(root, params, { store, audio }) {
   if (!loaded) return;
   const { meta, u, unit } = loaded;
   const lessonIndex = (unit.lessons || []).findIndex((l) => l.id === params.lessonId);
-  if (lessonIndex < 0) { location.replace(`#/unit/${u}`); return; }
+  if (lessonIndex < 0) {
+    dropResume(store, `#/lesson/${u}/${params.lessonId}`);
+    location.replace(`#/unit/${u}`);
+    return;
+  }
   const lesson = unit.lessons[lessonIndex];
 
   const units = [...(await loadEarlier(u, store.get().units)), unit];
@@ -215,7 +233,7 @@ async function mountLesson(root, params, { store, audio }) {
 
   function go(next) {
     step = next;
-    if (step !== 'done') saveStep(step);
+    if (savesStep(step, steps)) saveStep(step);
     window.scrollTo(0, 0);
     render();
   }
@@ -296,7 +314,8 @@ async function mountLesson(root, params, { store, audio }) {
     });
   }
 
-  if (!(step === 'practice' && saved)) saveStep(step);
+  if (declinesResume(state.resume, route, steps)) dropResume(store, route);
+  else if (step === 'practice' && state.resume?.session && !saved) saveStep('practice'); // keep the place, drop a snapshot that no longer fits
   render();
 
   return () => {
@@ -320,6 +339,7 @@ async function mountUnitSession(root, params, { store, audio }, mode) {
   const route = `#/${mode}/${u}`;
   const state = store.get();
   let saved = mixed && state.resume?.route === route ? restoreSession(state.resume.session, lookup) : null;
+  if (!saved) dropResume(store, route); // saved after the first answer only
   let stopSession = null;
   let alive = true;
   const label = mixed ? 'Mixed practice' : 'Drill';
@@ -332,9 +352,7 @@ async function mountUnitSession(root, params, { store, audio }, mode) {
     </div>
     <div data-stage></div>`;
   const stage = root.querySelector('[data-stage]');
-  const saveResume = (session) => store.update((d) => {
-    d.resume = session ? { route, step: 'practice', session } : { route, step: 'practice' };
-  });
+  const saveResume = (session) => store.update((d) => { d.resume = { route, step: 'practice', session }; });
 
   function start() {
     stopSession?.();
@@ -349,7 +367,6 @@ async function mountUnitSession(root, params, { store, audio }, mode) {
     }
     const resume = saved;
     saved = null;
-    if (mixed && !resume) saveResume(null);
     stopSession = runSession(stage, cards, {
       mode: mixed ? 'practice' : 'drill',
       lookup,

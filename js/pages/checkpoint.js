@@ -6,7 +6,7 @@ import { UNITS, exerciseIndex } from '../../content/index.js';
 import { buildCheckpoint, CHECKPOINT_SIZE, PASS_MARK } from '../engine/session.js';
 import { esc } from '../ui/dom.js';
 import { runSession, restoreSession, scoreResults } from '../ui/practice-card.js';
-import { pad2, loadUnitStep, updateProgress } from './unit.js';
+import { pad2, loadUnitStep, updateProgress, dropResume } from './unit.js';
 
 const pct = (x) => `${Math.round(x * 100)}%`;
 
@@ -98,6 +98,7 @@ export async function mount(root, params, { store, audio }) {
   const route = `#/checkpoint/${u}`;
   const state = store.get();
   let saved = state.resume?.route === route ? restoreSession(state.resume.session, lookup) : null;
+  if (!saved) dropResume(store, route); // saved after the first answer only
   let stopSession = null;
   let alive = true;
 
@@ -110,9 +111,7 @@ export async function mount(root, params, { store, audio }) {
     </div>
     <div data-stage></div>`;
   const stage = root.querySelector('[data-stage]');
-  const saveResume = (session) => store.update((d) => {
-    d.resume = session ? { route, step: 'test', session } : { route, step: 'test' };
-  });
+  const saveResume = (session) => store.update((d) => { d.resume = { route, step: 'test', session }; });
 
   function intro() {
     stage.innerHTML = introHTML(meta, store.get().units[u]?.checkpointBest || 0);
@@ -132,7 +131,6 @@ export async function mount(root, params, { store, audio }) {
           <div class="ldone__go"><a class="btn" href="#/unit/${u}">Back to the unit</a></div></section>`;
       return;
     }
-    if (!resume) saveResume(null);
     stopSession = runSession(stage, cards, {
       mode: 'checkpoint',
       lookup,
