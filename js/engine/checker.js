@@ -122,12 +122,35 @@ export function applyAccentShortcut(value) {
   return value;
 }
 
+/** Accented words that change meaning when written without the accent (spec 5.3). */
+export const ACCENT_PAIRS = {
+  'è': { plain: 'e', message: 'e means "and", è means "is".' },
+  'sì': { plain: 'si', message: 'si means "oneself", sì means "yes".' },
+  'tè': { plain: 'te', message: 'te means "you" (after a preposition), tè means "tea".' },
+  'là': { plain: 'la', message: 'la means "the" or "her", là means "there".' },
+  'lì': { plain: 'li', message: 'li means "them", lì means "there".' },
+  'dà': { plain: 'da', message: 'da means "from" or "at", dà means "gives".' },
+  'né': { plain: 'ne', message: 'ne means "of it" or "some", né means "nor".' },
+  'sé': { plain: 'se', message: 'se means "if", sé means "oneself".' },
+};
+
+/** Forms of avere whose h is silent but always written, and what they turn into without it (spec 5.4). */
+export const SILENT_H = { ho: 'o', hai: 'ai', ha: 'a', hanno: 'anno' };
+export const SILENT_H_GLOSS = {
+  ho: 'ho = I have, o = or',
+  hai: 'hai = you have, ai = to the',
+  ha: 'ha = has, a = to or at',
+  hanno: 'hanno = they have, anno = year',
+};
+
 const stripAccents = (s) => s.normalize('NFD').replace(/[̀-ͯ]/g, '');
 
-const isGlue = (c) => c === "'" || c === ' ';
+// A word boundary is anything that is not a letter (space, apostrophe, hyphen, digit...).
+const isLetter = (c) => /\p{L}/u.test(c || '');
+const isGlue = (c) => !isLetter(c);
 const isConsonant = (c) => /[bcdfghjklmnpqrstvwxyz]/.test(c || '');
 
-/** [start, end) of the word (maximal run without apostrophe/space) containing index i. */
+/** [start, end) of the word (maximal run of letters) containing index i. */
 function wordAt(s, i) {
   let start = i;
   let end = i;
@@ -208,13 +231,52 @@ export function isPass(verdict) {
   return verdict === 'correct' || verdict === 'typo' || verdict === 'accent';
 }
 
+/** Letter runs and the separators between them, so two strings can be compared token by token. */
+const tokens = (s) => s.match(/\p{L}+|[^\p{L}]+/gu) || [];
+
+/** Message for the first meaning-changing accent pair that separates input `n` from answer `a`, or null. */
+function accentPairMessage(a, n) {
+  const ta = tokens(a);
+  const tn = tokens(n);
+  if (ta.length !== tn.length) return null;
+  for (let i = 0; i < ta.length; i++) {
+    if (ta[i] === tn[i]) continue;
+    const accented = Object.hasOwn(ACCENT_PAIRS, ta[i]) ? ta[i] : tn[i];
+    const pair = Object.hasOwn(ACCENT_PAIRS, accented) ? ACCENT_PAIRS[accented] : null;
+    const other = accented === ta[i] ? tn[i] : ta[i];
+    if (pair && other === pair.plain) return `${pair.message} Here you need ${ta[i]}.`;
+  }
+  return null;
+}
+
+/** Message when `n` is answer `a` with one of ho/hai/ha/hanno written without its h, or null. */
+function silentHMessage(a, n) {
+  const ta = tokens(a);
+  for (let i = 0; i < ta.length; i++) {
+    const without = Object.hasOwn(SILENT_H, ta[i]) ? SILENT_H[ta[i]] : null;
+    if (without && [...ta.slice(0, i), without, ...ta.slice(i + 1)].join('') === n) {
+      return `Right sound! The h in ${ta[i]} is silent, but it's always written: ${SILENT_H_GLOSS[ta[i]]}.`;
+    }
+  }
+  return null;
+}
+
+/** The letters of the word the first ___ gap sits in: [before, after], or null without a gap. */
+function gapContext(prompt) {
+  const at = String(prompt ?? '').indexOf('___');
+  if (at < 0) return null;
+  const before = prompt.slice(0, at).match(/\p{L}*$/u)[0];
+  const after = prompt.slice(at + 3).match(/^\p{L}*/u)[0];
+  return [before, after];
+}
+
 export function judge(exercise, input, extraAnswers = []) {
   const first = exercise.answers[0];
   const target = typeof first === 'string' ? first : first.text;
   const opts = { digits: exercise.digits !== false };
   const entries = [...acceptedAnswers(exercise), ...(extraAnswers || []).map((text) => ({ text }))]
     .map((a) => ({ ...a, norm: normalize(a.text, opts) }));
-  const accepted = entries.map((a) => a.norm);
+  const norms = entries.map((a) => a.norm);
   const n = normalize(input, opts);
   const diff = (t) => diffChars(input, t, opts);
 
@@ -230,18 +292,44 @@ export function judge(exercise, input, extraAnswers = []) {
     }
   }
 
-  // 4. accent-only difference
+  // 4. accent-only difference: a meaning-changing pair (e/è, la/là...) is a mistake
   const bare = stripAccents(n);
-  if (accepted.some((a) => stripAccents(a) === bare)) {
+  const accentOnly = norms.filter((a) => stripAccents(a) === bare);
+  for (const a of accentOnly) {
+    const message = accentPairMessage(a, n);
+    if (message) return { verdict: 'mistake', message, target, diff: diff(a) };
+  }
+
+  // 5. silent h: ho/hai/ha/hanno written without the h
+  for (const a of norms) {
+    const message = silentHMessage(a, n);
+    if (message) return { verdict: 'mistake', message, target, diff: diff(a) };
+  }
+
+  // 6. any other accent-only difference passes
+  if (accentOnly.length) {
     return { verdict: 'accent', message: ACCENT_MESSAGE, target };
   }
 
-  // 5. edit distance 1, mid-word in a word longer than 4 letters, not a taught spelling
-  const close = accepted.find((a) => isTolerableTypo(a, n));
+  // 7. the whole word typed into a gap
+  const gap = gapContext(exercise.prompt);
+  if (gap) {
+    const [before, after] = gap;
+    if (entries.some((a) => normalize(before + a.text + after, opts) === n)) {
+      return {
+        verdict: 'correct',
+        target,
+        note: `Right word! Next time type just the missing letters: ${target}.`,
+      };
+    }
+  }
+
+  // 8. edit distance 1, mid-word in a word longer than 4 letters, not a taught spelling
+  const close = norms.find((a) => isTolerableTypo(a, n));
   if (close) {
     return { verdict: 'typo', message: 'Giusto, small typo.', target, diff: diff(close) };
   }
 
-  // 6. wrong
+  // 9. wrong
   return { verdict: 'wrong', target, diff: diff(target) };
 }

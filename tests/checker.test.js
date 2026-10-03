@@ -27,8 +27,11 @@ test('curly apostrophe is accepted', () => {
 test('space after elision apostrophe is accepted', () => {
   assert.equal(judge(ex2, "l' amico è italiano").verdict, 'correct');
 });
-test('accent-only difference is accent', () => {
-  assert.equal(judge(ex2, "l'amico e italiano").verdict, 'accent');
+test('meaning-changing accent (e/è) is a mistake', () => {
+  assert.equal(judge(ex2, "l'amico e italiano").verdict, 'mistake');
+});
+test('accent-only difference outside the meaning pairs is accent', () => {
+  assert.equal(judge({ answers: ['Perché no?'] }, 'perche no').verdict, 'accent');
 });
 test('one-character typo on a long target is typo with diff', () => {
   const r = judge(ex2, "l'amico è italino");
@@ -238,4 +241,76 @@ test('typo is found inside an expanded answer', () => {
 });
 test('target is the text of an object first answer', () => {
   assert.equal(judge({ answers: [{ text: 'Vado.', note: 'x' }] }, 'zzz').target, 'Vado.');
+});
+
+// Meaning-changing accents (spec 5.3).
+test('e written for è is a mistake that names the word needed', () => {
+  const r = judge({ answers: ['La cena è pronta.'] }, 'La cena e pronta');
+  assert.equal(r.verdict, 'mistake');
+  assert.ok(r.message.includes('e means "and"'), r.message);
+  assert.ok(r.message.includes('Here you need è'), r.message);
+});
+test('è written for e is a mistake that names the word needed', () => {
+  const r = judge({ answers: ['Pane e vino.'] }, 'Pane è vino');
+  assert.equal(r.verdict, 'mistake');
+  assert.ok(r.message.includes('Here you need e'), r.message);
+});
+const accentPairs = [
+  ['Sì, grazie.', 'Si, grazie', 'si means "oneself", sì means "yes".', 'sì'],
+  ['Un tè caldo.', 'Un te caldo', 'te means "you" (after a preposition), tè means "tea".', 'tè'],
+  ['Sono là.', 'Sono la', 'la means "the" or "her", là means "there".', 'là'],
+  ['Sono lì.', 'Sono li', 'li means "them", lì means "there".', 'lì'],
+  ['Lui dà il libro.', 'Lui da il libro', 'da means "from" or "at", dà means "gives".', 'dà'],
+  ['Né pane né vino.', 'Ne pane ne vino', 'ne means "of it" or "some", né means "nor".', 'né'],
+  ['Pensa solo a sé.', 'Pensa solo a se', 'se means "if", sé means "oneself".', 'sé'],
+];
+for (const [answer, input, message, needed] of accentPairs) {
+  test(`accent pair: "${input}" for "${answer}" is a mistake`, () => {
+    const r = judge({ answers: [answer] }, input);
+    assert.equal(r.verdict, 'mistake');
+    assert.equal(r.message, `${message} Here you need ${needed}.`);
+  });
+}
+
+// Silent h (spec 5.4).
+const silentH = [
+  ['Ho sete.', 'O sete', 'ho', 'ho = I have, o = or'],
+  ['Hai fame.', 'Ai fame', 'hai', 'hai = you have, ai = to the'],
+  ['Ha fame.', 'A fame', 'ha', 'ha = has, a = to or at'],
+  ['Hanno fame.', 'Anno fame', 'hanno', 'hanno = they have, anno = year'],
+];
+for (const [answer, input, w, gloss] of silentH) {
+  test(`silent h: "${input}" for "${answer}" is a mistake`, () => {
+    const r = judge({ answers: [answer] }, input);
+    assert.equal(r.verdict, 'mistake');
+    assert.equal(r.message, `Right sound! The h in ${w} is silent, but it's always written: ${gloss}.`);
+  });
+}
+test('an explicit mistakes key wins over the silent h rule', () => {
+  assert.equal(judge({ answers: ['Ho sete.'], mistakes: { 'O sete': 'custom' } }, 'O sete').message, 'custom');
+});
+
+// Word boundaries (spec 5.5).
+test('signore for signora is wrong, not a typo', () => {
+  assert.equal(judge({ answers: ['Buongiorno, signora!'] }, 'Buongiorno, signore!').verdict, 'wrong');
+});
+test('typo tolerance is kept for mid-word slips', () => {
+  assert.notEqual(judge({ answers: ['Buongiorno, signora!'] }, 'Buongiorno, signroa!').verdict, 'typo');
+  assert.equal(judge({ answers: ['Arrivederci!'] }, 'Arrivedreci!').verdict, 'wrong');
+  assert.equal(judge({ answers: ['Buongiorno, signora!'] }, 'Buongiorno, signra!').verdict, 'typo');
+});
+test('a letter boundary (not only space/apostrophe) ends a word: edit before a hyphen is on the word end', () => {
+  assert.equal(judge({ answers: ['il caffè-latte'] }, 'il caffa-latte').verdict, 'wrong');
+});
+
+// Whole word typed into a gap.
+test('typing the whole word in a gap is correct with a note', () => {
+  assert.deepEqual(judge({ prompt: 'La ___na è pronta.', answers: ['ce'] }, 'cena'), {
+    verdict: 'correct',
+    target: 'ce',
+    note: 'Right word! Next time type just the missing letters: ce.',
+  });
+});
+test('a wrong whole word in a gap is wrong', () => {
+  assert.equal(judge({ prompt: 'La ___na è pronta.', answers: ['ce'] }, 'cina').verdict, 'wrong');
 });
