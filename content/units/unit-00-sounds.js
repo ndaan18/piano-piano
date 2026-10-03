@@ -109,10 +109,10 @@ export default {
         {
           id: 'u0-l1-e04', type: 'recognise', reg: 'neutral', rung: 1, ruleId: 'u0-r1',
           prompt: 'Un ___ al pistacchio, per favore.', say: 'Un gelato al pistacchio, per favore.', base: '(an ice cream)', en: 'A pistachio ice cream, please.',
-          answers: ['gelato'], options: ['gelato', 'ghelato', 'gielato'],
+          answers: ['gelato'], options: ['gelato', 'ghelato', 'celato'],
           mistakes: {
             ghelato: 'gh is always hard, as in "go". The soft "j" sound before e is just ge: gelato.',
-            gielato: 'Before e, g is already soft, so no i is needed: gelato.',
+            celato: 'celato, with a soft c like "ch", means "hidden". Ice cream has a soft g like "j": gelato.',
           },
           why: WHY_SOFT,
         },
@@ -146,10 +146,10 @@ export default {
         {
           id: 'u0-l1-e08', type: 'recognise', reg: 'neutral', rung: 1, ruleId: 'u0-r1',
           prompt: "___ cos'è?", say: "Che cos'è?", base: '(what is it?)', en: 'What is it?',
-          answers: ['Che'], options: ['Che', 'Ce', 'Ke'],
+          answers: ['Che'], options: ['Che', 'Ce', 'Chi'],
           mistakes: {
             Ce: 'ce is soft, "cheh". The k sound before e is spelled che.',
-            Ke: 'Italian uses k only in foreign words. The k sound before e is spelled ch: che.',
+            Chi: 'chi is "kee" and means "who". You hear k + e: che.',
           },
           why: WHY_HARD,
         },
@@ -189,6 +189,7 @@ export default {
           mistakes: {
             cia: 'cia is soft, "CHAH-veh". You hear a hard k and then a "y": chia, chiave.',
             ca: 'ca would have no "y" after the k, "KAH-veh". You hear k + y + a: chia.',
+            cha: 'You hear a "y" after the k, and it is written: chia, chiave.',
           },
           why: WHY_HARD,
         },
@@ -219,6 +220,7 @@ export default {
           mistakes: {
             gia: 'gia is soft, "JAT-cho". You hear the g of "go" and then a "y": ghia, ghiaccio.',
             ga: 'ga would have no "y" after the g. You hear g + y + a: ghia.',
+            gha: 'You hear a "y" after the g, and it is written: ghia, ghiaccio.',
           },
           why: WHY_HARD,
         },
@@ -317,6 +319,7 @@ export default {
           mistakes: {
             ca: 'caro means "dear" or "expensive". Clear has a "y" after the k: chia, chiaro.',
             cia: 'cia is soft, "CHAH-ro". Clear starts with a hard k: chia.',
+            cha: 'You hear a "y" after the k, and it is written: chia, chiaro.',
           },
           why: WHY_HARD,
         },
@@ -338,14 +341,14 @@ export default {
         // Rung 4: build from English (words not taught yet are glossed in base)
         {
           id: 'u0-l1-e26', type: 'build', reg: 'neutral', rung: 4, ruleId: 'u0-r1',
-          prompt: 'Translate: "The key, please."', base: '(at hotel reception; key = chiave)', en: 'The key, please.',
+          prompt: 'Translate: "The key, please."', base: '(at hotel reception; please = per favore)', en: 'The key, please.',
           answers: ['La chiave, per favore.', '[La] chiave, per {favore|piacere}.'],
           mistakes: { 'La ciave, per favore.': 'ci + a is soft, "chah". The key starts with a hard k: chiave.' },
           why: 'chiave: ch keeps the k sound before i.',
         },
         {
           id: 'u0-l1-e27', type: 'build', reg: 'neutral', rung: 4, ruleId: 'u0-r1',
-          prompt: 'Translate: "No ice, thanks."', base: '(ordering a drink at the bar; without = senza, ice = ghiaccio)', en: 'No ice, thanks.',
+          prompt: 'Translate: "No ice, thanks."', base: '(ordering a drink at the bar; without = senza, thanks = grazie)', en: 'No ice, thanks.',
           answers: ['Senza ghiaccio, grazie.', '{Senza|Niente} ghiaccio, grazie.'],
           mistakes: { 'Senza giaccio, grazie.': 'gia is soft, "jah". Ice has the g of "go": ghiaccio.' },
           why: WHY_HARD,
@@ -362,7 +365,7 @@ export default {
         },
         {
           id: 'u0-l1-e29', type: 'build', reg: 'neutral', rung: 4, ruleId: 'u0-r1',
-          prompt: 'Translate: "What time is dinner?"', base: '(asking at your hotel; what time = a che ora, dinner = cena)', en: 'What time is dinner?',
+          prompt: 'Translate: "What time is dinner?"', base: '(asking at your hotel; what time = a che ora, is = è)', en: 'What time is dinner?',
           answers: ['A che ora è la cena?', "A che ora {è|c'è} [la] cena?", 'A che ora si cena?'],
           mistakes: {
             'A ce ora è la cena?': 'ce is soft, "cheh". "What" is che, with a hard k.',
@@ -372,7 +375,7 @@ export default {
         },
         {
           id: 'u0-l1-e30', type: 'build', reg: 'neutral', rung: 4, ruleId: 'u0-r1',
-          prompt: 'Translate: "A chocolate ice cream, please."', base: '(at the gelateria; chocolate = cioccolato; the flavour comes after al)', en: 'A chocolate ice cream, please.',
+          prompt: 'Translate: "A chocolate ice cream, please."', base: '(at the gelateria; a = un, please = per favore; the flavour comes after al)', en: 'A chocolate ice cream, please.',
           answers: ['Un gelato al cioccolato, per favore.', 'Un gelato al cioccolato, per piacere.'],
           mistakes: {
             'Un ghelato al cioccolato, per favore.': 'gh is hard. gelato has a soft g: ge.',
@@ -402,9 +405,12 @@ export default {
         },
         {
           id: 'u0-l1-e33', type: 'listen', reg: 'neutral', rung: 5, ruleId: 'u0-r1',
-          prompt: 'La cena è pronta.', base: '', en: 'Dinner is ready.',
-          answers: ['La cena è pronta.'],
-          mistakes: { 'La chena è pronta.': 'You heard a soft "ch": before e, that is plain ce, cena.' },
+          prompt: 'Chiara, la cena!', base: '', en: 'Chiara, dinner!',
+          answers: ['Chiara, la cena!'],
+          mistakes: {
+            'Chiara, la chena!': 'You heard a soft "ch": before e, that is plain ce, cena.',
+            'Ciara, la cena!': 'You heard a hard k and a "y": Chiara starts with chi.',
+          },
           why: WHY_SOFT,
         },
         {
@@ -488,26 +494,28 @@ export default {
         {
           id: 'u0-l2-e01', type: 'recognise', reg: 'neutral', rung: 1, ruleId: 'u0-r2',
           prompt: 'Questa è la mia ___.', say: 'Questa è la mia famiglia.', base: '(family)', en: 'This is my family.',
-          answers: ['famiglia'], options: ['famiglia', 'familia', 'famillia'],
+          answers: ['famiglia'], options: ['famiglia', 'famigla'],
           mistakes: {
-            familia: 'familia is the Spanish spelling. Italian spells the "lly" sound gli: famiglia.',
-            famillia: 'lli is a double l + i, "fa-MEEL-lya". The "lly" sound is spelled gli: famiglia.',
+            famigla: 'gla is a plain g + l, "fa-MEE-gla". The "lli" sound of million is spelled gli: famiglia.',
           },
           why: WHY_GLI,
         },
         {
           id: 'u0-l2-e02', type: 'recognise', reg: 'neutral', rung: 1, ruleId: 'u0-r2',
           prompt: "Dov'è il ___?", say: "Dov'è il bagno?", base: '(the bathroom)', en: "Where's the bathroom?",
-          answers: ['bagno'], options: ['bagno', 'banio'],
-          mistakes: { banio: 'Italian spells the "ny" of canyon gn: bagno. ni would be a plain n plus a quick y, a lighter sound.' },
+          answers: ['bagno'], options: ['bagno', 'bango', 'bano'],
+          mistakes: {
+            bango: 'ng is a plain n then a hard g, "BAN-go". The "ny" of canyon is spelled gn: bagno.',
+            bano: 'bano would be a plain n, "BAH-no". You hear "ny": gn, bagno.',
+          },
           why: WHY_GN,
         },
         {
           id: 'u0-l2-e03', type: 'recognise', reg: 'neutral', rung: 1, ruleId: 'u0-r2',
           prompt: 'Un piatto di ___, per favore.', say: 'Un piatto di gnocchi, per favore.', base: '(potato dumplings)', en: 'A plate of gnocchi, please.',
-          answers: ['gnocchi'], options: ['gnocchi', 'niocchi', 'gnocci'],
+          answers: ['gnocchi'], options: ['gnocchi', 'nocchi', 'gnocci'],
           mistakes: {
-            niocchi: 'The "ny" sound is spelled gn: gnocchi.',
+            nocchi: 'nocchi would be a plain n, "NOK-kee". You hear "ny": gn, gnocchi.',
             gnocci: 'cci would be soft, "NYOT-chee". The hard k before i needs h: gnocchi.',
           },
           why: WHY_GN,
@@ -552,9 +560,9 @@ export default {
         {
           id: 'u0-l2-e08', type: 'recognise', reg: 'neutral', rung: 1, ruleId: 'u0-r2',
           prompt: 'Il ___ di Anna si chiama Luca.', say: 'Il figlio di Anna si chiama Luca.', base: '(son)', en: "Anna's son is called Luca.",
-          answers: ['figlio'], options: ['figlio', 'filio', 'figlo'],
+          answers: ['figlio'], options: ['figlio', 'filo', 'figlo'],
           mistakes: {
-            filio: 'li is a plain l plus a quick "y", a lighter sound. The "lli" sound of million is spelled gli: figlio.',
+            filo: 'filo, with a plain l, is a thread. You hear the "lli" sound of million: gli, figlio.',
             figlo: 'gl before o is a plain g + l, "FEE-glo". Keep the i: figlio.',
           },
           why: WHY_GLI,
@@ -589,6 +597,7 @@ export default {
           mistakes: {
             shi: 'Italian spells "sh" as sc before i or e: sci, uscita.',
             schi: 'sch is "sk", "oo-SKEE-ta". For "sh", write just sc: sci, uscita.',
+            si: 'si is a plain s. You hear "sh": before i, that is sci, uscita.',
           },
           why: WHY_SC_SOFT,
         },
@@ -618,6 +627,7 @@ export default {
           answers: ['glie'],
           mistakes: {
             le: 'mole would be "MO-leh". You hear the "lly" sound: glie, moglie.',
+            gle: 'gle is a plain g + l, "MO-gleh". Keep the i: glie, moglie.',
             lie: 'lie is a plain l plus a quick "y", a lighter sound. The "lli" sound of million is spelled gli: glie, moglie.',
           },
           why: WHY_GLI,
@@ -737,7 +747,7 @@ export default {
         // Rung 4: build from English (words not taught yet are glossed in base)
         {
           id: 'u0-l2-e26', type: 'build', reg: 'lei', rung: 4, ruleId: 'u0-r2',
-          prompt: 'Translate: "Excuse me, where\'s the bathroom?"', base: "(to a waiter; excuse me = scusi, where's = dov'è, bathroom = bagno)", en: "Excuse me, where's the bathroom?",
+          prompt: 'Translate: "Excuse me, where\'s the bathroom?"', base: "(to a waiter; where's = dov'è, the = il)", en: "Excuse me, where's the bathroom?",
           answers: ["Scusi, dov'è il bagno?", "[Mi] scusi, {dov'è|dove è} il bagno?"],
           mistakes: {
             "Scusi, dov'è il banio?": 'The "ny" sound is gn: bagno.',
@@ -748,7 +758,7 @@ export default {
         },
         {
           id: 'u0-l2-e27', type: 'build', reg: 'neutral', rung: 4, ruleId: 'u0-r2',
-          prompt: 'Translate: "Where\'s the exit?"', base: "(in a museum; where's = dov'è, the exit = l'uscita)", en: "Where's the exit?",
+          prompt: 'Translate: "Where\'s the exit?"', base: "(in a museum; where's = dov'è; before a vowel, the = l')", en: "Where's the exit?",
           answers: ["Dov'è l'uscita?", "{Dov'è|Dove è} l'uscita?", "[Mi] scusi, {dov'è|dove è} l'uscita?"],
           mistakes: {
             "Dov'è l'ushita?": 'Italian spells "sh" as sc: uscita.',
@@ -769,21 +779,21 @@ export default {
         },
         {
           id: 'u0-l2-e29', type: 'build', reg: 'neutral', rung: 4, ruleId: 'u0-r2',
-          prompt: 'Translate: "There\'s a strike tomorrow."', base: "(warning your partner about the trains; tomorrow = domani, there's = c'è, strike = sciopero)", en: "There's a strike tomorrow.",
+          prompt: 'Translate: "There\'s a strike tomorrow."', base: "(warning your partner about the trains; tomorrow = domani, there's = c'è)", en: "There's a strike tomorrow.",
           answers: ["Domani c'è sciopero.", "Domani c'è {lo|uno|} sciopero.", "C'è {lo|uno|} sciopero domani."],
           mistakes: { "Domani c'è scopero.": 'sco would be "sko". For "sh" before o, add an i you don\'t hear: sciopero.' },
           why: WHY_SC_SOFT,
         },
         {
           id: 'u0-l2-e30', type: 'build', reg: 'neutral', rung: 4, ruleId: 'u0-r2',
-          prompt: 'Translate: "A bottle of water, please."', base: "(at a restaurant; bottle = bottiglia, of water = d'acqua)", en: 'A bottle of water, please.',
+          prompt: 'Translate: "A bottle of water, please."', base: "(at a restaurant; a bottle = una bottiglia, of water = d'acqua, please = per favore)", en: 'A bottle of water, please.',
           answers: ["Una bottiglia d'acqua, per favore.", "Una bottiglia {d'acqua|di acqua}, per {favore|piacere}."],
           mistakes: { "Una bottilia d'acqua, per favore.": 'The "lly" sound is gli: bottiglia.' },
           why: WHY_GLI,
         },
         {
           id: 'u0-l2-e31', type: 'build', reg: 'neutral', rung: 4, ruleId: 'u0-r2',
-          prompt: 'Translate: "This is my family."', base: '(showing a photo to a friend; this is = questa è, my = la mia, family = famiglia)', en: 'This is my family.',
+          prompt: 'Translate: "This is my family."', base: '(showing a photo to a friend; this is = questa è, my = la mia)', en: 'This is my family.',
           answers: ['Questa è la mia famiglia.', 'Ecco la mia famiglia.'],
           mistakes: {
             'Questa è la mia familia.': 'familia is Spanish. Italian spells the "lly" sound gli: famiglia.',
@@ -795,22 +805,21 @@ export default {
         // Rung 5: listen & type
         {
           id: 'u0-l2-e32', type: 'listen', reg: 'neutral', rung: 5, ruleId: 'u0-r2',
-          prompt: "Dov'è il bagno?", base: '', en: "Where's the bathroom?",
-          answers: ["Dov'è il bagno?", 'Dove è il bagno?'],
+          prompt: 'Scusi, il bagno?', base: '', en: 'Excuse me, the bathroom?',
+          answers: ['Scusi, il bagno?'],
           mistakes: {
-            "Dov'è il banio?": 'You heard one "ny" sound: that is gn, bagno.',
-            'Dovè il bagno?': "Right sound! Write dov'è with an apostrophe: it is dove + è (where is), and the e of dove drops.",
-            'Dove il bagno?': "You need \"is\" too: dov'è is dove + è (where is).",
+            'Scusi, il banio?': 'You heard one "ny" sound: that is gn, bagno.',
+            'Sciusi, il bagno?': 'You heard "sk" before u: plain sc, scusi.',
           },
           why: WHY_GN,
         },
         {
           id: 'u0-l2-e33', type: 'listen', reg: 'neutral', rung: 5, ruleId: 'u0-r2',
-          prompt: 'Il pesce è fresco.', base: '', en: 'The fish is fresh.',
-          answers: ['Il pesce è fresco.'],
+          prompt: 'Prendo il pesce fresco.', base: '', en: "I'll have the fresh fish.",
+          answers: ['Prendo il pesce fresco.'],
           mistakes: {
-            'Il pesche è fresco.': 'You heard "sh": that is sc + e, pesce. pesche ("sk") are peaches.',
-            'Il pesce è fresho.': 'fresco has "sk": sc before o.',
+            'Prendo il pesche fresco.': 'You heard "sh": that is sc + e, pesce. pesche ("sk") are peaches.',
+            'Prendo il pesce fresho.': 'fresco has "sk": sc before o.',
           },
           why: WHY_SC_SOFT,
         },
@@ -833,16 +842,16 @@ export default {
         },
         {
           id: 'u0-l2-e36', type: 'listen', reg: 'neutral', rung: 5, ruleId: 'u0-r2',
-          prompt: 'La mia famiglia è grande.', base: '', en: 'My family is big.',
-          answers: ['La mia famiglia è grande.'],
-          mistakes: { 'La mia familia è grande.': 'You heard the "lli" of "million": Italian spells it gli, famiglia.' },
+          prompt: 'Sono qui con la mia famiglia.', base: '', en: "I'm here with my family.",
+          answers: ['Sono qui con la mia famiglia.'],
+          mistakes: { 'Sono qui con la mia familia.': 'You heard the "lli" of "million": Italian spells it gli, famiglia.' },
           why: WHY_GLI,
         },
         {
           id: 'u0-l2-e37', type: 'listen', reg: 'neutral', rung: 5, ruleId: 'u0-r2',
-          prompt: 'Lo sciopero è domani.', base: '', en: 'The strike is tomorrow.',
-          answers: ['Lo sciopero è domani.'],
-          mistakes: { 'Lo scopero è domani.': 'You heard "sh": before o, that is sci, sciopero.' },
+          prompt: 'Sciopero dei treni domani.', base: '', en: 'Train strike tomorrow.',
+          answers: ['Sciopero dei treni domani.'],
+          mistakes: { 'Scopero dei treni domani.': 'You heard "sh": before o, that is sci, sciopero.' },
           why: WHY_SC_SOFT,
         },
       ],

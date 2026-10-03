@@ -1,7 +1,7 @@
 // Unit 0, lessons 1–2: audio-first content (spec §3.5, §4, §7).
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { judge, normalize } from '../js/engine/checker.js';
+import { answerTexts, judge, normalize } from '../js/engine/checker.js';
 
 const unit = (await import('../content/units/unit-00-sounds.js')).default;
 
@@ -15,8 +15,8 @@ const cards = lessons.flatMap((l) => l.exercises);
 const first = (ex) => (typeof ex.answers[0] === 'string' ? ex.answers[0] : ex.answers[0].text);
 const audioTyped = cards.filter((ex) => ex.type === 'recognise' || ex.type === 'type');
 const gapCards = cards.filter((ex) => ex.type === 'type' && String(ex.prompt).includes(GAP));
-// Whole words or phrases, with an apostrophe as a word boundary (l'uscita contains uscita).
-const words = (s) => ` ${normalize(s).replace(/'/g, ' ')} `;
+// Whole words or phrases: any non-letter (apostrophe, bracket, =) is a word boundary (l'uscita contains uscita).
+const words = (s) => ` ${normalize(s).replace(/[^\p{L}]+/gu, ' ').trim()} `;
 
 /** The whole word the gap sits in, with the answer filled in ("___na" + "ce" → "cena"). */
 function wholeWord(ex) {
@@ -38,6 +38,12 @@ test('a hear & pick card speaks its answer as a whole word', () => {
   for (const ex of cards.filter((e) => e.type === 'recognise')) {
     assert.ok(words(ex.say).includes(words(first(ex))), `${ex.id}: "${ex.say}" lacks "${first(ex)}"`);
     assert.ok(ex.options.includes(first(ex)), `${ex.id}: options lack the answer`);
+  }
+});
+
+test('a hear & pick gap card with its answer filled in is exactly what is spoken', () => {
+  for (const ex of cards.filter((e) => e.type === 'recognise' && e.prompt.includes(GAP))) {
+    assert.equal(normalize(ex.prompt.replace(GAP, first(ex))), normalize(ex.say), ex.id);
   }
 });
 
@@ -102,5 +108,22 @@ test('the removed plural transforms and register cards stay removed', () => {
   const ids = new Set(cards.map((ex) => ex.id));
   for (const l of ['u0-l1', 'u0-l2']) {
     for (const n of [18, 19, 20, 21, 22, 23, 24, 25]) assert.ok(!ids.has(`${l}-e${n}`), `${l}-e${n}`);
+  }
+});
+
+// Accents are taught in lesson 4; before that, nothing may require one unless base gives the word.
+const ACCENTED = /[àèéìòù]/;
+
+test('no listen dictation in lessons 1–2 needs an accent', () => {
+  for (const ex of cards.filter((e) => e.type === 'listen')) {
+    for (const a of answerTexts(ex)) assert.ok(!ACCENTED.test(a), `${ex.id}: "${a}"`);
+  }
+});
+
+test('a card whose every answer needs an accent glosses the accented words in base', () => {
+  for (const ex of cards.filter((e) => e.type !== 'listen')) {
+    if (!answerTexts(ex).every((a) => ACCENTED.test(a))) continue;
+    const accented = normalize(first(ex)).split(' ').filter((w) => ACCENTED.test(w));
+    for (const w of accented) assert.ok(words(ex.base).includes(words(w)), `${ex.id}: base lacks "${w}"`);
   }
 });
