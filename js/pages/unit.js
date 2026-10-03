@@ -6,7 +6,7 @@ import { UNITS, loadUnit } from '../../content/index.js';
 import { renderCover, toneText } from '../covers.js';
 import { PASS_MARK, isUnlocked, unitStage } from '../engine/srs.js';
 import { SLOW_RATE } from '../audio.js';
-import { esc, PLAY_ICON } from '../ui/dom.js';
+import { esc, PLAY_ICON, NO_VOICE_HTML } from '../ui/dom.js';
 
 export const pad2 = (n) => String(n).padStart(2, '0');
 
@@ -225,4 +225,13 @@ export async function mount(root, params, ctx) {
   side.querySelector('.play')?.addEventListener('click', () => {
     ctx.audio.speak(unit.canSay, { rate: ctx.store.get().settings.slowDefault ? SLOW_RATE : 1 });
   });
+
+  // an audio-first unit can't be done without an Italian voice: say so above the steps
+  if (unit.audioFirst) {
+    const list = side.querySelector('.steps');
+    ctx.audio.hasItalianVoice().catch(() => false).then((ok) => {
+      if (ok || !list.isConnected) return;
+      list.insertAdjacentHTML('beforebegin', `<div class="notice">${NO_VOICE_HTML}</div>`);
+    });
+  }
 }

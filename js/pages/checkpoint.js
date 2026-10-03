@@ -5,10 +5,13 @@
 import { UNITS, exerciseIndex } from '../../content/index.js';
 import { buildCheckpoint, CHECKPOINT_SIZE, PASS_MARK } from '../engine/session.js';
 import { esc } from '../ui/dom.js';
-import { runSession, restoreSession, scoreResults } from '../ui/practice-card.js';
+import { runSession, restoreSession, scoreResults, isAudioCard, practisedCount, nothingPractisedHTML } from '../ui/practice-card.js';
 import { pad2, loadUnitStep, updateProgress, dropResume } from './unit.js';
 
 const pct = (x) => `${Math.round(x * 100)}%`;
+
+// Without an Italian voice the audio cards are dropped; a checkpoint left with fewer cards than this doesn't start.
+const MIN_CARDS_NO_VOICE = 10;
 
 /**
  * The checkpoint outcome. score = passes / cards answered; best = the best score
@@ -120,7 +123,10 @@ export async function mount(root, params, { store, audio }) {
     btn.focus({ preventScroll: true });
   }
 
-  function start() {
+  let starting = false;
+
+  async function start() {
+    if (starting) return;
     window.scrollTo(0, 0);
     const resume = saved;
     saved = null;
@@ -130,6 +136,23 @@ export async function mount(root, params, { store, audio }) {
         <section class="card ldone"><p class="ldone__text">Checkpoint cards for this unit are being written.</p>
           <div class="ldone__go"><a class="btn" href="#/unit/${u}">Back to the unit</a></div></section>`;
       return;
+    }
+    starting = true;
+    const voice = await audio.hasItalianVoice().catch(() => false);
+    starting = false;
+    if (!alive) return;
+    if (!voice) {
+      // the cards that would be left once runSession drops the audio cards (answered ones stay)
+      const ahead = resume ? resume.queue.slice(resume.pos) : cards;
+      const kept = (resume ? resume.results.length : 0) + ahead.filter((c) => !isAudioCard(lookup(c.exerciseId))).length;
+      if (kept < MIN_CARDS_NO_VOICE) {
+        stage.innerHTML = `
+          <section class="card ldone"><p class="ldone__text">This checkpoint needs an Italian voice.</p>
+            <div class="ldone__go"><a class="btn" href="#/settings">Settings</a>
+              <a class="btn btn--ghost" href="#/unit/${u}" data-back>Back to the unit</a></div></section>`;
+        stage.querySelector('[data-back]').focus({ preventScroll: true });
+        return;
+      }
     }
     stopSession = runSession(stage, cards, {
       mode: 'checkpoint',
@@ -141,12 +164,19 @@ export async function mount(root, params, { store, audio }) {
       onDone: (results) => {
         if (!alive) return;
         stopSession = null;
+        window.scrollTo(0, 0);
+        if (!practisedCount(results)) {
+          // nothing graded: no score
+          dropResume(store, route);
+          stage.innerHTML = nothingPractisedHTML(`#/unit/${u}`, 'Back to the unit →');
+          stage.querySelector('[data-back]').focus({ preventScroll: true });
+          return;
+        }
         const r = checkpointResult(results, unit, store.get().units[u]?.checkpointBest);
         updateProgress(store, u, (p, d) => {
           p.checkpointBest = r.best;
           d.resume = null;
         });
-        window.scrollTo(0, 0);
         stage.innerHTML = resultHTML(u, r);
         stage.querySelector('[data-again]')?.addEventListener('click', start);
         stage.querySelector('[data-back]').focus({ preventScroll: true });

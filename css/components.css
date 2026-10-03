@@ -333,6 +333,7 @@
 .unit__teaser { margin-top: 14px; font-weight: 700; font-size: 18px; letter-spacing: -0.02em; }
 
 .unit__side { display: flex; flex-direction: column; gap: 10px; }
+.unit__side .notice { margin-bottom: 0; }
 .unit__say { display: flex; flex-direction: column; gap: 10px; }
 .unit__say-row { display: flex; justify-content: space-between; align-items: center; gap: 14px; }
 .unit__say-it { font-weight: 800; font-size: 26px; letter-spacing: -0.035em; line-height: 1.1; }
@@ -570,13 +571,18 @@ a.step:hover { border-color: var(--ink); }
 .opt.is-wrong { border-color: var(--orange); box-shadow: inset 0 0 0 1px var(--orange); }
 
 .pc__audio { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
-.pc__audio[hidden], .pc__novoice[hidden] { display: none; }
+.pc__audio[hidden] { display: none; }
 .play--lg { width: 64px; height: 64px; }
 .play--lg svg { width: 22px; height: 22px; }
 .speed { display: flex; border: 1px solid var(--line); border-radius: var(--r-pill); overflow: hidden; }
 .speed button { border: 0; background: var(--card); padding: 8px 14px; min-height: 40px; font-weight: 700; font-size: 13px; cursor: pointer; }
 .speed button[aria-pressed="true"] { background: var(--ink); color: var(--lime); }
-.pc__novoice { display: flex; flex-direction: column; align-items: flex-start; gap: 10px; padding: 14px 16px; border-radius: var(--r-md); background: var(--base); font-size: 15px; }
+/* "Can't listen now" (+ "Skip all audio cards" after a few skips) */
+.pc__skip { display: flex; gap: var(--sp-2); flex-wrap: wrap; }
+.pc__skip[hidden] { display: none; }
+.pc__skip .btn { max-width: 100%; white-space: normal; text-align: center; }
+/* "Hear it" in the feedback */
+.fb__hear { align-self: flex-start; margin-top: var(--sp-1); }
 
 .pc__hintbox { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; }
 .pc__hintbox .btn[hidden], .pc__hinttext[hidden] { display: none; }

@@ -7,7 +7,7 @@ import { buildLessonSession, buildMixedSession, buildDrill } from '../engine/ses
 import { SLOW_RATE } from '../audio.js';
 import { esc, PLAY_ICON, regChip } from '../ui/dom.js';
 import { renderRuleSentence } from '../ui/marks.js';
-import { runSession, restoreSession, scoreResults } from '../ui/practice-card.js';
+import { runSession, restoreSession, scoreResults, practisedCount, nothingPractisedHTML } from '../ui/practice-card.js';
 import { pad2, loadUnitStep, updateProgress, dropResume } from './unit.js';
 
 // ---------- pure helpers ----------
@@ -277,8 +277,8 @@ async function mountLesson(root, params, { store, audio }) {
     } else if (step === 'practice') {
       startPractice();
     } else {
-      stage.innerHTML = doneHTML(u, results);
-      stage.querySelector('[data-again]').addEventListener('click', () => go('practice'));
+      stage.innerHTML = practisedCount(results) ? doneHTML(u, results) : nothingPractisedHTML(`#/unit/${u}`, 'Back to the unit →');
+      stage.querySelector('[data-again]')?.addEventListener('click', () => go('practice'));
       stage.querySelector('[data-back]').focus({ preventScroll: true });
     }
   }
@@ -304,10 +304,13 @@ async function mountLesson(root, params, { store, audio }) {
       onDone: (res) => {
         if (!alive) return;
         results = res;
-        updateProgress(store, u, (p, d) => {
-          if (!p.lessonsDone.includes(lesson.id)) p.lessonsDone = [...p.lessonsDone, lesson.id];
-          d.resume = null;
-        });
+        if (!practisedCount(res)) dropResume(store, route); // every card needed sound: no progress
+        else {
+          updateProgress(store, u, (p, d) => {
+            if (!p.lessonsDone.includes(lesson.id)) p.lessonsDone = [...p.lessonsDone, lesson.id];
+            d.resume = null;
+          });
+        }
         stopSession = null;
         go('done');
       },
@@ -377,13 +380,20 @@ async function mountUnitSession(root, params, { store, audio }, mode) {
       onDone: (results) => {
         if (!alive) return;
         stopSession = null;
+        window.scrollTo(0, 0);
+        if (!practisedCount(results)) {
+          // every card needed sound: no progress
+          dropResume(store, route);
+          stage.innerHTML = nothingPractisedHTML(`#/unit/${u}`, 'Back to the unit →');
+          stage.querySelector('[data-back]').focus({ preventScroll: true });
+          return;
+        }
         if (mixed) {
           updateProgress(store, u, (p, d) => {
             p.mixedDone = true;
             d.resume = null;
           });
         }
-        window.scrollTo(0, 0);
         stage.innerHTML = mixed ? doneHTML(u, results, { chip: 'Mixed practice done' }) : drillDoneHTML(u, results);
         stage.querySelector('[data-again]').addEventListener('click', start);
         stage.querySelector('[data-back]').focus({ preventScroll: true });

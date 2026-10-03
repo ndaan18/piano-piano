@@ -5,7 +5,7 @@
 import { exerciseIndex } from '../../content/index.js';
 import { SLOW_RATE } from '../audio.js';
 import { esc, PLAY_ICON, regChip } from '../ui/dom.js';
-import { runSession, restoreSession } from '../ui/practice-card.js';
+import { runSession, restoreSession, practisedCount, nothingPractisedHTML } from '../ui/practice-card.js';
 import { pad2, loadUnitStep, updateProgress, dropResume } from './unit.js';
 import { resumeStep, savesStep, declinesResume } from './lesson.js';
 
@@ -82,6 +82,7 @@ export async function mount(root, params, { store, audio }) {
   let saved = step === 'practice' ? restoreSession(state.resume?.session, lookup) : null;
   let stopSession = null;
   let results = [];
+  let nothing = false; // the session practised nothing: every card needed sound
   let alive = true;
   let voice = null; // unknown until hasItalianVoice resolves
   const rate = () => (store.get().settings.slowDefault ? SLOW_RATE : 1);
@@ -112,6 +113,7 @@ export async function mount(root, params, { store, audio }) {
 
   function finish(res) {
     results = res;
+    nothing = false;
     updateProgress(store, u, (p, d) => {
       p.sceneDone = true;
       d.resume = null;
@@ -173,7 +175,7 @@ export async function mount(root, params, { store, audio }) {
     } else if (step === 'practice') {
       startPractice();
     } else {
-      stage.innerHTML = doneHTML(u, results);
+      stage.innerHTML = nothing ? nothingPractisedHTML(`#/unit/${u}`, 'Back to the unit →') : doneHTML(u, results);
       stage.querySelector('[data-back]').focus({ preventScroll: true });
     }
   }
@@ -200,7 +202,14 @@ export async function mount(root, params, { store, audio }) {
       onDone: (res) => {
         if (!alive) return;
         stopSession = null;
-        finish(res);
+        if (practisedCount(res)) {
+          finish(res);
+          return;
+        }
+        // every card needed sound: no progress
+        nothing = true;
+        dropResume(store, route);
+        go('done');
       },
     });
   }

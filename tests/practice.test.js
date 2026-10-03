@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import {
   startSession, recordAnswer, overruleAnswer, nextCard, isFinished, segmentStates, shouldGrade,
   feedbackFor, markTarget, answerMarks, applyAnswer, applyOverrule, accentBody, restoreSession,
+  isAudioCard, spokenText, skipCard, dropCards, practisedCount, SKIP_ALL_AFTER,
 } from '../js/ui/practice-card.js';
 import { judge, diffChars, ACCENT_MESSAGE } from '../js/engine/checker.js';
 import { defaultState } from '../js/store.js';
@@ -215,4 +216,59 @@ test('restoreSession accepts a saved snapshot whose cards all still exist', () =
   assert.equal(restoreSession({ ...saved, pos: 2, results: [...saved.results, saved.results[0]] }, lookup), null);
   assert.equal(restoreSession({ queue: 'x', pos: 0, results: [] }, lookup), null);
   assert.equal(restoreSession(null, lookup), null);
+});
+
+test('isAudioCard: listen cards and cards with say', () => {
+  assert.equal(isAudioCard({ type: 'listen' }), true);
+  assert.equal(isAudioCard({ type: 'type', say: 'x' }), true);
+  assert.equal(isAudioCard({ type: 'type' }), false);
+});
+
+test('spokenText: listen prompt, say, the gap filled in, or the first answer', () => {
+  assert.equal(spokenText({ type: 'listen', prompt: 'Ciao, come stai?', answers: ['Ciao, come stai?'] }), 'Ciao, come stai?');
+  assert.equal(spokenText({ type: 'type', prompt: 'La ___na è pronta.', answers: ['ce'] }), 'La cena è pronta.');
+  assert.equal(spokenText({ type: 'type', say: 'Ciao!' }), 'Ciao!');
+  assert.equal(spokenText({ type: 'build', prompt: 'Hi', answers: [{ text: 'Ciao!', note: 'n' }] }), 'Ciao!');
+});
+
+test('skipCard moves the current card to the end, leaving results and pos alone', () => {
+  const lookup = (id) => (['a', 'b', 'c'].includes(id) ? { id } : undefined);
+  const s = skipCard(startSession(cards('a', 'b', 'c')));
+  assert.deepEqual(s.queue.map((c) => c.exerciseId), ['b', 'c', 'a']);
+  assert.equal(s.pos, 0);
+  assert.deepEqual(s.results, []);
+  assert.deepEqual(restoreSession(s, lookup), s);
+
+  let t = recordAnswer(startSession(cards('a', 'b', 'c')), { verdict: 'correct', pass: true }, 'practice');
+  t = skipCard(nextCard(t));
+  assert.deepEqual(t.queue.map((c) => c.exerciseId), ['a', 'c', 'b']);
+  assert.equal(t.pos, 1);
+  assert.deepEqual(t.results, [{ exerciseId: 'a', verdict: 'correct', pass: true, retry: false }]);
+  assert.deepEqual(restoreSession(t, lookup), t);
+});
+
+test('skipCard on the last card returns the session unchanged', () => {
+  const s = nextCard(nextCard(recordAnswer(startSession(cards('a', 'b')), { verdict: 'correct', pass: true }, 'practice')));
+  const last = { ...s, pos: 1, results: s.results };
+  assert.equal(skipCard(last), last);
+});
+
+test('dropCards removes matching cards from pos onwards', () => {
+  const ex = { a: { type: 'listen' }, b: { type: 'type' }, c: { type: 'type', say: 'x' } };
+  const s = dropCards(startSession(cards('a', 'b', 'c')), (id) => isAudioCard(ex[id]));
+  assert.deepEqual(s.queue.map((c) => c.exerciseId), ['b']);
+  assert.equal(s.pos, 0);
+
+  // answered cards before pos stay
+  let t = recordAnswer(startSession(cards('a', 'b', 'c')), { verdict: 'correct', pass: true }, 'practice');
+  t = dropCards(nextCard(t), (id) => isAudioCard(ex[id]));
+  assert.deepEqual(t.queue.map((c) => c.exerciseId), ['a', 'b']);
+  assert.equal(t.results.length, 1);
+});
+
+test('practisedCount counts first attempts only', () => {
+  assert.equal(practisedCount([]), 0);
+  assert.equal(practisedCount([{ retry: true }]), 0);
+  assert.equal(practisedCount([{ retry: false }, { retry: true }, { retry: false }]), 2);
+  assert.equal(SKIP_ALL_AFTER, 3);
 });

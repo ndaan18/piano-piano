@@ -1,5 +1,7 @@
 // Practice card session (spec §5, §6, §7.5; prototype in mockups/interaction-sketches-v2).
 // One centred card at a time: Enter checks, Enter continues, Space replays audio.
+// Audio cards (listen, or any card with `say`) play first and can be skipped;
+// without an Italian voice they are dropped from the session.
 // Used by every practice mode: lesson ('practice'), mixed, scene, checkpoint, review, drill.
 //
 // The top half is pure (session state, store mutations, feedback copy, answer
@@ -23,6 +25,19 @@ const TYPE_LABELS = {
   register: 'Switch register',
 };
 const GAP = '___';
+export const SKIP_ALL_AFTER = 3; // consecutive "Can't listen now" before "Skip all audio cards" is offered
+
+/** An audio card plays a sentence before it is answered: every listen card, and any card with `say`. */
+export const isAudioCard = (ex) => ex?.type === 'listen' || !!ex?.say;
+
+/** What the card speaks: the listen prompt, else `say`, else the gap sentence filled in, else the first answer. */
+export function spokenText(ex) {
+  if (ex.type === 'listen') return ex.prompt;
+  if (ex.say) return ex.say;
+  const first = ex.answers?.length ? answerTexts(ex)[0] : '';
+  const prompt = String(ex.prompt || '');
+  return prompt.includes(GAP) ? prompt.split(GAP).join(first) : first;
+}
 
 // ---------- session state (pure) ----------
 // Session = { queue: SessionCard[], pos, results: Array<{exerciseId, verdict, pass, retry, overruled?}> }
@@ -64,6 +79,22 @@ export function overruleAnswer(session) {
   }
   return { queue, pos, results };
 }
+
+/** "Can't listen now": the current card moves to the end, ungraded. A lone last card stays put. */
+export function skipCard(session) {
+  const { queue, pos } = session;
+  if (pos >= queue.length - 1) return session;
+  return { ...session, queue: [...queue.slice(0, pos), ...queue.slice(pos + 1), queue[pos]] };
+}
+
+/** Removes every card not yet shown (index ≥ pos) whose exerciseId matches `predicate`. */
+export function dropCards(session, predicate) {
+  const { queue, pos } = session;
+  return { ...session, queue: queue.filter((c, i) => i < pos || !predicate(c.exerciseId)) };
+}
+
+/** Cards practised in a session: first attempts only. 0 means nothing was practised. */
+export const practisedCount = (results) => (results || []).filter((r) => r && !r.retry).length;
 
 export const nextCard = (session) => ({ ...session, pos: session.pos + 1 });
 export const isFinished = (session) => session.pos >= session.queue.length;
@@ -209,31 +240,48 @@ function promptHTML(ex) {
 
 // ---------- DOM ----------
 
-function cardHTML(ex, card, { hints, mode }) {
-  const listen = ex.type === 'listen';
+/** The done block for a session that practised nothing: every card needed sound. */
+export function nothingPractisedHTML(href, label) {
+  return `
+    <section class="card ldone">
+      <span class="chip">Nothing practised</span>
+      <p class="ldone__text">These cards need sound. Find a quiet moment, or install an Italian voice in <a href="#/settings">Settings</a>.</p>
+      <div class="ldone__go"><a class="btn" href="${esc(href)}" data-back>${esc(label)}</a></div>
+    </section>`;
+}
+
+function cardHTML(ex, card, { hints, mode, skips }) {
+  const audio = isAudioCard(ex);
   const kind = `
     <div class="pc__kind">
       <span class="chip">${TYPE_LABELS[ex.type] || esc(ex.type)}</span>${regChip(ex.reg)}
       ${card.retry ? '<span class="chip chip--retry">second try</span>' : ''}
     </div>`;
 
-  const body = listen
+  // audio cards play the sentence first; a listen card's prompt is the sentence itself, so it stays hidden
+  const sound = audio
     ? `
     <div class="pc__audio" data-audio>
       <button class="play play--lg" type="button" data-play aria-label="Play the sentence">${PLAY_ICON}</button>
       <div class="speed" role="group" aria-label="Speed">
         <button type="button" data-rate="1">Normal</button><button type="button" data-rate="${SLOW_RATE}">Slow</button>
       </div>
-      <span class="pc__hint">Type what you hear<span class="pc__keys"> · <kbd class="kbd">Space</kbd> replays until you start typing</span></span>
-    </div>
-    <div class="pc__novoice" data-novoice hidden>
-      <p>No Italian voice installed, see <a href="#/settings">Settings</a>.</p>
-      <button class="btn btn--ghost" type="button" data-show>Show sentence</button>
-      <p class="pc__prompt" lang="it" data-sentence hidden>${esc(ex.prompt)}</p>
+      <span class="pc__hint">${ex.type === 'recognise' ? 'Pick' : 'Type'} what you hear<span class="pc__keys"> · <kbd class="kbd">Space</kbd> replays until you start typing</span></span>
     </div>`
+    : '';
+  const body = ex.type === 'listen'
+    ? ''
     : `
     <p class="pc__prompt"${ex.type === 'build' ? '' : ' lang="it"'}>${promptHTML(ex)}</p>
     ${ex.base ? `<p class="pc__hint">${esc(ex.base)}</p>` : ''}`;
+
+  const skip = audio && mode !== 'checkpoint'
+    ? `
+    <div class="pc__skip" data-skiprow>
+      <button class="btn btn--ghost" type="button" data-skip>Can't listen now</button>
+      ${skips >= SKIP_ALL_AFTER ? '<button class="btn btn--ghost" type="button" data-skipall>Skip all audio cards this session</button>' : ''}
+    </div>`
+    : '';
 
   const answer = ex.type === 'recognise'
     ? `
@@ -258,7 +306,7 @@ function cardHTML(ex, card, { hints, mode }) {
     </div>`
     : '';
 
-  return `${kind}${body}${answer}${hint}
+  return `${kind}${sound}${body}${answer}${hint}${skip}
     <div class="fb" data-fb aria-live="polite"></div>
     <div class="pc__actions">
       <span class="pc__keys pc__hint" data-keys><kbd class="kbd">Enter</kbd> to check</span>
@@ -283,7 +331,6 @@ export function runSession(root, cards, { mode = 'practice', lookup, store, audi
   let alive = true;
   let phase = 'answer'; // 'answer' | 'feedback'
   let checkedAt = 0;
-  let token = 0; // per rendered card, so a late async callback can't touch the next card
   let timer = null;
   let rate = store.get().settings.slowDefault ? SLOW_RATE : 1;
   let ex = null;
@@ -291,7 +338,8 @@ export function runSession(root, cards, { mode = 'practice', lookup, store, audi
   let picked = null; // recognise: chosen option index
   let lastInput = '';
   let before; // the card's SRS state before this answer, for "I was right"
-  let hasVoice = false;
+  let voice = false; // an Italian voice is installed; known before the first card
+  let skips = 0; // consecutive "Can't listen now"; reset by answering a card
 
   root.innerHTML = `
     <div class="session">
@@ -315,8 +363,14 @@ export function runSession(root, cards, { mode = 'practice', lookup, store, audi
     countEl.innerHTML = `${n} / ${session.queue.length}<span class="sr-only"> cards</span>`;
   }
 
+  // audio cards play themselves; "Hear it" (hear) is the only way to play any other card
   function speak() {
-    if (hasVoice && ex?.type === 'listen') audio.speak(ex.prompt, { rate });
+    if (voice && ex && isAudioCard(ex)) audio.speak(spokenText(ex), { rate });
+  }
+
+  function hear() {
+    if (voice && ex) audio.speak(spokenText(ex), { rate });
+    focusAnswer();
   }
 
   function focusAnswer() {
@@ -325,27 +379,25 @@ export function runSession(root, cards, { mode = 'practice', lookup, store, audi
   }
 
   function render() {
-    token++;
     clearTimeout(timer);
     card = session.queue[session.pos];
     ex = lookup(card.exerciseId);
     phase = 'answer';
     picked = null;
     before = undefined;
-    hasVoice = false;
     const hints = !!card.hints && mode !== 'checkpoint';
     cardEl.className = 'pc';
     cardEl.style.animation = 'none'; // replay the entry animation for each card
     void cardEl.offsetWidth;
     cardEl.style.animation = '';
-    cardEl.innerHTML = cardHTML(ex, card, { hints, mode });
+    cardEl.innerHTML = cardHTML(ex, card, { hints, mode, skips });
     drawBar();
     wire();
     focusAnswer();
-    if (ex.type === 'listen') setupAudio(token);
+    if (isAudioCard(ex)) setupAudio();
   }
 
-  function setupAudio(t) {
+  function setupAudio() {
     const setRate = (r) => {
       rate = r;
       cardEl.querySelectorAll('[data-rate]').forEach((b) => b.setAttribute('aria-pressed', String(Number(b.dataset.rate) === rate)));
@@ -357,21 +409,32 @@ export function runSession(root, cards, { mode = 'practice', lookup, store, audi
       speak();
       focusAnswer();
     }));
-    $('[data-show]').addEventListener('click', (e) => {
-      $('[data-sentence]').hidden = false;
-      e.currentTarget.hidden = true;
-      focusAnswer();
-    });
-    audio.hasItalianVoice().then((ok) => {
-      if (!alive || t !== token) return;
-      hasVoice = ok;
-      if (!ok) {
-        $('[data-audio]').hidden = true;
-        $('[data-novoice]').hidden = false;
-      } else if (phase === 'answer') {
-        timer = setTimeout(speak, AUTOPLAY_MS); // auto-play once
-      }
-    });
+    timer = setTimeout(speak, AUTOPLAY_MS); // auto-play once
+  }
+
+  /** Shows the next card, or ends the session when none is left. */
+  function show() {
+    if (isFinished(session)) finish();
+    else render();
+  }
+
+  // "Can't listen now": the card goes to the end of the queue, ungraded. A last card
+  // has nothing to go behind, so it is dropped instead and the learner is never stuck.
+  function skip() {
+    if (!alive || phase !== 'answer') return;
+    const moved = skipCard(session);
+    session = moved !== session ? moved : dropCards(session, (id) => id === card.exerciseId);
+    skips++;
+    audio.stop?.();
+    show();
+  }
+
+  function skipAll() {
+    if (!alive || phase !== 'answer') return;
+    session = dropCards(session, (id) => isAudioCard(lookup(id)));
+    skips = 0;
+    audio.stop?.();
+    show();
   }
 
   function pick(i) {
@@ -406,12 +469,14 @@ export function runSession(root, cards, { mode = 'practice', lookup, store, audi
       e.currentTarget.hidden = true;
       focusAnswer();
     });
+    $('[data-skip]')?.addEventListener('click', skip);
+    $('[data-skipall]')?.addEventListener('click', skipAll);
     $('[data-go]').addEventListener('click', act);
     $('[data-right]').addEventListener('click', overrule);
   }
 
   function act() {
-    if (!alive) return;
+    if (!alive || !ex) return; // no card yet: waiting to learn whether there is a voice
     if (phase === 'answer') check();
     else if (performance.now() - checkedAt >= DEBOUNCE_MS) advance();
   }
@@ -426,7 +491,10 @@ export function runSession(root, cards, { mode = 'practice', lookup, store, audi
     phase = 'feedback';
     checkedAt = performance.now();
     lastInput = value;
+    skips = 0;
     clearTimeout(timer);
+    const skipRow = $('[data-skiprow]');
+    if (skipRow) skipRow.hidden = true;
 
     session = recordAnswer(session, { verdict: res.verdict, pass }, mode);
     store.update((d) => {
@@ -456,9 +524,20 @@ export function runSession(root, cards, { mode = 'practice', lookup, store, audi
     speak();
   }
 
+  // the feedback box, with "Hear it" (never auto-played) when there is a voice
+  function setFeedback(tone, html) {
+    const fb = $('[data-fb]');
+    fb.className = `fb fb--${tone}`;
+    fb.innerHTML = html + (voice
+      ? `<button class="btn btn--ghost fb__hear" type="button" data-hear>${PLAY_ICON}Hear it</button>`
+      : '');
+    fb.querySelector('[data-hear]')?.addEventListener('click', hear);
+  }
+
   function showFeedback(res, answers) {
     const f = feedbackFor(res, ex, mode);
     const parts = [`<span class="fb__bar"></span><p class="fb__verdict">${esc(f.title)}</p>`];
+    if (res.note) parts.push(`<p class="fb__body">${esc(res.note)}</p>`);
     if (f.showTarget) {
       const marks = f.marked ? answerMarks(res, answers) : answerMarks({ target: res.target }, []);
       parts.push(`<p class="fb__target" lang="it">${targetHTML(ex, marks)}</p>`);
@@ -467,9 +546,7 @@ export function runSession(root, cards, { mode = 'practice', lookup, store, audi
     }
     if (f.body) parts.push(`<p class="fb__body">${esc(f.body)}</p>`);
     if (mode !== 'checkpoint' && ex.type !== 'build' && ex.en) parts.push(`<p class="fb__en">${esc(ex.en)}</p>`);
-    const fb = $('[data-fb]');
-    fb.className = `fb fb--${f.tone}`;
-    fb.innerHTML = parts.join('');
+    setFeedback(f.tone, parts.join(''));
   }
 
   function overrule() {
@@ -477,10 +554,8 @@ export function runSession(root, cards, { mode = 'practice', lookup, store, audi
     session = overruleAnswer(session);
     store.update((d) => applyOverrule(d, { card, input: lastInput, before, mode, now: new Date() }));
     onProgress?.(snapshot());
-    const fb = $('[data-fb]');
-    fb.className = 'fb fb--ok';
-    fb.innerHTML = `<span class="fb__bar"></span><p class="fb__verdict">Noted.</p>
-      <p class="fb__body">“<span lang="it">${esc(lastInput)}</span>” now counts as correct for this card. It's saved to your reports so the content can be fixed.</p>`;
+    setFeedback('ok', `<span class="fb__bar"></span><p class="fb__verdict">Noted.</p>
+      <p class="fb__body">“<span lang="it">${esc(lastInput)}</span>” now counts as correct for this card. It's saved to your reports so the content can be fixed.</p>`);
     $('[data-right]').hidden = true;
     $('[data-go]').focus({ preventScroll: true });
     drawBar();
@@ -488,8 +563,7 @@ export function runSession(root, cards, { mode = 'practice', lookup, store, audi
 
   function advance() {
     session = nextCard(session);
-    if (isFinished(session)) finish();
-    else render();
+    show();
   }
 
   function finish() {
@@ -511,7 +585,7 @@ export function runSession(root, cards, { mode = 'practice', lookup, store, audi
       act();
     } else if (e.key === ' ') {
       // Space replays, unless it is typing a space into an answer already started
-      if (ex?.type !== 'listen' || onControl || onOption || (t?.matches('input') && t.value !== '')) return;
+      if (!ex || !isAudioCard(ex) || onControl || onOption || (t?.matches('input') && t.value !== '')) return;
       e.preventDefault();
       speak();
     } else if (/^[1-4]$/.test(e.key) && ex?.type === 'recognise' && !t?.matches('input')) {
@@ -540,12 +614,16 @@ export function runSession(root, cards, { mode = 'practice', lookup, store, audi
   vv?.addEventListener('resize', onViewport);
   vv?.addEventListener('scroll', onViewport);
 
-  if (isFinished(session)) {
-    // nothing to practise (empty pool, or a snapshot saved after the last answer)
-    queueMicrotask(finish);
-  } else {
-    render();
-  }
+  // Without an Italian voice, audio cards can't be done: drop them before the first card.
+  // An empty session (empty pool, a snapshot saved after the last answer, or only audio
+  // cards and no voice) finishes at once with the results so far.
+  const begin = (ok) => {
+    if (!alive) return;
+    voice = ok;
+    if (!voice) session = dropCards(session, (id) => isAudioCard(lookup(id)));
+    show();
+  };
+  audio.hasItalianVoice().then(begin, () => begin(false));
 
   return () => {
     stop();

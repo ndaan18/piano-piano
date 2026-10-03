@@ -5,7 +5,7 @@ import { UNITS, loadUnit, exerciseIndex } from '../../content/index.js';
 import { dueIds, localDate } from '../engine/srs.js';
 import { buildReviewSession, REVIEW_LIMIT } from '../engine/session.js';
 import { esc } from '../ui/dom.js';
-import { runSession, restoreSession } from '../ui/practice-card.js';
+import { runSession, restoreSession, practisedCount, nothingPractisedHTML } from '../ui/practice-card.js';
 import { dropResume } from './unit.js';
 
 const ROUTE = '#/review';
@@ -137,7 +137,8 @@ export async function mount(root, params, { store, audio }) {
         stopSession = null;
         store.update((d) => { d.resume = null; });
         window.scrollTo(0, 0);
-        stage.innerHTML = doneHTML(results, due().length);
+        // every due card needed sound: they stay due
+        stage.innerHTML = practisedCount(results) ? doneHTML(results, due().length) : nothingPractisedHTML('#/', 'Back to your path →');
         stage.querySelector('[data-again]')?.addEventListener('click', start);
         stage.querySelector('[data-back]').focus({ preventScroll: true });
       },
