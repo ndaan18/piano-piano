@@ -365,7 +365,7 @@ export default {
         },
         {
           id: 'u0-l1-e29', type: 'build', reg: 'neutral', rung: 4, ruleId: 'u0-r1',
-          prompt: 'Translate: "What time is dinner?"', base: '(asking at your hotel; what time = a che ora, is = è)', en: 'What time is dinner?',
+          prompt: 'Translate: "What time is dinner?"', base: '(asking at your hotel; what time = a + what + ora, is = è)', en: 'What time is dinner?',
           answers: ['A che ora è la cena?', "A che ora {è|c'è} [la] cena?", 'A che ora si cena?'],
           mistakes: {
             'A ce ora è la cena?': 'ce is soft, "cheh". "What" is che, with a hard k.',
@@ -388,11 +388,11 @@ export default {
         // Rung 5: listen & type
         {
           id: 'u0-l1-e31', type: 'listen', reg: 'neutral', rung: 5, ruleId: 'u0-r1',
-          prompt: 'Che bella chiesa!', base: '', en: 'What a beautiful church!',
-          answers: ['Che bella chiesa!'],
+          prompt: 'Che chiesa grande!', base: '', en: 'What a big church!',
+          answers: ['Che chiesa grande!'],
           mistakes: {
-            'Ce bella chiesa!': 'You heard a hard k ("keh"): that is che.',
-            'Che bella ciesa!': 'You heard a hard k ("KYEH-za"): before i, that is chi, chiesa.',
+            'Ce chiesa grande!': 'You heard a hard k ("keh"): that is che.',
+            'Che ciesa grande!': 'You heard a hard k ("KYEH-za"): before i, that is chi, chiesa.',
           },
           why: WHY_HARD,
         },
@@ -626,7 +626,7 @@ export default {
           prompt: 'Ti presento mia mo___.', say: 'Ti presento mia moglie.', base: '(let me introduce my wife)', en: 'Let me introduce my wife.',
           answers: ['glie'],
           mistakes: {
-            le: 'mole would be "MO-leh". You hear the "lly" sound: glie, moglie.',
+            le: 'mole would be "MO-leh". You hear the "lli" of million: glie, moglie.',
             gle: 'gle is a plain g + l, "MO-gleh". Keep the i: glie, moglie.',
             lie: 'lie is a plain l plus a quick "y", a lighter sound. The "lli" sound of million is spelled gli: glie, moglie.',
           },
@@ -788,7 +788,7 @@ export default {
           id: 'u0-l2-e30', type: 'build', reg: 'neutral', rung: 4, ruleId: 'u0-r2',
           prompt: 'Translate: "A bottle of water, please."', base: "(at a restaurant; a bottle = una bottiglia, of water = d'acqua, please = per favore)", en: 'A bottle of water, please.',
           answers: ["Una bottiglia d'acqua, per favore.", "Una bottiglia {d'acqua|di acqua}, per {favore|piacere}."],
-          mistakes: { "Una bottilia d'acqua, per favore.": 'The "lly" sound is gli: bottiglia.' },
+          mistakes: { "Una bottilia d'acqua, per favore.": 'The "lli" sound of million is spelled gli: bottiglia.' },
           why: WHY_GLI,
         },
         {
@@ -796,7 +796,7 @@ export default {
           prompt: 'Translate: "This is my family."', base: '(showing a photo to a friend; this is = questa è, my = la mia)', en: 'This is my family.',
           answers: ['Questa è la mia famiglia.', 'Ecco la mia famiglia.'],
           mistakes: {
-            'Questa è la mia familia.': 'familia is Spanish. Italian spells the "lly" sound gli: famiglia.',
+            'Questa è la mia familia.': 'familia is Spanish. Italian spells the "lli" sound of million gli: famiglia.',
             'Questa è mia famiglia.': 'With famiglia, Italians keep "the": la mia famiglia.',
           },
           why: WHY_GLI,
