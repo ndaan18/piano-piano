@@ -147,7 +147,7 @@ export async function mount(root, params, ctx) {
           <div class="review__count">${due}</div>
           <p class="review__text">${esc(reviewCountText(due))}</p>
         </div>
-        <a class="btn" href="#/review">Start review →</a>
+        ${due ? '<a class="btn" href="#/review">Start review →</a>' : ''}
       </section>
     </div>
 

@@ -445,7 +445,6 @@ a.step:hover { border-color: var(--ink); }
 }
 .rule__why { font-size: 17px; line-height: 1.5; max-width: 60ch; }
 .rule__side { display: flex; flex-direction: column; gap: 10px; }
-.rule__careful { border-left: 4px solid var(--orange); display: flex; flex-direction: column; gap: 8px; font-size: 15px; }
 .rule__careful-tag { color: var(--orange-ink); }
 .rule__say { display: flex; flex-direction: column; gap: 8px; }
 .rule__say-row { display: flex; justify-content: space-between; align-items: center; gap: 14px; }
@@ -581,7 +580,7 @@ a.step:hover { border-color: var(--ink); }
 
 .pc__hintbox { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; }
 .pc__hintbox .btn[hidden], .pc__hinttext[hidden] { display: none; }
-.pc__hinttext { font-size: 15px; padding-left: 12px; border-left: 3px solid var(--ultra); }
+.pc__hinttext { font-size: 15px; padding: 12px 14px; border: 2px solid var(--ultra); border-radius: var(--r-md); }
 
 .pc__actions { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; margin-top: auto; }
 .pc__btns { display: flex; gap: 8px; margin-left: auto; }
@@ -734,7 +733,8 @@ body.page--ink { background: var(--ink); color: var(--base); }
 .ref__list + .ref__list { margin-top: var(--sp-5); }
 .ref__list > .sec { margin: 0; }
 .ref .rule__sent { font-size: clamp(26px, 3.4vw, 36px); }
-.ref__careful {
+/* the "Careful" box looks the same on the rule screen and in Reference */
+.rule__careful, .ref__careful {
   display: flex;
   flex-direction: column;
   gap: 6px;

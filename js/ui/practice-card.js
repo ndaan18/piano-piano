@@ -224,7 +224,7 @@ function cardHTML(ex, card, { hints, mode }) {
       <div class="speed" role="group" aria-label="Speed">
         <button type="button" data-rate="1">Normal</button><button type="button" data-rate="${SLOW_RATE}">Slow</button>
       </div>
-      <span class="pc__hint">Type what you hear<span class="pc__keys"> · <kbd class="kbd">Space</kbd> replays</span></span>
+      <span class="pc__hint">Type what you hear<span class="pc__keys"> · <kbd class="kbd">Space</kbd> replays until you start typing</span></span>
     </div>
     <div class="pc__novoice" data-novoice hidden>
       <p>No Italian voice installed, see <a href="#/settings">Settings</a>.</p>
@@ -506,9 +506,12 @@ export function runSession(root, cards, { mode = 'practice', lookup, store, audi
     if (e.key === 'Enter') {
       if (onControl) return; // the focused button or link handles its own Enter
       e.preventDefault();
-      if (!e.repeat) act();
+      if (e.repeat) return;
+      if (onOption && phase === 'answer') pick(Number(t.closest('[data-opt]').dataset.opt)); // Enter on a Tab-focused option picks it
+      act();
     } else if (e.key === ' ') {
-      if (ex?.type !== 'listen' || onControl || onOption || t?.matches('input')) return;
+      // Space replays, unless it is typing a space into an answer already started
+      if (ex?.type !== 'listen' || onControl || onOption || (t?.matches('input') && t.value !== '')) return;
       e.preventDefault();
       speak();
     } else if (/^[1-4]$/.test(e.key) && ex?.type === 'recognise' && !t?.matches('input')) {
