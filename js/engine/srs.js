@@ -18,11 +18,16 @@ export function addDays(isoDate, n) {
   return localDate(new Date(y, m - 1, d + n));
 }
 
+// A pass only climbs a box when the card is due (or new): passing a card again
+// before its due date (same lesson twice, a mixed session) counts it as seen and
+// correct but keeps its box and due date. A fail always demotes.
 export function grade(card, pass, now) {
   const today = localDate(now);
   const prev = card || { box: 0, seen: 0, correct: 0, lastWrong: null };
   const next = { ...prev, seen: prev.seen + 1 };
-  if (pass) {
+  if (pass && prev.due && prev.due > today) {
+    next.correct = prev.correct + 1;
+  } else if (pass) {
     next.box = Math.min(prev.box + 1, MAX_BOX);
     next.due = addDays(today, INTERVALS[next.box - 1]);
     next.correct = prev.correct + 1;

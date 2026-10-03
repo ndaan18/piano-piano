@@ -28,16 +28,54 @@ test('new card passed becomes box 1, due tomorrow', () => {
   assert.equal(c.lastWrong, null);
 });
 
-test('pass chain climbs boxes 1-5 with dues +1, +3, +7, +21, +60; box 5 stays', () => {
+test('pass chain (each pass on its due day) climbs boxes 1-5 with intervals 1, 3, 7, 21, 60; box 5 stays', () => {
   let c = undefined;
+  let now = NOW;
   const dues = [];
-  for (let i = 0; i < 6; i++) { c = grade(c, true, NOW); dues.push([c.box, c.due]); }
+  for (let i = 0; i < 6; i++) {
+    c = grade(c, true, now);
+    dues.push([c.box, c.due]);
+    const [y, m, d] = c.due.split('-').map(Number);
+    now = new Date(y, m - 1, d, 10, 0);
+  }
   assert.deepEqual(dues, [
-    [1, '2026-10-03'], [2, '2026-10-05'], [3, '2026-10-09'],
-    [4, '2026-10-23'], [5, '2026-12-01'], [5, '2026-12-01'],
+    [1, '2026-10-03'], [2, '2026-10-06'], [3, '2026-10-13'],
+    [4, '2026-11-03'], [5, '2027-01-02'], [5, '2027-03-03'],
   ]);
   assert.equal(c.seen, 6);
   assert.equal(c.correct, 6);
+});
+
+test('a pass before the card is due counts as seen and correct but keeps box and due', () => {
+  const c0 = { box: 2, due: '2026-10-05', seen: 2, correct: 2, lastWrong: null };
+  const c = grade(c0, true, NOW);
+  assert.equal(c.box, 2);
+  assert.equal(c.due, '2026-10-05');
+  assert.equal(c.seen, 3);
+  assert.equal(c.correct, 3);
+});
+
+test('repeated passes on the same day do not climb boxes', () => {
+  let c = undefined;
+  for (let i = 0; i < 5; i++) c = grade(c, true, NOW);
+  assert.equal(c.box, 1);
+  assert.equal(c.due, '2026-10-03');
+  assert.equal(c.correct, 5);
+});
+
+test('a fail before the card is due still demotes to box 1, due tomorrow', () => {
+  const c0 = { box: 3, due: '2026-10-09', seen: 3, correct: 3, lastWrong: null };
+  const c = grade(c0, false, NOW);
+  assert.equal(c.box, 1);
+  assert.equal(c.due, '2026-10-03');
+  assert.equal(c.lastWrong, '2026-10-02');
+});
+
+test('a pass on an overdue card promotes it from today', () => {
+  const c0 = { box: 2, due: '2026-09-20', seen: 2, correct: 2, lastWrong: null };
+  const c = grade(c0, true, NOW);
+  assert.equal(c.box, 3);
+  assert.equal(c.due, '2026-10-09');
 });
 
 test('fail from box 4 drops to box 1, due tomorrow, lastWrong set', () => {
