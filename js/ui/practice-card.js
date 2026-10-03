@@ -5,7 +5,7 @@
 // The top half is pure (session state, store mutations, feedback copy, answer
 // marking) so node can test it. runSession() is the DOM part.
 
-import { judge, isPass, applyAccentShortcut, normalize, ACCENT_MESSAGE } from '../engine/checker.js';
+import { judge, isPass, applyAccentShortcut, normalize, answerTexts, ACCENT_MESSAGE } from '../engine/checker.js';
 import { grade, localDate } from '../engine/srs.js';
 import { requeue } from '../engine/session.js';
 import { SLOW_RATE } from '../audio.js';
@@ -443,7 +443,7 @@ export function runSession(root, cards, { mode = 'practice', lookup, store, audi
         else if (mode !== 'checkpoint' && !pass && normalize(ex.options[i]) === normalize(res.target)) b.classList.add('is-right');
       });
     }
-    showFeedback(res, [...ex.answers, ...extra]);
+    showFeedback(res, [...answerTexts(ex), ...extra]);
     $('[data-go]').textContent = 'Continue →';
     $('[data-keys]').innerHTML = '<kbd class="kbd">Enter</kbd> to continue';
     if (!pass) {

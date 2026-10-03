@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { normalize, applyAccentShortcut, judge, isPass, diffChars } from '../js/engine/checker.js';
+import { normalize, applyAccentShortcut, judge, isPass, diffChars, expandAnswer, acceptedAnswers, answerTexts, digitsToWords } from '../js/engine/checker.js';
 
 const ex = { answers: ['sei'], mistakes: { 'è': 'è is for Lei…' } };
 const ex2 = { answers: ["l'amico è italiano"] };
@@ -156,4 +156,86 @@ test('genuine mid-word slips in long words are still typos', () => {
   assert.equal(judge({ answers: ['italiano'] }, 'italino').verdict, 'typo');
   assert.equal(judge({ answers: ['prendere'] }, 'prendre').verdict, 'typo');
   assert.equal(judge({ answers: ['Un amico italiano'] }, 'Un amico itaiano').verdict, 'typo');
+});
+
+const sorted = (a) => [...a].sort();
+
+test('expandAnswer: optional part', () => {
+  assert.deepEqual(expandAnswer('[Tu] sei stanca?'), ['Tu sei stanca?', 'sei stanca?']);
+});
+test('expandAnswer: alternatives with optional part', () => {
+  assert.deepEqual(
+    sorted(expandAnswer('{Signora, ha fame?|Ha fame[, signora]?}')),
+    sorted(['Signora, ha fame?', 'Ha fame, signora?', 'Ha fame?']),
+  );
+});
+test('expandAnswer: empty alternative', () => {
+  assert.deepEqual(sorted(expandAnswer('Ciao{| Marco}!')), sorted(['Ciao!', 'Ciao Marco!']));
+});
+test('expandAnswer: nested/combined patterns are tidy', () => {
+  const out = expandAnswer("{Scusi|Mi scusi}[, signora], dov'è{| il bagno}?");
+  assert.equal(out.length, 8);
+  for (const s of out) {
+    assert.ok(!s.includes('  '), s);
+    assert.ok(!s.includes(' ,'), s);
+    assert.ok(!s.includes(',?'), s);
+  }
+});
+test('expandAnswer: plain text is returned as is; unbalanced throws', () => {
+  assert.deepEqual(expandAnswer('Ciao.'), ['Ciao.']);
+  assert.throws(() => expandAnswer('[Tu sei'), /unbalanced pattern/);
+  assert.throws(() => expandAnswer('Tu sei}'), /unbalanced pattern/);
+  assert.throws(() => expandAnswer('{a|b'), /unbalanced pattern/);
+});
+test('acceptedAnswers expands entries, carries notes, and is memoised', () => {
+  const e = { answers: ['Mangio.', { text: '[Io] sto mangiando.', note: 'n' }] };
+  assert.deepEqual(acceptedAnswers(e), [
+    { text: 'Mangio.' },
+    { text: 'Io sto mangiando.', note: 'n' },
+    { text: 'sto mangiando.', note: 'n' },
+  ]);
+  assert.equal(acceptedAnswers(e), acceptedAnswers(e));
+  assert.deepEqual(answerTexts(e), ['Mangio.', 'Io sto mangiando.', 'sto mangiando.']);
+});
+test('digitsToWords', () => {
+  assert.equal(digitsToWords('2 birre'), 'due birre');
+  assert.equal(digitsToWords('21'), 'ventuno');
+  assert.equal(digitsToWords('23'), 'ventitré');
+  assert.equal(digitsToWords('28'), 'ventotto');
+  assert.equal(digitsToWords('32'), 'trentadue');
+  assert.equal(digitsToWords('100'), 'cento');
+  assert.equal(digitsToWords('0'), 'zero');
+  assert.equal(digitsToWords('1 birra'), '1 birra');
+  assert.equal(digitsToWords('alle 8:30'), 'alle 8:30');
+  assert.equal(digitsToWords('alle 8.30'), 'alle 8.30');
+  assert.equal(digitsToWords('101'), '101');
+});
+test('normalize turns inner punctuation into spaces', () => {
+  assert.equal(normalize('Rispondi tu? Ho le mani bagnate.'), normalize('Rispondi tu. Ho le mani bagnate'));
+});
+test('normalize keeps the apostrophe join and skips times when converting digits', () => {
+  assert.equal(normalize("un' amica"), "un'amica");
+  assert.equal(normalize('Alle 8:30, 2 birre!'), 'alle 8 30 due birre');
+});
+test('digits in input match number words; digits:false opts out', () => {
+  assert.equal(judge({ answers: ['due birre'] }, '2 birre').verdict, 'correct');
+  assert.equal(judge({ answers: ['due birre'], digits: false }, '2 birre').verdict, 'wrong');
+});
+test('judge returns the note of the matched object answer', () => {
+  const e = { answers: ['Mangio.', { text: 'Sto mangiando.', note: 'Right! Mangio is the everyday choice.' }] };
+  assert.deepEqual(judge(e, 'sto mangiando'), {
+    verdict: 'correct',
+    target: 'Mangio.',
+    note: 'Right! Mangio is the everyday choice.',
+  });
+});
+test('judge accepts any expansion of a pattern', () => {
+  const e = { answers: ['Ha fame?', '{Signora, ha fame?|Ha fame, signora?}'] };
+  assert.equal(judge(e, 'ha fame signora').verdict, 'correct');
+});
+test('typo is found inside an expanded answer', () => {
+  assert.equal(judge({ answers: ['[Tu] sei stanchissima?'] }, 'sei stanchissema?').verdict, 'typo');
+});
+test('target is the text of an object first answer', () => {
+  assert.equal(judge({ answers: [{ text: 'Vado.', note: 'x' }] }, 'zzz').target, 'Vado.');
 });

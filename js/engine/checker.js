@@ -5,18 +5,113 @@ const GRAVE = { a: 'à', e: 'è', i: 'ì', o: 'ò', u: 'ù', A: 'À', E: 'È', I
 export const ACCENT_MESSAGE =
   'Almost: mind the accent. Accents change meaning, e.g. è "is" vs e "and".';
 
-/** Lowercase, unify apostrophes/whitespace, drop inner commas and final ?!., */
-export function normalize(s) {
-  let out = String(s ?? '')
-    .normalize('NFC')
+const UNITS = ['zero', 'uno', 'due', 'tre', 'quattro', 'cinque', 'sei', 'sette', 'otto', 'nove',
+  'dieci', 'undici', 'dodici', 'tredici', 'quattordici', 'quindici', 'sedici', 'diciassette', 'diciotto', 'diciannove'];
+const TENS = ['', '', 'venti', 'trenta', 'quaranta', 'cinquanta', 'sessanta', 'settanta', 'ottanta', 'novanta'];
+
+/** Italian word for a whole number 0-100. */
+function numberWord(n) {
+  if (n === 100) return 'cento';
+  if (n < 20) return UNITS[n];
+  const tens = TENS[Math.floor(n / 10)];
+  const unit = n % 10;
+  if (unit === 0) return tens;
+  const stem = unit === 1 || unit === 8 ? tens.slice(0, -1) : tens;
+  return stem + (unit === 3 ? 'tré' : UNITS[unit]);
+}
+
+/**
+ * Replaces whole-token numbers 0-100 with Italian words ("2 birre" -> "due birre").
+ * 1 stays (un/uno/una is grammar); a token with a digit-separator (8:30, 8.30) is
+ * left alone. Trailing sentence punctuation does not stop a token converting.
+ */
+export function digitsToWords(s) {
+  return String(s ?? '').replace(/(^|\s)(\d+)([?!.;:,]*)(?=\s|$)/g, (m, pre, num, post) => {
+    const n = Number(num);
+    if (num === '1' || num.length > 3 || (num.length > 1 && num[0] === '0') || n > 100) return m;
+    return pre + numberWord(n) + post;
+  });
+}
+
+/** Lowercase, unify apostrophes/whitespace, turn ? ! . ; : , into spaces, optionally spell out digits. */
+export function normalize(s, { digits = true } = {}) {
+  let out = String(s ?? '').normalize('NFC');
+  if (digits) out = digitsToWords(out);
+  return out
     .toLowerCase()
     .replace(/[’‘`]/g, "'")
-    .replace(/,/g, ' ')
+    .replace(/[?!.;:,]/g, ' ')
     .replace(/\s+/g, ' ')
-    .trim();
-  out = out.replace(/[?!.\s]+$/, '');
-  return out.replace(/'\s+/g, "'");
+    .trim()
+    .replace(/'\s+/g, "'");
 }
+
+const unbalanced = () => new Error('unbalanced pattern');
+
+/** Parses a sequence starting at s[i]; returns [strings, next index]. Stops at ] } or | when nested. */
+function parseSeq(s, i, nested) {
+  let results = [''];
+  while (i < s.length) {
+    const c = s[i];
+    if (c === ']' || c === '}') {
+      if (!nested) throw unbalanced();
+      break;
+    }
+    if (c === '|' && nested) break;
+    let parts;
+    if (c === '[') {
+      const [inner, next] = parseSeq(s, i + 1, true);
+      if (s[next] !== ']') throw unbalanced();
+      parts = [...inner, ''];
+      i = next + 1;
+    } else if (c === '{') {
+      parts = [];
+      let next = i;
+      do {
+        const [alt, after] = parseSeq(s, next + 1, true);
+        parts.push(...alt);
+        next = after;
+      } while (s[next] === '|');
+      if (s[next] !== '}') throw unbalanced();
+      i = next + 1;
+    } else {
+      parts = [c];
+      i++;
+    }
+    results = results.flatMap((r) => parts.map((p) => r + p));
+  }
+  return [results, i];
+}
+
+const tidy = (s) => s
+  .replace(/\s+/g, ' ')
+  .replace(/ +([,.?!])/g, '$1')
+  .replace(/,+(?=[.?!]|$)/g, '')
+  .trim();
+
+/** Every concrete string a pattern allows: [x] optional, {a|b} alternatives, nestable. */
+export function expandAnswer(pattern) {
+  const [results] = parseSeq(String(pattern), 0, false);
+  return [...new Set(results.map(tidy))];
+}
+
+const accepted = new WeakMap();
+
+/** All accepted answers of an exercise as [{ text, note? }], patterns expanded. Memoised per exercise. */
+export function acceptedAnswers(exercise) {
+  let list = accepted.get(exercise);
+  if (!list) {
+    list = exercise.answers.flatMap((a) => {
+      const obj = typeof a === 'string' ? { text: a } : a;
+      return expandAnswer(obj.text).map((text) => (obj.note ? { text, note: obj.note } : { text }));
+    });
+    accepted.set(exercise, list);
+  }
+  return list;
+}
+
+/** The plain accepted answer texts of an exercise. */
+export const answerTexts = (exercise) => acceptedAnswers(exercise).map((a) => a.text);
 
 /** Rewrites only the end of the string: vowel+` -> grave, e+' -> é. */
 export function applyAccentShortcut(value) {
@@ -99,9 +194,9 @@ function isTolerableTypo(a, n) {
  * Per-position comparison of normalised strings. `ch` is the target character;
  * if the input is longer, its surplus characters are appended with ok:false.
  */
-export function diffChars(input, target) {
-  const a = normalize(input);
-  const b = normalize(target);
+export function diffChars(input, target, opts) {
+  const a = normalize(input, opts);
+  const b = normalize(target, opts);
   const out = [];
   for (let i = 0; i < Math.max(a.length, b.length); i++) {
     out.push({ ch: i < b.length ? b[i] : a[i], ok: a[i] === b[i] });
@@ -114,18 +209,24 @@ export function isPass(verdict) {
 }
 
 export function judge(exercise, input, extraAnswers = []) {
-  const target = exercise.answers[0];
-  const accepted = [...exercise.answers, ...(extraAnswers || [])].map(normalize);
-  const n = normalize(input);
+  const first = exercise.answers[0];
+  const target = typeof first === 'string' ? first : first.text;
+  const opts = { digits: exercise.digits !== false };
+  const entries = [...acceptedAnswers(exercise), ...(extraAnswers || []).map((text) => ({ text }))]
+    .map((a) => ({ ...a, norm: normalize(a.text, opts) }));
+  const accepted = entries.map((a) => a.norm);
+  const n = normalize(input, opts);
+  const diff = (t) => diffChars(input, t, opts);
 
   // 2. exact
-  if (accepted.includes(n)) return { verdict: 'correct', target };
+  const hit = entries.find((a) => a.norm === n);
+  if (hit) return hit.note ? { verdict: 'correct', target, note: hit.note } : { verdict: 'correct', target };
 
   // 3. known mistake
   const mistakes = exercise.mistakes || {};
   for (const key of Object.keys(mistakes)) {
-    if (normalize(key) === n) {
-      return { verdict: 'mistake', message: mistakes[key], target, diff: diffChars(input, target) };
+    if (normalize(key, opts) === n) {
+      return { verdict: 'mistake', message: mistakes[key], target, diff: diff(target) };
     }
   }
 
@@ -138,9 +239,9 @@ export function judge(exercise, input, extraAnswers = []) {
   // 5. edit distance 1, mid-word in a word longer than 4 letters, not a taught spelling
   const close = accepted.find((a) => isTolerableTypo(a, n));
   if (close) {
-    return { verdict: 'typo', message: 'Giusto, small typo.', target, diff: diffChars(input, close) };
+    return { verdict: 'typo', message: 'Giusto, small typo.', target, diff: diff(close) };
   }
 
   // 6. wrong
-  return { verdict: 'wrong', target, diff: diffChars(input, target) };
+  return { verdict: 'wrong', target, diff: diff(target) };
 }
