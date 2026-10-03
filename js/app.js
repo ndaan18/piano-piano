@@ -46,6 +46,18 @@ let cleanup = null;
 let current = 0; // increments per navigation; a slower, older mount is discarded
 let firstRender = true;
 
+// Storage banner (spec §9): shown on every page while progress can't be saved,
+// including after a save fails later (the store flips `persistent` before notifying).
+const NO_STORAGE = "Your browser is blocking storage, so progress won't be saved.";
+const banner = document.createElement('div');
+banner.className = 'notice notice--storage';
+banner.setAttribute('role', 'status');
+banner.innerHTML = `<span class="mono">Storage</span><p><b>${NO_STORAGE}</b></p>`;
+app.before(banner);
+const showBanner = () => { banner.hidden = store.persistent; };
+showBanner();
+store.subscribe(showBanner);
+
 function navigate(hash) {
   if (location.hash === hash) render();
   else location.hash = hash;

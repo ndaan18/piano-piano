@@ -6,7 +6,6 @@ import { localDate } from '../engine/srs.js';
 import { esc, NO_VOICE_HTML } from '../ui/dom.js';
 
 export const TEST_PHRASE = 'Ciao! Come stai?';
-const NO_STORAGE = "Your browser is blocking storage, so progress won't be saved.";
 const RESET_PROMPT = "Reset all progress? This can't be undone.";
 
 /** 'piano-piano-progress-2026-10-03.json', dated by the local calendar day. */
@@ -38,7 +37,6 @@ export async function mount(root, params, ctx) {
     root.innerHTML = `
       <div class="settings">
         <div class="topbar"><h1 class="settings__title">Settings</h1></div>
-        ${store.persistent ? '' : `<div class="notice" role="status"><span class="mono">Storage</span><p><b>${esc(NO_STORAGE)}</b></p></div>`}
 
         <section class="card settings__card" aria-labelledby="set-audio">
           <h2 class="sec__title" id="set-audio">Audio</h2>
