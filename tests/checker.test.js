@@ -101,9 +101,9 @@ test('typo is refused when the edit involves an apostrophe or space', () => {
 test('typo is still given for mid-word edits (substitution, deletion, insertion)', () => {
   assert.equal(judge({ answers: ['stanco'] }, 'stinco').verdict, 'typo');
   assert.equal(judge({ answers: ['prendere'] }, 'prendre').verdict, 'typo');
-  assert.equal(judge({ answers: ['prendere'] }, 'prenddere').verdict, 'typo');
   assert.equal(judge({ answers: ['buona sera'] }, 'buoma sera').verdict, 'typo');
-  assert.equal(judge({ answers: ['buona sera'] }, 'buona seera').verdict, 'typo');
+  assert.equal(judge({ answers: ['buona giornata'] }, 'buona giornaata').verdict, 'typo');
+  assert.equal(judge({ answers: ["l'amico è italiano"] }, "l'amico è italino").verdict, 'typo');
 });
 test("applyAccentShortcut: curly e’ (iOS smart punctuation) gives é", () => {
   assert.equal(applyAccentShortcut('perche’'), 'perché');
@@ -111,4 +111,49 @@ test("applyAccentShortcut: curly e’ (iOS smart punctuation) gives é", () => {
 test('judge tolerates null extraAnswers', () => {
   assert.equal(judge(ex, 'x', null).verdict, 'wrong');
   assert.equal(judge(ex, 'sei', null).verdict, 'correct');
+});
+
+// Typo tolerance is judged on the word the edit lands in (final review, finding 1).
+const notTypo = [
+  // h after c/g is a taught spelling
+  ['ti piace il gelato', 'ti piache il gelato'],
+  ['un gelato al cioccolato', 'un gelato al chioccolato'],
+  ['le chiavi', 'le ciavi'],
+  ['perché', 'percé'],
+  ['spaghetti', 'spagetti'],
+  ['Bianchi', 'Bianci'],
+  // short words: one letter is a different word
+  ['ho sete', 'o sete'],
+  ['hai la chiave', 'ai la chiave'],
+  ['Giulia ha una zia', 'Giulia a una zia'],
+  ['hanno', 'anno'],
+  ['Cosa fai', 'Cosa vai'],
+  ['Vado', 'Vedo'],
+  ['Sei', 'Sai'],
+  ['Un amico', 'In amico'],
+  ['Gli amici', 'Li amici'],
+  // double consonants change words
+  ['il nonno', 'il nono'],
+  ['prendere', 'prenddere'],
+];
+for (const [answer, input] of notTypo) {
+  test(`"${input}" for "${answer}" is not a typo`, () => {
+    const r = judge({ answers: [answer] }, input);
+    assert.notEqual(r.verdict, 'typo');
+    assert.ok(r.diff.some((d) => !d.ok));
+  });
+}
+test('an edit on the first letter of a long word is not a typo', () => {
+  assert.equal(judge({ answers: ['il gelato'] }, 'il belato').verdict, 'wrong');
+  assert.equal(judge({ answers: ['il gelato'] }, 'il ggelato').verdict, 'wrong');
+});
+test('substitutions that make or break ch/gh or a double consonant are not typos', () => {
+  assert.equal(judge({ answers: ['la chiave'] }, 'la ciiave').verdict, 'wrong');
+  assert.equal(judge({ answers: ['il nonno'] }, 'il nonmo').verdict, 'wrong');
+  assert.equal(judge({ answers: ['la cucina'] }, 'la cuciina').verdict, 'typo');
+});
+test('genuine mid-word slips in long words are still typos', () => {
+  assert.equal(judge({ answers: ['italiano'] }, 'italino').verdict, 'typo');
+  assert.equal(judge({ answers: ['prendere'] }, 'prendre').verdict, 'typo');
+  assert.equal(judge({ answers: ['Un amico italiano'] }, 'Un amico itaiano').verdict, 'typo');
 });

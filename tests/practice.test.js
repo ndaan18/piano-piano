@@ -188,7 +188,7 @@ test('markTarget returns null when the diff belongs to another answer', () => {
 
 test('answerMarks finds the accepted answer a typo diff was made against', () => {
   const exercise = { answers: ['Lo zio arriva domani.', 'Domani arriva lo zio.'] };
-  const res = judge(exercise, 'Domani ariva lo zio');
+  const res = judge(exercise, 'Domani arriba lo zio');
   assert.equal(res.verdict, 'typo');
   const m = answerMarks(res, exercise.answers);
   assert.equal(text(m), 'Domani arriva lo zio.');
