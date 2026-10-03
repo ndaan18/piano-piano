@@ -109,13 +109,15 @@ for (const family of FAMILIES) {
   }
 }
 
+const DAI_FILLER = (wrong) => `"Come on" is the filler dai (or su, forza), not ${wrong}.`;
+
 // u5-r1: andare & venire
 const WHY_VADO = 'andare is irregular: vado, vai, va, vanno. Only noi and voi keep the and- of andare: andiamo, andate.';
 const WHY_VA_LEI = 'Lei takes the "she" form of andare: va. tu takes vai.';
 const WHY_ANDIAMO = 'noi and voi are the regular-looking forms of andare: andiamo, andate. The other four start with v-: vado, vai, va, vanno.';
 const WHY_VENGO = 'venire adds a g with io and loro (vengo, vengono) and an i with tu and lui/lei/Lei (vieni, viene). noi and voi are regular: veniamo, venite.';
 const WHY_VIENE_LEI = 'Lei takes the "she" form of venire: viene. tu takes vieni.';
-const WHY_VENIRE = 'venire is for coming to where the speaker or listener is, or going along with them: Vieni con noi? = Are you coming with us?';
+const WHY_VENIRE = 'venire is for moving towards where the speaker or the listener is, or going along with them: Vieni con noi? = Are you coming with us?';
 const WHY_A_IN = 'With andare, a city takes a (vado a Roma); a country or a region usually takes in (vado in Italia, in Toscana).';
 const WHY_ANDARE_A = 'andare a + an infinitive means "go and do": andiamo a mangiare = let\'s go and eat. The a is needed.';
 
@@ -172,7 +174,7 @@ const unit = {
             ],
             highlight: [3, 4],
           },
-          careful: 'venire is for moving towards the person you are talking to, or going along with them; for going anywhere else, use andare. So when someone calls you over, you answer Vengo! (I\'m coming to you), and when Giulia asks Vieni con noi? (are you coming with us?), you say Sì, vengo! Vado! on its own is for leaving: Ciao, vado! = Bye, I\'m off! Mind vai (tu) and va (he, she, Lei), one letter apart, and the double n in vanno.',
+          careful: 'venire is for moving towards where the speaker or the listener is, or going along with them; for going anywhere else, use andare. So when someone calls you over, you answer Vengo! (I\'m coming to you), and when Giulia asks Vieni con noi? (are you coming with us?), you say Sì, vengo! Vado! on its own is for leaving: Ciao, vado! = Bye, I\'m off! Mind vai (tu) and va (he, she, Lei), one letter apart, and the double n in vanno.',
           howItaliansSayIt: {
             it: 'Dai, andiamo!',
             en: 'Come on, let\'s go!',
@@ -255,8 +257,8 @@ const unit = {
           why: WHY_ANDIAMO + ' ' + WHY_ANDARE_A,
         },
         {
-          id: 'u5-l1-e07', type: 'recognise', reg: 'neutral', rung: 1, ruleId: 'u5-r1',
-          prompt: '"Amore, a tavola!" "___ subito!"', base: '"Love, dinner\'s ready!" "I\'m coming!"', en: '"Love, dinner\'s ready!" "I\'m coming!"',
+          id: 'u5-l1-e07', type: 'recognise', reg: 'tu', rung: 1, ruleId: 'u5-r1',
+          prompt: '"Amore, a tavola!" "___ subito!"', base: '"Love, dinner\'s ready!" "I\'m coming!" (Giulia calls you)', en: '"Love, dinner\'s ready!" "I\'m coming!"',
           answers: ['Vengo'], options: ['Vengo', 'Vado', 'Viene'],
           mistakes: {
             Vado: 'Vado! means "I\'m off". Giulia is calling you over, so you are coming to her: Vengo!',
@@ -424,7 +426,10 @@ const unit = {
         {
           id: 'u5-l1-e22', type: 'register', reg: 'lei', rung: 3, ruleId: 'u5-r1',
           prompt: 'Dove vai?', base: 'You asked Marco. Now ask an older man at the station (formal).', en: 'Where are you going?',
-          answers: ['Dove va?', 'Lei dove va?', 'Dove va Lei?', 'Scusi, dove va?', 'Mi scusi, dove va?', 'Scusi, Lei dove va?'],
+          answers: [
+            'Dove va?', 'Lei dove va?', 'Dove va Lei?', 'Scusi, dove va?', 'Mi scusi, dove va?', 'Scusi, Lei dove va?',
+            'Signore, dove va?', 'Dove sta andando?', 'Scusi, dove sta andando?',
+          ],
           mistakes: {
             'Dove vai?': 'That is still the tu form. With Lei: dove va?',
             'Scusi, dove vai?': 'scusi is right, but vai is tu. With Lei: va.',
@@ -473,8 +478,11 @@ const unit = {
         {
           id: 'u5-l1-e26', type: 'build', reg: 'neutral', rung: 4, ruleId: 'u5-r1',
           prompt: 'Translate: "Come on, let\'s go home!"', base: '(to Giulia and Marco, at the end of a long evening)', en: "Come on, let's go home!",
-          answers: ['Dai, andiamo a casa!', 'Andiamo a casa!', 'Dai, andiamo a casa.', 'Su, andiamo a casa!'],
+          answers: ['Dai, andiamo a casa!', 'Andiamo a casa!', 'Dai, andiamo a casa.', 'Su, andiamo a casa!', 'Forza, andiamo a casa!'],
           mistakes: {
+            'Vai, andiamo a casa!': DAI_FILLER('vai'),
+            'Fai, andiamo a casa!': DAI_FILLER('fai'),
+            'Sai, andiamo a casa!': DAI_FILLER('sai'),
             'Dai, andate a casa!': 'andate is "you go" (plural). "Let\'s go" is andiamo.',
             'Dai, andiamo alla casa!': 'Home is just a casa, with no article.',
           },
@@ -522,11 +530,13 @@ const unit = {
           answers: [
             'Scusi, questo autobus va in centro?', 'Mi scusi, questo autobus va in centro?',
             'Scusi, va in centro questo autobus?', 'Mi scusi, va in centro questo autobus?',
+            'Scusi, questo autobus va al centro?', 'Mi scusi, questo autobus va al centro?',
+            'Scusi, va al centro questo autobus?', 'Mi scusi, va al centro questo autobus?',
           ],
           mistakes: {
             'Scusa, questo autobus va in centro?': 'To the driver, use Lei: scusi.',
             'Scusi, questo autobus vai in centro?': 'vai is "you go". The bus is "it": va.',
-            'Scusi, questo autobus va a centro?': 'The centre is in centro.',
+            'Scusi, questo autobus va a centro?': 'Without an article, the centre is in centro (al centro also works, but never a centro).',
           },
           why: 'The bus is "it", so va. Scusi is the Lei "excuse me", right for a driver.',
         },
@@ -610,7 +620,7 @@ const unit = {
             ],
             highlight: [0, 3],
           },
-          careful: 'faccio and facciamo have a double c; fanno and stanno have a double n. fa and sta have no accent. essere or stare? Keep it simple for now: for how someone is, use stare (Come sta? Sto bene); for where a thing or a place is, use essere (Dov\'è la stazione? Le chiavi sono in cucina). stare a casa means "stay at home". And for the weather Italian says fare, not "be": fa freddo = it\'s cold.',
+          careful: 'faccio and facciamo have a double c; fanno and stanno have a double n. fa and sta have no accent. essere or stare? Keep it simple for now: for how someone is with bene or male, use stare (Come sta? Sto bene); adjectives like stanco or contento still take essere (sono stanco). For where a thing or a place is, use essere (Dov\'è la stazione? Le chiavi sono in cucina). stare a casa means "stay at home". And for the weather Italian says fare, not "be": fa freddo = it\'s cold.',
           howItaliansSayIt: {
             it: 'Come stai? — Bene, grazie, e tu?',
             en: 'How are you? — Fine, thanks, and you?',
@@ -677,8 +687,8 @@ const unit = {
           prompt: 'Oggi ___ freddo.', base: '"It\'s cold today."', en: "It's cold today.",
           answers: ['fa'], options: ['fa', 'è', 'sta'],
           mistakes: {
-            'è': 'For the weather Italians say fa freddo. (È freddo describes a thing: il caffè è freddo.)',
-            sta: 'For the weather Italians use fare: fa freddo.',
+            'è': 'For the weather, standard Italian says fa freddo. (È freddo describes a thing: il caffè è freddo.)',
+            sta: 'For the weather, standard Italian uses fare: fa freddo.',
           },
           why: WHY_WEATHER,
         },
@@ -834,7 +844,10 @@ const unit = {
         {
           id: 'u5-l2-e20', type: 'transform', reg: 'neutral', rung: 3, ruleId: 'u5-r2',
           prompt: 'Stasera sto a casa.', base: 'Now say "we" (noi).', en: "We're staying at home tonight.",
-          answers: ['Stasera stiamo a casa.', 'Stasera noi stiamo a casa.', 'Noi stasera stiamo a casa.'],
+          answers: [
+            'Stasera stiamo a casa.', 'Stasera noi stiamo a casa.', 'Noi stasera stiamo a casa.',
+            'Stasera stiamo in casa.', 'Stasera noi stiamo in casa.', 'Noi stasera stiamo in casa.',
+          ],
           mistakes: {
             'Stasera stanno a casa.': 'stanno is "they stay". "We stay" is stiamo.',
             'Stasera state a casa.': 'state is "you stay" (plural). "We stay" is stiamo.',
@@ -934,6 +947,11 @@ const unit = {
             'Come sta?': 'come sta is the Lei form. Luca is a friend: come stai?',
             'Come sei?': 'Come sei? asks what someone is like. "How are you?" is come stai?',
             'Luca, come sta?': 'come sta is the Lei form. Luca is a friend: come stai?',
+            'Ciao Luca, come sta?': 'come sta is the Lei form. Luca is a friend: come stai?',
+            'Ciao, come sta?': 'come sta is the Lei form. Luca is a friend: come stai?',
+            'Come sta, Luca?': 'come sta is the Lei form. Luca is a friend: come stai?',
+            'Come sa?': 'sa is from sapere ("know"). Ask with stare or andare: come stai? / come va?',
+            'Ciao Luca, come sa?': 'sa is from sapere ("know"). Ask with stare or andare: come stai? / come va?',
           },
           why: WHY_STARE_HOW + ' Come va? ("how\'s it going?") works too.',
         },
@@ -964,6 +982,7 @@ const unit = {
           prompt: 'Translate: "We\'re staying at home tonight."', base: '(Luca asks if you two are coming out)', en: "We're staying at home tonight.",
           answers: [
             'Stasera stiamo a casa.', 'Stiamo a casa stasera.', 'Stasera noi stiamo a casa.', 'Noi stiamo a casa stasera.',
+            'Stasera stiamo in casa.', 'Stiamo in casa stasera.', 'Stasera noi stiamo in casa.', 'Noi stiamo in casa stasera.',
             'Stasera restiamo a casa.', 'Restiamo a casa stasera.', 'Stasera rimaniamo a casa.', 'Rimaniamo a casa stasera.',
           ],
           mistakes: {
@@ -1232,6 +1251,7 @@ const unit = {
             dicete: 'voi is the one irregular form of dire: dite.',
             dicite: 'voi is the one irregular form of dire: dite.',
             dicono: 'dicono is "they say". Asking the group: dite.',
+            dice: 'dice is he/she/Lei. Asking the group: dite.',
           },
           why: WHY_DIRE,
         },
@@ -1409,10 +1429,10 @@ const unit = {
           answers: ['Giulia dice che è tardi.', 'Giulia dice che si è fatto tardi.'],
           mistakes: {
             'Giulia dici che è tardi.': 'dici is "you say". Talking about Giulia: dice.',
-            'Giulia dice è tardi.': 'After dire, Italian needs che ("that"): dice che è tardi.',
+            'Giulia dice è tardi.': 'In everyday Italian, keep che ("that") after dire: dice che è tardi.',
             'Giulia dice che è tarda.': 'tardi ("late") never changes: è tardi.',
           },
-          why: WHY_DIRE + ' Unlike English, Italian never drops che ("that") after dire.',
+          why: WHY_DIRE + ' In everyday Italian you keep che after dire, where English often drops "that".',
         },
 
         // Rung 5: listen & type
@@ -1462,7 +1482,7 @@ const unit = {
     lines: [
       { speaker: 'Giulia', it: 'Allora, cosa facciamo stasera?', en: 'So, what are we doing tonight?', reg: 'neutral' },
       { speaker: 'Luca', it: 'Andiamo a mangiare una pizza? E dopo andiamo a ballare!', en: "Shall we go for a pizza? And then we'll go dancing!", reg: 'neutral' },
-      { speaker: 'Sara', it: 'Io vengo per la pizza, ma poi sto a casa: domani lavoro.', en: "I'm coming for the pizza, but then I'm staying at home: I'm working tomorrow.", reg: 'neutral' },
+      { speaker: 'Sara', it: 'Io vengo per la pizza, ma poi torno a casa: domani lavoro.', en: "I'm coming for the pizza, but then I'm going back home: I'm working tomorrow.", reg: 'neutral' },
       { speaker: 'Giulia', it: 'E tu, amore, che dici? Vieni anche tu a ballare?', en: 'And you, love, what do you say? Are you coming dancing too?', reg: 'tu' },
       { speaker: 'You', it: 'Sì, vengo volentieri! Ma tu sai ballare, Luca?', en: "Yes, I'd love to! But can you dance, Luca?", reg: 'tu' },
       { speaker: 'Giulia', it: 'Lui? Non sa ballare per niente!', en: "Him? He can't dance at all!", reg: 'neutral' },
@@ -1520,13 +1540,14 @@ const unit = {
       },
       {
         id: 'u5-s-e05', type: 'transform', reg: 'neutral', rung: 3, ruleId: 'u5-r2',
-        prompt: 'Poi sto a casa.', base: 'Now say "we" (noi).', en: "Then we're staying at home.",
-        answers: ['Poi stiamo a casa.', 'Poi noi stiamo a casa.'],
+        prompt: 'Prima faccio la doccia.', base: 'Now say it about Giulia: start with Prima Giulia.', en: 'First Giulia has a shower.',
+        answers: ['Prima Giulia fa la doccia.'],
         mistakes: {
-          'Poi stanno a casa.': 'stanno is "they stay". "We stay" is stiamo.',
-          'Poi state a casa.': 'state is "you stay" (plural). "We stay" is stiamo.',
+          'Prima Giulia fai la doccia.': 'fai is "you do". Talking about Giulia: fa.',
+          'Prima Giulia faccio la doccia.': 'faccio is "I do". Talking about Giulia: fa.',
+          'Prima Giulia faccia la doccia.': 'faccia isn\'t the present: "she does" is just fa.',
         },
-        why: WHY_STAY + ' ' + WHY_STO,
+        why: WHY_FACCIO + ' fare la doccia = have a shower.',
       },
       {
         id: 'u5-s-e06', type: 'register', reg: 'lei', rung: 3, ruleId: 'u5-r1',
@@ -1593,14 +1614,18 @@ function withSlipKeys(u) {
   const exercises = [...u.lessons.flatMap((l) => l.exercises), ...u.scene.exercises];
   for (const ex of exercises) {
     if (ex.type === 'recognise') continue; // options only: nothing can be typed
-    const accepted = new Set(ex.answers.map((a) => a.toLowerCase()));
+    const norm = (t) => t.toLowerCase().replace(/[’‘]/g, "'").replace(/,/g, ' ').replace(/\s+/g, ' ').trim().replace(/[?!.\s]+$/, '');
+    const accepted = new Set(ex.answers.map(norm));
+    const keyed = new Set(Object.keys(ex.mistakes).map(norm));
     for (const answer of ex.answers) {
       for (const [right, wrongs] of Object.entries(SLIPS)) {
         const re = new RegExp(`(^|[^\\p{L}])(${right})(?=$|[^\\p{L}])`, 'iu');
         if (!re.test(answer)) continue;
         for (const [wrong, message] of Object.entries(wrongs)) {
           const key = answer.replace(re, (_, pre, word) => pre + (word[0] === word[0].toUpperCase() ? wrong[0].toUpperCase() + wrong.slice(1) : wrong));
-          if (!accepted.has(key.toLowerCase()) && !(key in ex.mistakes)) ex.mistakes[key] = message;
+          if (accepted.has(norm(key)) || keyed.has(norm(key))) continue;
+          ex.mistakes[key] = message;
+          keyed.add(norm(key));
         }
       }
     }
