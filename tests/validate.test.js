@@ -145,11 +145,16 @@ test('UNITS lists all 19 units in order', () => {
   assert.equal(UNITS[18].title, 'Polite conditional');
 });
 
-test('loadUnit returns the sample unit and null for unwritten ones', async () => {
+test('loadUnit returns the sample unit and null for unknown ids', async () => {
   const unit = await loadUnit(2);
   assert.equal(unit.id, 2);
-  assert.equal(await loadUnit(UNITS.find((u) => !u.load).id), null);
   assert.equal(await loadUnit(99), null);
+});
+
+test('loadUnit returns null for a unit not written yet', async (t) => {
+  const unwritten = UNITS.find((u) => !u.load);
+  if (!unwritten) return t.skip('every unit has a loader');
+  assert.equal(await loadUnit(unwritten.id), null);
 });
 
 test('the sample unit validates and indexes every exercise', async () => {

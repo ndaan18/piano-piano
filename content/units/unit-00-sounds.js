@@ -14,9 +14,10 @@ const WHY_SC_SOFT = 'sc before e or i sounds "sh": pesce, uscita. Before a, o or
 const WHY_SC_HARD = 'sc before a, o or u sounds "sk": scusi, tasca. Before e or i, add h to keep the "sk": bruschetta, pesche.';
 
 const WHY_DOUBLE = 'A double consonant is held longer, and it can change the word: sete (thirst) / sette (seven), nono (ninth) / nonno (grandfather).';
-const WHY_DOUBLE_KEEP = 'Double letters stay double in every form of the word. (Plurals come in Unit 1.)';
+const WHY_DOUBLE_KEEP = 'Double letters stay double in the plural. (Plurals come in Unit 1.)';
 
-const WHY_FINAL = 'When the stress falls on the last vowel, Italian writes an accent on it: caffè, città, perché, lunedì.';
+const WHY_FINAL = 'In words of two or more syllables, a stressed last vowel is written with an accent: caffè, città, perché, lunedì.';
+const WHY_ONE_SYLLABLE = 'One-syllable words usually take no accent (qui, qua, tre, su, no). They get one only to tell two words apart (è/e, lì/li, tè/te, sì/si) and in a handful of words like più, già, giù, può.';
 const WHY_E = 'è with an accent means "is". e without one means "and": il caffè è caldo, tè e caffè.';
 const WHY_LI = 'lì (there) has an accent. Without it, li means "them".';
 const WHY_PLURAL_ACCENT = 'Words that end in an accented vowel never change in the plural: una città, due città.';
@@ -99,7 +100,7 @@ export default {
           answers: ['chiave'], options: ['chiave', 'ciave', 'cave'],
           mistakes: {
             ciave: 'ci + a is the soft sound, "CHAH-veh". For a hard k before i, write chi: chiave.',
-            cave: 'cave (caves) has no "y" sound after the k. The key is chi + ave: chiave.',
+            cave: 'cave (quarries) has no "y" sound after the k. The key is chi + ave: chiave.',
           },
           why: WHY_HARD,
         },
@@ -458,7 +459,7 @@ export default {
           id: 'u0-l2-e02', type: 'recognise', reg: 'neutral', rung: 1, ruleId: 'u0-r2',
           prompt: "Dov'è il ___?", base: '(the bathroom, said "BAH-nyo")', en: "Where's the bathroom?",
           answers: ['bagno'], options: ['bagno', 'banio'],
-          mistakes: { banio: 'n + i is two sounds, "BAH-nee-o". The single "ny" sound is gn: bagno.' },
+          mistakes: { banio: 'Italian spells the "ny" of canyon gn: bagno. ni would be a plain n plus a quick y, a lighter sound.' },
           why: WHY_GN,
         },
         {
@@ -525,7 +526,7 @@ export default {
           prompt: 'Il fi___o di Anna.', base: '(son, said "FEE-lyo")', en: "Anna's son.",
           answers: ['gli'],
           mistakes: {
-            li: 'li is a plain l + i, "FEE-lee-o". The "lly" sound is gli: figlio.',
+            li: 'The "lli" sound of million is spelled gli: figlio. li would be a plain l plus a quick y.',
             gl: 'gl before o is a plain g + l. You need gli: figlio.',
           },
           why: WHY_GLI,
@@ -535,7 +536,7 @@ export default {
           prompt: 'Il co___ome, per favore.', base: '(surname, said "ko-NYO-meh")', en: 'Your surname, please.',
           answers: ['gn'],
           mistakes: {
-            ni: 'n + i is two sounds, "ko-nee-O-meh". The "ny" sound is gn: cognome.',
+            ni: 'Italian spells the "ny" of canyon gn: cognome. ni would be a plain n plus a quick y.',
             n: 'With one n it would be "ko-NO-meh". The "ny" sound is gn: cognome.',
           },
           why: WHY_GN,
@@ -576,7 +577,7 @@ export default {
           answers: ['gli'],
           mistakes: {
             l: 'mole would be "MO-leh". The "lly" sound is gli: moglie.',
-            li: 'lie is a plain l + i + e. The "lly" sound is gli: moglie.',
+            li: 'The "lli" sound of million is spelled gli: moglie. lie would be a plain l plus a quick y.',
           },
           why: WHY_GLI,
         },
@@ -586,7 +587,7 @@ export default {
           answers: ['sc'],
           mistakes: {
             sch: 'sch is "sk", "SKYAR-pa". For "sh", write just sc: sciarpa.',
-            s: 'With s alone it would be "see-AR-pa". For "sh", write sc: sciarpa.',
+            s: 'With s alone you would get a plain s, not "sh". For "sh", write sc: sciarpa.',
           },
           why: WHY_SC_SOFT,
         },
@@ -602,7 +603,7 @@ export default {
           prompt: "Una botti___a d'acqua, per favore.", base: '(bottle, said "bot-TEE-lya")', en: 'A bottle of water, please.',
           answers: ['gli'],
           mistakes: {
-            li: 'lia is a plain l + i + a, "bot-TEE-lee-a". The "lly" sound is gli: bottiglia.',
+            li: 'The "lli" sound of million is spelled gli: bottiglia. lia would be a plain l plus a quick y.',
             gl: 'gl before a is a plain g + l. You need gli: bottiglia.',
           },
           why: WHY_GLI,
@@ -1139,11 +1140,11 @@ export default {
         },
         {
           id: 'u0-l3-e39', type: 'listen', reg: 'neutral', rung: 5, ruleId: 'u0-r3',
-          prompt: 'È troppo caro.', base: '', en: "It's too expensive.",
-          answers: ['È troppo caro.'],
+          prompt: 'Il vino è troppo caro.', base: '', en: 'The wine is too expensive.',
+          answers: ['Il vino è troppo caro.'],
           mistakes: {
-            'È troppo carro.': 'You heard a short r: caro, expensive. carro is a cart.',
-            'È tropo caro.': 'You heard a long p: troppo.',
+            'Il vino è troppo carro.': 'You heard a short r: caro, expensive. carro is a cart.',
+            'Il vino è tropo caro.': 'You heard a long p: troppo.',
           },
           why: WHY_DOUBLE,
         },
@@ -1164,7 +1165,7 @@ export default {
             { word: 'è', kind: 'circle', color: 'pink' },
             { word: 'e', kind: 'circle', color: 'ultra' },
           ],
-          why: 'Most Italian words are stressed on the second-to-last syllable: GRA-zie, a-MI-co, ra-GAZ-zo. When the stress falls on the last vowel, it is written with an accent: caffè, città, perché, lunedì. A few short words use the accent to tell two words apart: è (is) and e (and), lì (there) and li (them), tè (tea) and te (you).',
+          why: 'Most Italian words are stressed on the second-to-last syllable: GRA-zie, a-MI-co, ra-GAZ-zo. In words of two or more syllables, a stressed last vowel is written with an accent: caffè, città, perché, lunedì. One-syllable words usually have none (qui, tre, su, va). They take one only to tell two words apart, like è (is) and e (and), lì (there) and li (them), tè (tea) and te (you), and in a handful of words like più, già, può.',
           table: {
             head: ['Word', 'Said', 'Meaning'],
             rows: [
@@ -1177,7 +1178,7 @@ export default {
             ],
             highlight: [2, 3, 4, 5],
           },
-          careful: 'Only a stressed last vowel gets a written accent. camera is CA-me-ra, stressed early, with no mark: you learn those by ear. Most accents lean left (à, è, ì, ò, ù), but perché and ventitré end in é. And È with an apostrophe (E\') is a typing shortcut, not Italian spelling.',
+          careful: 'Only a stressed last vowel can carry a written accent. camera is CA-me-ra, stressed early, with no mark: you learn those by ear. qui and tre have no accent, but ventitré does. Most accents lean left (à, è, ì, ò, ù), but perché and ventitré end in é. And È with an apostrophe (E\') is a typing shortcut, not Italian spelling.',
           howItaliansSayIt: {
             it: 'Perché? Perché sì!',
             en: 'Why? Just because!',
@@ -1398,6 +1399,7 @@ export default {
             'Sei di qui?': 'That is still the tu form. For Lei, sei becomes è.',
             'E di qui?': 'Without the accent, e means "and". "Are you" (Lei) is È.',
             "E' di qui?": "E' with an apostrophe is a typing shortcut, not Italian spelling: write È.",
+            'È di quì?': 'qui has one syllable, so it takes no accent: qui.',
           },
           why: 'tu sei → Lei è. A capital È keeps its accent too.',
         },
@@ -1503,12 +1505,12 @@ export default {
         },
         {
           id: 'u0-l4-e36', type: 'listen', reg: 'neutral', rung: 5, ruleId: 'u0-r4',
-          prompt: 'È lì, a destra.', base: '', en: "It's there, on the right.",
-          answers: ['È lì, a destra.'],
+          prompt: 'Il bagno è lì, a destra.', base: '', en: 'The bathroom is there, on the right.',
+          answers: ['Il bagno è lì, a destra.'],
           mistakes: {
-            'E lì, a destra.': 'Here you heard "it is": È, with an accent.',
-            'È li, a destra.': 'lì (there) needs its accent.',
-            "E' lì, a destra.": "E' with an apostrophe is a typing shortcut: write È.",
+            'Il bagno e lì, a destra.': 'e means "and". The bathroom "is" there: è, with an accent.',
+            'Il bagno è li, a destra.': 'lì (there) needs its accent.',
+            "Il bagno e' lì, a destra.": "e' with an apostrophe is a typing shortcut: write è.",
           },
           why: WHY_E + ' ' + WHY_LI,
         },
@@ -1519,11 +1521,40 @@ export default {
           mistakes: { 'Ci vediamo lunedi.': 'You heard the stress on the last i: lunedì.' },
           why: WHY_FINAL,
         },
+
+        // One-syllable words: no accent unless it tells two words apart
+        {
+          id: 'u0-l4-e38', type: 'recognise', reg: 'neutral', rung: 1, ruleId: 'u0-r4',
+          prompt: 'Il nonno è ___.', base: '(here)', en: 'Grandpa is here.',
+          answers: ['qui'], options: ['qui', 'quì'],
+          mistakes: { quì: 'qui has one syllable and there is no other qui to tell apart, so it takes no accent.' },
+          why: WHY_ONE_SYLLABLE,
+        },
+        {
+          id: 'u0-l4-e39', type: 'type', reg: 'neutral', rung: 2, ruleId: 'u0-r4',
+          prompt: 'Sono ___, a destra!', base: '(here)', en: "I'm here, on the right!",
+          answers: ['qui', 'qua'],
+          mistakes: {
+            quì: 'qui has one syllable, so it takes no accent: qui.',
+            quà: 'qua has one syllable, so it takes no accent: qua.',
+          },
+          why: WHY_ONE_SYLLABLE,
+        },
+        {
+          id: 'u0-l4-e40', type: 'listen', reg: 'neutral', rung: 5, ruleId: 'u0-r4',
+          prompt: 'Siamo in tre.', base: '', en: 'There are three of us.',
+          answers: ['Siamo in tre.'],
+          mistakes: {
+            'Siamo in trè.': 'tre has one syllable, so it takes no accent. Only longer numbers ending in it do: ventitré.',
+            'Siamo in tré.': 'tre has one syllable, so it takes no accent. Only longer numbers ending in it do: ventitré.',
+          },
+          why: WHY_ONE_SYLLABLE,
+        },
       ],
     },
   ],
   scene: {
-    title: 'Spelling your name and hotel at check-in',
+    title: 'Spelling your name at check-in',
     setting: 'You arrive at a small hotel in Bologna and spell your surname for the receptionist. Italian letter names: a, bi, ci, di, e, effe, gi, acca, i, elle, emme, enne, o, pi, cu, erre, esse, ti, u, vu, zeta. For a double letter, say doppia: doppia elle.',
     lines: [
       { speaker: 'Receptionist', it: 'Buonasera! Ha una prenotazione?', en: 'Good evening! Do you have a booking?', reg: 'lei' },
@@ -1556,7 +1587,7 @@ export default {
         prompt: 'Ecco la chiave: camera ___.', base: '(room 23, said "ven-tee-TREH")', en: "Here's the key: room twenty-three.",
         answers: ['ventitré'], options: ['ventitré', 'ventitre'],
         mistakes: { ventitre: 'ventitré is stressed on the last syllable, so it needs an accent: ventitré.' },
-        why: WHY_FINAL + ' ventitré takes é, like perché.',
+        why: WHY_FINAL + ' tre alone has no accent, but ventitré, stressed on its last syllable, does, with é like perché.',
       },
       {
         id: 'u0-s-e03', type: 'type', reg: 'neutral', rung: 2, ruleId: 'u0-r1',
