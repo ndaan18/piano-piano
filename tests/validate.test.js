@@ -145,7 +145,7 @@ test('UNITS lists all 19 units in order', () => {
   assert.equal(UNITS[18].title, 'Polite conditional');
 });
 
-test('loadUnit returns the sample unit and null for unknown ids', async () => {
+test('loadUnit returns a written unit and null for unknown ids', async () => {
   const unit = await loadUnit(2);
   assert.equal(unit.id, 2);
   assert.equal(await loadUnit(99), null);
@@ -157,15 +157,16 @@ test('loadUnit returns null for a unit not written yet', async (t) => {
   assert.equal(await loadUnit(unwritten.id), null);
 });
 
-test('the sample unit validates and indexes every exercise', async () => {
+test('unit 2 validates and indexes every exercise', async () => {
   const unit = await loadUnit(2);
   assert.deepEqual(validateUnit(unit), []);
   const ex = unit.lessons[0].exercises;
-  assert.equal(ex.length, 30);
+  assert.ok(ex.length >= 30);
   assert.deepEqual(new Set(ex.map((e) => e.type)), new Set(TYPES));
   assert.deepEqual(new Set(ex.map((e) => e.rung)), new Set([1, 2, 3, 4, 5]));
+  const all = [...unit.lessons.flatMap((l) => l.exercises), ...unit.scene.exercises];
   const index = exerciseIndex([unit]);
-  assert.equal(index.size, 30);
+  assert.equal(index.size, all.length);
   assert.deepEqual(
     { ...index.get('u2-l1-e01'), exercise: undefined },
     { exercise: undefined, unitId: 2, lessonId: 'u2-l1', ruleId: 'u2-r1' },
