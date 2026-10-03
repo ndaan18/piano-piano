@@ -3,7 +3,7 @@
 // units show the cover and title with a short message instead.
 
 import { UNITS, loadUnit } from '../../content/index.js';
-import { renderCover, lightAt } from '../covers.js';
+import { renderCover, toneText } from '../covers.js';
 import { PASS_MARK, isUnlocked, unitStage } from '../engine/srs.js';
 import { SLOW_RATE } from '../audio.js';
 import { esc, PLAY_ICON } from '../ui/dom.js';
@@ -132,8 +132,7 @@ function stepRow(s, i, next) {
 const STAGE_LABELS = { learned: 'Learned', practised: 'Practised', passed: 'Passed ✓', longterm: 'Long-term ✓' };
 
 function shell(meta, { locked = false } = {}) {
-  // text tone follows the cover under it; a locked cover is faded, so always light
-  const dark = (x, y) => (!locked && !lightAt(meta.id, x, y) ? ' on-dark' : '');
+  // text over the cover is toned in mount (toneText); a locked cover is faded, so always light
   return `
     <div class="topbar">
       <a class="iconbtn" href="#/" aria-label="Back to your path">✕</a>
@@ -143,10 +142,10 @@ function shell(meta, { locked = false } = {}) {
       <section class="unit__hero${locked ? ' unit__hero--locked' : ''}">
         <div class="cover cover--fill" data-cover></div>
         <div class="cover__content unit__head">
-          <span class="mono${dark(8, 6)}" data-stage>${locked ? 'Locked' : ''}</span>
-          <div class="${dark(22, 80)}">
-            <h1 class="big-title unit__title">${esc(meta.title)}</h1>
-            <p class="unit__teaser">${esc(meta.teaser)}</p>
+          <span class="mono" data-stage data-tone>${locked ? 'Locked' : ''}</span>
+          <div>
+            <h1 class="big-title unit__title" data-tone="large">${esc(meta.title)}</h1>
+            <p class="unit__teaser" data-tone>${esc(meta.teaser)}</p>
           </div>
         </div>
       </section>
@@ -177,6 +176,7 @@ export async function mount(root, params, ctx) {
   const cover = root.querySelector('[data-cover]');
   renderCover(cover, id);
   const side = root.querySelector('[data-side]');
+  const retone = unlocked ? toneText(cover, id, [...root.querySelectorAll('.unit__head [data-tone]')], { drift: true }) : () => {};
 
   if (!unlocked) {
     side.innerHTML = messageSide(`<b>Locked.</b> Pass the Unit ${pad2(id - 1)} checkpoint to unlock.`);
@@ -187,6 +187,7 @@ export async function mount(root, params, ctx) {
   const stage = root.querySelector('[data-stage]');
   if (!unit) {
     stage.textContent = 'Being written';
+    retone();
     side.innerHTML = messageSide('Lessons for this unit are being written.');
     return;
   }
@@ -199,6 +200,7 @@ export async function mount(root, params, ctx) {
   const saved = safeRoute(state.resume?.route);
   const resume = unitFromRoute(saved) === id ? saved : null;
   stage.textContent = STAGE_LABELS[unitStage(unit, state.units[id], state.cards)] || (doneCount ? 'In progress' : 'Not started');
+  retone();
 
   let go;
   if (resume) go = { href: resume, label: 'Resume →' };

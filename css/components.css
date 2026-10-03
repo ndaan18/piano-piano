@@ -96,7 +96,6 @@
 }
 .tile__thumb { position: relative; overflow: hidden; aspect-ratio: 1 / 0.82; }
 .tile__num { position: absolute; left: 9px; top: 8px; z-index: 4; }
-.tile--dark .tile__num { color: var(--base); }
 .tile__badge {
   position: absolute;
   right: 8px;
@@ -181,6 +180,9 @@
 }
 .on-ink-muted { color: var(--on-ink-muted); }
 .on-dark { color: var(--base); } /* text over a dark part of a cover */
+/* text over a part of a cover where neither ink nor light text reads: a solid backing */
+.on-pill { width: fit-content; max-width: 100%; padding: 0.05em 0.35em; border-radius: 0.3em; background: var(--base); color: var(--ink); -webkit-box-decoration-break: clone; box-decoration-break: clone; }
+.on-pill.on-dark { background: var(--ink); color: var(--base); }
 
 /* round lime play button with an ink icon */
 .play {

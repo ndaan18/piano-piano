@@ -2,7 +2,7 @@
 // (Continue · Phrase of the day · Review) and the path of unit tiles.
 
 import { UNITS, loadUnit, exerciseIndex } from '../../content/index.js';
-import { renderCover, lightAt } from '../covers.js';
+import { renderCover, lightAt, toneText } from '../covers.js';
 import { PASS_MARK, localDate, addDays, unitStage, isUnlocked, dueIds } from '../engine/srs.js';
 import { SLOW_RATE } from '../audio.js';
 import { esc, PLAY_ICON, regChip, NO_VOICE_HTML } from '../ui/dom.js';
@@ -80,8 +80,7 @@ export async function mount(root, params, ctx) {
   const at = core.findIndex((s) => s.route === href);
   const stepLabel = reviewing ? 'In progress'
     : !core.length ? 'Being written' : at >= 0 ? `Step ${at + 1} / ${core.length}` : next ? '' : 'Complete';
-  // text tone follows the cover under it (dark covers can be lime at the edges)
-  const tone = (x, y) => (lightAt(current, x, y) ? '' : ' on-dark');
+  // the button sits on a solid fill, so the unblurred cover colour is enough
   const btnOnDark = !lightAt(current, 85, 85);
 
   // phrase of the day, from the examples of reached units
@@ -97,13 +96,13 @@ export async function mount(root, params, ctx) {
     const locked = !isUnlocked(u.id, state.units);
     const unit = content.get(u.id);
     const passed = unit && ['passed', 'longterm'].includes(unitStage(unit, state.units[u.id], state.cards));
-    const cls = ['tile', locked && 'tile--locked', u.id === current && 'tile--now', !locked && !lightAt(u.id, 8, 8) && 'tile--dark']
+    const cls = ['tile', locked && 'tile--locked', u.id === current && 'tile--now']
       .filter(Boolean).join(' ');
     const status = locked ? 'locked' : passed ? 'passed' : u.id === current ? 'current unit' : '';
     return `
       <li><a class="${cls}" href="${esc(`#/unit/${u.id}`)}">
         <div class="tile__thumb"><div class="cover cover--fill" data-cover="${u.id}"></div>
-          <span class="tile__num mono">${pad2(u.id)}</span>${passed ? '<span class="tile__badge" aria-hidden="true">✓</span>' : ''}</div>
+          <span class="tile__num mono"${locked ? '' : ' data-tone'}>${pad2(u.id)}</span>${passed ? '<span class="tile__badge" aria-hidden="true">✓</span>' : ''}</div>
         <div class="tile__info"><b>${esc(u.title)}</b><span class="tile__tease">${esc(u.teaser)}</span>
           ${status ? `<span class="sr-only">, ${status}</span>` : ''}</div>
       </a></li>`;
@@ -125,9 +124,9 @@ export async function mount(root, params, ctx) {
     <div class="bento">
       <section class="card bento__hero" aria-label="Continue">
         <div class="cover cover--fill" data-cover="${current}"></div>
-        <div class="cover__content bento__row mono"><span class="${tone(12, 8)}">Continue · ${reviewing ? 'Review' : `Unit ${pad2(current)}`}</span><span class="${tone(88, 8)}">${stepLabel}</span></div>
+        <div class="cover__content bento__row mono"><span data-tone>Continue · ${reviewing ? 'Review' : `Unit ${pad2(current)}`}</span><span data-tone>${stepLabel}</span></div>
         <div class="cover__content bento__row bento__row--end">
-          <h2 class="bento__title${tone(22, 82)}">${reviewing ? 'Review' : esc(UNITS[current].title)}</h2>
+          <h2 class="bento__title" data-tone="large">${reviewing ? 'Review' : esc(UNITS[current].title)}</h2>
           <a class="btn${btnOnDark ? ' btn--lime' : ''}" href="${esc(href)}">${reviewing ? 'Continue review →' : resuming ? 'Resume →' : started ? 'Continue →' : 'Start →'}</a>
         </div>
       </section>
@@ -158,9 +157,14 @@ export async function mount(root, params, ctx) {
     </div>
     <ol class="path">${tiles}</ol>`;
 
+  // text over a cover takes its colour from the blurred colours under it
   root.querySelectorAll('[data-cover]').forEach((el) => {
     const i = Number(el.dataset.cover);
-    renderCover(el, i, { scale: el.closest('.tile') ? 0.55 : 1 });
+    const tile = el.closest('.tile');
+    const scale = tile ? 0.55 : 1;
+    renderCover(el, i, { scale });
+    const host = tile || el.closest('.bento__hero');
+    toneText(el, i, [...host.querySelectorAll('[data-tone]')], { scale, drift: !tile });
   });
 
   root.querySelector('.bento__phrase .play').addEventListener('click', () => {
